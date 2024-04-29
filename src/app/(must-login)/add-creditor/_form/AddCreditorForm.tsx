@@ -19,15 +19,34 @@ import { FormProviderAddCreditor, useAddCreditorForm } from '.'
 import AttachmentsField from './AttachmentsField'
 import LegalRepresentativeInputs from './LegalRepresentativeInputs'
 import { AddCreditorValues } from './validation'
+import { ClaimType, CreditorType } from '@/types'
+import { useToast } from '@/components/ui/use-toast'
+import { addCreditor } from '../actions'
+import { useRouter } from 'next/navigation'
 
 function AddCreditorForm() {
+    const { toast } = useToast()
+    const router = useRouter()
+
     const [withLegalRepresentative, setWithLegalRepresentative] =
         useState<boolean>()
 
     const form = useAddCreditorForm()
 
-    function onSubmit(values: AddCreditorValues) {
-        console.log(values)
+    async function onSubmit(values: AddCreditorValues) {
+        try {
+            await addCreditor(values)
+            toast({
+                title: 'Successfully Added Creditor:',
+                description: values.nama,
+            })
+            router.push('/dashboard')
+        } catch (err) {
+            toast({
+                title: 'Oh no!',
+                description: 'Something went wrong!',
+            })
+        }
     }
 
     function handleNumberInputChange(
@@ -85,10 +104,11 @@ function AddCreditorForm() {
                                                 defaultValue={field.value}
                                                 className="flex flex-wrap gap-4"
                                             >
-                                                {[
-                                                    'INSTANSI/PERUSAHAAN',
-                                                    'PRIBADI',
-                                                ].map((item) => (
+                                                {(
+                                                    Object.values(
+                                                        CreditorType
+                                                    ) as string[]
+                                                ).map((item) => (
                                                     <FormItem
                                                         key={item}
                                                         className="flex items-center space-x-3 space-y-0"
@@ -272,11 +292,11 @@ function AddCreditorForm() {
                                                 defaultValue={field.value}
                                                 className="flex flex-wrap gap-4"
                                             >
-                                                {[
-                                                    'SEPARATIS',
-                                                    'PREFEREN',
-                                                    'KONKUREN',
-                                                ].map((item) => (
+                                                {(
+                                                    Object.values(
+                                                        ClaimType
+                                                    ) as string[]
+                                                ).map((item) => (
                                                     <FormItem
                                                         key={item}
                                                         className="flex items-center space-x-3 space-y-0"

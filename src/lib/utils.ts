@@ -23,13 +23,13 @@ export function formatNumber(amount: number) {
     return NUMBER_FORMATTER.format(amount)
 }
 
-export function formatToSlug(str: string) {
+export function toSlug(str: string) {
     return str
         .toLowerCase()
         .replace(/ /g, "-")
-        .replace(/[^\w-]+/g, "")
-    // the first regex replace all spaces into -
-    // the second regex replaces all - that is more than 1 to be an empty string
+        .replace(/[^\w-]+/g, ""); 
+        // the first regex replace all spaces into -
+        // the second regex replaces all - that is more than 1 to be an empty string 
 }
 
 export function capitalizeFirstLetter(str: string): string {

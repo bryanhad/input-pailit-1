@@ -14,62 +14,75 @@ datasource db {
     directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Account {
-    id                String  @id @default(cuid())
-    userId            String  @map("user_id")
-    type              String
-    provider          String
-    providerAccountId String  @map("provider_account_id")
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? @db.Text
-    session_state     String?
+// model User {
+//     id            String    @id @default(cuid())
+//     name          String
+//     email         String    @unique
+//     emailVerified DateTime?
+//     image         String
+//     role          String    @default("USER")
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     accounts Account[]
+//     sessions Session[]
 
-    @@unique([provider, providerAccountId])
-    @@map("accounts")
-}
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
 
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique @map("session_token")
-    userId       String   @map("user_id")
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     @@map("users")
+// }
 
-    @@map("sessions")
-}
+// model Account {
+//     userId            String
+//     type              String
+//     provider          String
+//     providerAccountId String
+//     refresh_token     String?
+//     access_token      String?
+//     expires_at        Int?
+//     token_type        String?
+//     scope             String?
+//     id_token          String?
+//     session_state     String?
 
-model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime? @map("email_verified")
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
 
-    @@map("users")
-}
+//     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//     @@id([provider, providerAccountId])
+//     @@map("accounts")
+// }
+
+// model Session {
+//     sessionToken String   @unique
+//     userId       String
+//     expires      DateTime
+//     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@map("sessions")
+// }
 
 model Creditor {
     id String @id @default(cuid())
 
-    name                           String
-    address                        String?
-    email                          String @unique
-    phoneNumber                    String?
-    category                       String
-    legalRepresentativeName        String
-    legalRepresentativePhoneNumber String
-    creditorType                   String
-    totalClaimAmount               BigInt
-    paidClaimAmount                BigInt
-    claimAmount                    BigInt
+    nama                      String
+    slug                      String @unique
+    jenis                     String
+    NIKAtauNomorAktaPendirian String?
+    alamat                    String?
+    email                     String?
+    nomorTelepon              String?
+    korespondensi             String?
+    totalTagihan              String
+    sifatTagihan              String
+
+    namaKuasaHukum         String?
+    emailKuasaHukum        String?
+    nomorTeleponKuasaHukum String?
+    alamatKuasaHukum       String?
 
     attachments Attachment[]
 
@@ -79,11 +92,11 @@ model Creditor {
 model Attachment {
     id String @id @default(cuid())
 
-    name        String
-    url         String?
+    nama        String
+    ready       Boolean
+    deskripsi   String?
     Creditor    Creditor? @relation(fields: [creditorId], references: [id])
     creditorId  String?
-    description String?
 
     @@map("attachments")
 }
