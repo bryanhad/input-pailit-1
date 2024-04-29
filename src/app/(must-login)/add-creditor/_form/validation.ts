@@ -24,7 +24,7 @@ const kuasaHukumSchema = z.object({
 
 export const AddCreditorSchema = z
     .object({
-        nama: z.string().min(2).max(255),
+        nama: z.string().min(3).max(255),
         jenis: z
             .string()
             .min(1)
@@ -35,9 +35,9 @@ export const AddCreditorSchema = z
                 }
             ),
         NIKAtauNomorAktaPendirian: z.string().optional(),
-        alamat: z.string().min(2).max(255).optional(),
+        alamat: z.string().min(5).max(255).optional().or(z.literal('')),
         email: optionalEmailSchema,
-        nomorTelepon: z.string().min(2).max(255).optional(),
+        nomorTelepon: z.string().min(5).max(255).optional().or(z.literal('')),
         korespondensi: z.string().optional(),
         totalTagihan: z.coerce
             .number()

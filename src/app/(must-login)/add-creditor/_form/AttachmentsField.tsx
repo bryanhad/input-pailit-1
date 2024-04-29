@@ -89,6 +89,7 @@ function AttachmentsField() {
             <Button
                 className="self-start"
                 type="button"
+                variant={'success'}
                 onClick={() =>
                     append({
                         nama: '',

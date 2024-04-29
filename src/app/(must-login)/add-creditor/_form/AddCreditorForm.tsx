@@ -19,7 +19,6 @@ import { FormProviderAddCreditor, useAddCreditorForm } from '.'
 import AttachmentsField from './AttachmentsField'
 import LegalRepresentativeInputs from './LegalRepresentativeInputs'
 import { AddCreditorValues } from './validation'
-import H1 from '@/components/ui/h1'
 
 function AddCreditorForm() {
     const [withLegalRepresentative, setWithLegalRepresentative] =
@@ -46,6 +45,19 @@ function AddCreditorForm() {
                 onChange(value)
             }
         }
+        form.trigger(field)
+    }
+
+    function handlePhoneNumberInputChange(
+        e: React.ChangeEvent<HTMLInputElement>,
+        onChange: (...event: any[]) => void,
+        field: keyof AddCreditorValues
+    ) {
+        const value = parseInt(e.target.value)
+        if (isNaN(value) && e.target.value !== '') {
+            return
+        }
+        onChange(e.target.value)
         form.trigger(field)
     }
 
@@ -121,11 +133,11 @@ function AddCreditorForm() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            NIK Atau Akta Pendirian
+                                            NIK / Akta Pendirian
                                         </FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Masukkan NIK Atau Akta Pendirianr.."
+                                                placeholder="Masukkan NIK Atau Akta Pendirian.."
                                                 {...field}
                                             />
                                         </FormControl>
@@ -168,15 +180,27 @@ function AddCreditorForm() {
                             <FormField
                                 control={form.control}
                                 name="nomorTelepon"
-                                render={({ field }) => (
+                                render={({
+                                    field: { value, ...restOfFieldValues },
+                                }) => (
                                     <FormItem>
                                         <FormLabel>
                                             Nomor Telepon Kreditor
                                         </FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Masukkan Nomor Telepon Kreditor"
-                                                {...field}
+                                                value={form.watch(
+                                                    'nomorTelepon'
+                                                )}
+                                                placeholder="Masukkan nomor telepon kreditor"
+                                                {...restOfFieldValues}
+                                                onChange={(e) =>
+                                                    handlePhoneNumberInputChange(
+                                                        e,
+                                                        restOfFieldValues.onChange,
+                                                        'nomorTelepon'
+                                                    )
+                                                }
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -281,7 +305,7 @@ function AddCreditorForm() {
                                 <Button
                                     className="block "
                                     type="button"
-                                    variant={'outline'}
+                                    variant={'success'}
                                     onClick={() =>
                                         setWithLegalRepresentative(
                                             (prev) => !prev
