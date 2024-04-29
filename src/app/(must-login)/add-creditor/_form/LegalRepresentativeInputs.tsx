@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { UseFormReturn } from 'react-hook-form'
 import { X } from 'lucide-react'
 import { AddCreditorValues } from './validation'
+import { Button } from '@/components/ui/button'
 
 type LegalRepresentativeInputsProps = {
     form: UseFormReturn<AddCreditorValues>
@@ -23,12 +24,13 @@ function LegalRepresentativeInputs({
 }: LegalRepresentativeInputsProps) {
     return (
         <div className="border border-input p-4 rounded-md relative">
-            <button
-                className="p-1 absolute right-0 top-0 translate-x-[5px] translate-y-[-5px] text-destructive border border-destructive rounded-full bg-white"
+            <Button
+                className="p-1 size-7 absolute right-0 top-0 rounded-tl-none rounded-br-none"
                 onClick={onCloseClicked}
+                variant={'destructive'}
             >
-                <X className="shrink-0" size={16} />
-            </button>
+                <X size={16} className='shrink-0' />
+            </Button>
             <FormField
                 control={form.control}
                 name="namaKuasaHukum"

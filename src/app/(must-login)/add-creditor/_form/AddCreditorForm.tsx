@@ -19,6 +19,7 @@ import { FormProviderAddCreditor, useAddCreditorForm } from '.'
 import AttachmentsField from './AttachmentsField'
 import LegalRepresentativeInputs from './LegalRepresentativeInputs'
 import { AddCreditorValues } from './validation'
+import H1 from '@/components/ui/h1'
 
 function AddCreditorForm() {
     const [withLegalRepresentative, setWithLegalRepresentative] =
@@ -50,14 +51,16 @@ function AddCreditorForm() {
 
     return (
         <FormProviderAddCreditor>
-            <main className="px-3 py-10">
-                <section className="mx-auto space-y-6">
-                    <h1 className="text-3xl font-bold">Add Creditor</h1>
-                    <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className=" space-y-2.5"
-                        >
+            <section className="mx-auto space-y-6 p-4 border border-input rounded-xl bg-white">
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="grid grid-cols-1 xl:grid-cols-2 gap-3 xl:gap-10"
+                    >
+                        <div className=" space-y-3">
+                            <h2 className="font-bold text-2xl">
+                                Detail Kreditor
+                            </h2>
                             <FormField
                                 control={form.control}
                                 name="jenis"
@@ -68,7 +71,7 @@ function AddCreditorForm() {
                                             <RadioGroup
                                                 onValueChange={field.onChange}
                                                 defaultValue={field.value}
-                                                className="flex space-x-1"
+                                                className="flex flex-wrap gap-4"
                                             >
                                                 {[
                                                     'INSTANSI/PERUSAHAAN',
@@ -230,30 +233,7 @@ function AddCreditorForm() {
                                     </FormItem>
                                 )}
                             />
-                            {!withLegalRepresentative && (
-                                <Button
-                                    className="block"
-                                    type="button"
-                                    onClick={() =>
-                                        setWithLegalRepresentative(
-                                            (prev) => !prev
-                                        )
-                                    }
-                                >
-                                    + Kuasa Hukum
-                                </Button>
-                            )}
-                            {withLegalRepresentative && (
-                                <>
-                                    <h2 className="font-bold">Kuasa Hukum</h2>
-                                    <LegalRepresentativeInputs
-                                        onCloseClicked={() =>
-                                            setWithLegalRepresentative(false)
-                                        }
-                                        form={form}
-                                    />
-                                </>
-                            )}
+
                             <FormField
                                 control={form.control}
                                 name="sifatTagihan"
@@ -266,7 +246,7 @@ function AddCreditorForm() {
                                             <RadioGroup
                                                 onValueChange={field.onChange}
                                                 defaultValue={field.value}
-                                                className="flex space-x-1"
+                                                className="flex flex-wrap gap-4"
                                             >
                                                 {[
                                                     'SEPARATIS',
@@ -295,6 +275,35 @@ function AddCreditorForm() {
                                     </FormItem>
                                 )}
                             />
+                        </div>
+                        <div className="space-y-4 max-xl:pt-4">
+                            {!withLegalRepresentative && (
+                                <Button
+                                    className="block "
+                                    type="button"
+                                    variant={'outline'}
+                                    onClick={() =>
+                                        setWithLegalRepresentative(
+                                            (prev) => !prev
+                                        )
+                                    }
+                                >
+                                    + Kuasa Hukum
+                                </Button>
+                            )}
+                            {withLegalRepresentative && (
+                                <>
+                                    <h2 className="font-bold text-2xl">
+                                        Kuasa Hukum
+                                    </h2>
+                                    <LegalRepresentativeInputs
+                                        onCloseClicked={() =>
+                                            setWithLegalRepresentative(false)
+                                        }
+                                        form={form}
+                                    />
+                                </>
+                            )}
                             <h2 className="font-bold text-2xl">Lampiran</h2>
                             <AttachmentsField />
                             <LoadingButton
@@ -303,10 +312,10 @@ function AddCreditorForm() {
                             >
                                 Submit
                             </LoadingButton>
-                        </form>
-                    </Form>
-                </section>
-            </main>
+                        </div>
+                    </form>
+                </Form>
+            </section>
         </FormProviderAddCreditor>
     )
 }
