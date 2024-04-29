@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import LoadingButton from "@/components/LoadingButton"
-import { Button } from "@/components/ui/button"
+import LoadingButton from '@/components/LoadingButton'
+import { Button } from '@/components/ui/button'
 import {
     Form,
     FormControl,
@@ -9,21 +9,18 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
-import { capitalizeFirstLetter } from "@/lib/utils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import LegalRepresentativeInputs from "./LegalRepresentativeInputs"
-import { FormProviderAddCreditor, useAddCreditorForm } from "."
-import AttachmentsField from "./AttachmentsField"
-import { AddCreditorValues } from "./validation"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Textarea } from '@/components/ui/textarea'
+import { capitalizeFirstLetter } from '@/lib/utils'
+import { useState } from 'react'
+import { FormProviderAddCreditor, useAddCreditorForm } from '.'
+import AttachmentsField from './AttachmentsField'
+import LegalRepresentativeInputs from './LegalRepresentativeInputs'
+import { AddCreditorValues } from './validation'
 
 function AddCreditorForm() {
-    const [selectedImage, setSelectedImage] = useState<string>()
     const [withLegalRepresentative, setWithLegalRepresentative] =
         useState<boolean>()
 
@@ -31,6 +28,24 @@ function AddCreditorForm() {
 
     function onSubmit(values: AddCreditorValues) {
         console.log(values)
+    }
+
+    function handleNumberInputChange(
+        e: React.ChangeEvent<HTMLInputElement>,
+        onChange: (...event: any[]) => void,
+        field: keyof AddCreditorValues
+    ) {
+        const value = parseInt(e.target.value)
+        if (isNaN(value) || value < 1) {
+            onChange(0)
+        } else {
+            if (value > 0 && String(form.watch(field)).length < 2) {
+                form.setValue(field, value)
+            } else {
+                onChange(value)
+            }
+        }
+        form.trigger(field)
     }
 
     return (
@@ -45,12 +60,10 @@ function AddCreditorForm() {
                         >
                             <FormField
                                 control={form.control}
-                                name="category"
+                                name="jenis"
                                 render={({ field }) => (
                                     <FormItem className="space-y-3">
-                                        <FormLabel>
-                                            Select creditor&apos;s category
-                                        </FormLabel>
+                                        <FormLabel>Jenis kreditor</FormLabel>
                                         <FormControl>
                                             <RadioGroup
                                                 onValueChange={field.onChange}
@@ -58,8 +71,8 @@ function AddCreditorForm() {
                                                 className="flex space-x-1"
                                             >
                                                 {[
-                                                    "INSTANSI/PERUSAHAAN",
-                                                    "PRIBADI",
+                                                    'INSTANSI/PERUSAHAAN',
+                                                    'PRIBADI',
                                                 ].map((item) => (
                                                     <FormItem
                                                         key={item}
@@ -85,13 +98,13 @@ function AddCreditorForm() {
                             />
                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="nama"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Name</FormLabel>
+                                        <FormLabel>Nama Kreditor</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Enter a name"
+                                                placeholder="Masukkan nama kreditor.."
                                                 {...field}
                                             />
                                         </FormControl>
@@ -101,14 +114,32 @@ function AddCreditorForm() {
                             />
                             <FormField
                                 control={form.control}
-                                name="address"
+                                name="NIKAtauNomorAktaPendirian"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Address</FormLabel>
+                                        <FormLabel>
+                                            NIK Atau Akta Pendirian
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Masukkan NIK Atau Akta Pendirianr.."
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="alamat"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Alamat Kreditor</FormLabel>
                                         <FormControl>
                                             <Textarea
                                                 {...field}
-                                                placeholder="Type creditor's address here."
+                                                placeholder="Jl. Mangga Duren Mantab No.17"
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -120,10 +151,10 @@ function AddCreditorForm() {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel>Email Kreditor</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Enter a email"
+                                                placeholder="Masukkan email kreditor.."
                                                 {...field}
                                             />
                                         </FormControl>
@@ -133,13 +164,15 @@ function AddCreditorForm() {
                             />
                             <FormField
                                 control={form.control}
-                                name="phoneNumber"
+                                name="nomorTelepon"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormLabel>
+                                            Nomor Telepon Kreditor
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Enter a phone number"
+                                                placeholder="Masukkan Nomor Telepon Kreditor"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -149,40 +182,49 @@ function AddCreditorForm() {
                             />
                             <FormField
                                 control={form.control}
-                                name="creditorType"
+                                name="korespondensi"
                                 render={({ field }) => (
-                                    <FormItem className="space-y-3">
+                                    <FormItem>
                                         <FormLabel>
-                                            Select creditor type
+                                            Korespondensi Kreditor
                                         </FormLabel>
                                         <FormControl>
-                                            <RadioGroup
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                className="flex space-x-1"
-                                            >
-                                                {[
-                                                    "SEPARATIS",
-                                                    "PREFEREN",
-                                                    "KONKUREN",
-                                                ].map((item) => (
-                                                    <FormItem
-                                                        key={item}
-                                                        className="flex items-center space-x-3 space-y-0"
-                                                    >
-                                                        <FormControl>
-                                                            <RadioGroupItem
-                                                                value={item}
-                                                            />
-                                                        </FormControl>
-                                                        <FormLabel className="font-normal">
-                                                            {capitalizeFirstLetter(
-                                                                item
-                                                            )}
-                                                        </FormLabel>
-                                                    </FormItem>
-                                                ))}
-                                            </RadioGroup>
+                                            <Textarea
+                                                {...field}
+                                                placeholder="Masukkan korespondensi kreditor"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="totalTagihan"
+                                render={({
+                                    field: { value, ...restOfFieldValues },
+                                }) => (
+                                    <FormItem>
+                                        <FormLabel>Price</FormLabel>
+                                        <FormControl>
+                                            <div className="flex items-center rounded-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                                                <p className="px-3">Rp</p>
+                                                <Input
+                                                    value={form.watch(
+                                                        'totalTagihan'
+                                                    )}
+                                                    variant="withIcon"
+                                                    placeholder="Add Product's Price"
+                                                    {...restOfFieldValues}
+                                                    onChange={(e) =>
+                                                        handleNumberInputChange(
+                                                            e,
+                                                            restOfFieldValues.onChange,
+                                                            'totalTagihan'
+                                                        )
+                                                    }
+                                                />
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -198,18 +240,62 @@ function AddCreditorForm() {
                                         )
                                     }
                                 >
-                                    Uses legal representative
+                                    + Kuasa Hukum
                                 </Button>
                             )}
                             {withLegalRepresentative && (
-                                <LegalRepresentativeInputs
-                                    onCloseClicked={() =>
-                                        setWithLegalRepresentative(false)
-                                    }
-                                    form={form}
-                                />
+                                <>
+                                    <h2 className="font-bold">Kuasa Hukum</h2>
+                                    <LegalRepresentativeInputs
+                                        onCloseClicked={() =>
+                                            setWithLegalRepresentative(false)
+                                        }
+                                        form={form}
+                                    />
+                                </>
                             )}
-                            <h2 className="font-bold text-2xl">Attachments</h2>
+                            <FormField
+                                control={form.control}
+                                name="sifatTagihan"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-3">
+                                        <FormLabel>
+                                            Pilih sifat tagihan
+                                        </FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="flex space-x-1"
+                                            >
+                                                {[
+                                                    'SEPARATIS',
+                                                    'PREFEREN',
+                                                    'KONKUREN',
+                                                ].map((item) => (
+                                                    <FormItem
+                                                        key={item}
+                                                        className="flex items-center space-x-3 space-y-0"
+                                                    >
+                                                        <FormControl>
+                                                            <RadioGroupItem
+                                                                value={item}
+                                                            />
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">
+                                                            {capitalizeFirstLetter(
+                                                                item
+                                                            )}
+                                                        </FormLabel>
+                                                    </FormItem>
+                                                ))}
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <h2 className="font-bold text-2xl">Lampiran</h2>
                             <AttachmentsField />
                             <LoadingButton
                                 type="submit"

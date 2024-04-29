@@ -1,51 +1,57 @@
-import { z } from "zod"
+import { z } from 'zod'
 
-const imageSchema = z
-    .custom<File | undefined>()
-    .refine((input) => {
-        return (
-            !input || (input instanceof File && input.type.startsWith("image/"))
-        )
-    }, "Please select an image file")
-    .refine((input) => {
-        // if input is not provided, is okey..
-        // if it is provided, must be less than 2 MB
-        return !input || input.size < 1024 * 1024 * 2
-    }, "File must less than 2MB")
+const optionalEmailSchema = z
+    .string()
+    .max(100)
+    .email()
+    .optional()
+    .or(z.literal(''))
 
 const attachmentsSchema = z.array(
-    z
-        .object({
-            attachmentName: z
-                .string()
-                .max(100)
-                .email()
-                .optional()
-                .or(z.literal("")),
-            attachmentFile: imageSchema,
-            attachmentDescription: z.string().max(50).optional(),
-        })
-        .refine((data) => data.attachmentFile || data.attachmentDescription, {
-            message: "Image or Description is required",
-            path: ["attachmentFile"],
-        })
+    z.object({
+        nama: z.string().min(1, 'Nama lampiran tidak boleh kosong').max(100),
+        ready: z.coerce.boolean(),
+        deskripsi: z.string().max(255).optional(),
+    })
 )
+
+const kuasaHukumSchema = z.object({
+    namaKuasaHukum: z.string().min(4).max(255).optional(),
+    emailKuasaHukum: optionalEmailSchema,
+    nomorTeleponKuasaHukum: z.string().min(5).max(255).optional(),
+    alamatKuasaHukum: z.string().min(5).max(255).optional(),
+})
 
 export const AddCreditorSchema = z
     .object({
-        name: z.string().min(2).max(50),
-        address: z.string().min(2).max(50),
-        email: z.string().min(2).max(50),
-        phoneNumber: z.string().min(2).max(50),
-        category: z.string().min(2).max(50),
-        legalRepresentativeName: z.string().min(2).max(50),
-        legalRepresentativePhoneNumber: z.string().min(2).max(50),
-        legalRepresentativeAddress: z.string().min(2).max(50),
-        creditorType: z.string().min(2).max(50),
-        totalClaimAmount: z.string().min(2).max(50),
-        paidClaimAmount: z.string().min(2).max(50),
-        claimAmount: z.string().min(2).max(50),
+        nama: z.string().min(2).max(255),
+        jenis: z
+            .string()
+            .min(1)
+            .refine(
+                (input) => ['INSTANSI/PERUSAHAAN', 'PRIBADI'].includes(input),
+                {
+                    message: 'Pilih jenis dari kreditor',
+                }
+            ),
+        NIKAtauNomorAktaPendirian: z.string().optional(),
+        alamat: z.string().min(2).max(255).optional(),
+        email: optionalEmailSchema,
+        nomorTelepon: z.string().min(2).max(255).optional(),
+        korespondensi: z.string().optional(),
+        totalTagihan: z.coerce
+            .number()
+            .min(100, 'Minimum total tagihan adalah Rp 100'),
+        sifatTagihan: z
+            .string()
+            .min(1)
+            .refine(
+                (input) =>
+                    ['SEPARATIS', 'PREFEREN', 'KONKUREN'].includes(input),
+                { message: 'Sifat tagihan salah' }
+            ),
         attachments: attachmentsSchema,
     })
+    .and(kuasaHukumSchema.optional())
 
 export type AddCreditorValues = z.infer<typeof AddCreditorSchema>

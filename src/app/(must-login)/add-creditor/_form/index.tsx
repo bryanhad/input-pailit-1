@@ -2,41 +2,44 @@
  * HOOK
  */
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import React from "react"
-import { useForm, FormProvider, useFormContext } from "react-hook-form"
-import { AddCreditorSchema, AddCreditorValues } from "./validation"
-
-
+import { zodResolver } from '@hookform/resolvers/zod'
+import React from 'react'
+import { useForm, FormProvider, useFormContext } from 'react-hook-form'
+import { AddCreditorSchema, AddCreditorValues } from './validation'
 
 export const useAddCreditorForm = () => {
     return useForm<AddCreditorValues>({
         resolver: zodResolver(AddCreditorSchema),
         defaultValues: {
-            name: "",
-            address: "",
-            email: "",
-            phoneNumber: "",
+            jenis: 'INSTANSI/PERUSAHAAN',
+            nama: '',
+            NIKAtauNomorAktaPendirian: '',
+            alamat: '',
+            email: '',
+            nomorTelepon: '',
+            korespondensi: '',
+            totalTagihan: 0,
+            sifatTagihan: 'SEPARATIS',
             attachments: [
                 {
-                    attachmentName: "Surat Permohonan Tagihan",
-                    attachmentFile: undefined,
-                    attachmentDescription: "",
+                    nama: 'Surat Permohonan Tagihan',
+                    ready: false,
+                    deskripsi: '',
                 },
                 {
-                    attachmentName: "Fotocopy KTP / Identitas",
-                    attachmentFile: undefined,
-                    attachmentDescription: "",
+                    nama: 'Fotocopy KTP / Identitas',
+                    ready: false,
+                    deskripsi: '',
                 },
                 {
-                    attachmentName: "Surat Kuasa (jika dikuasakan)",
-                    attachmentFile: undefined,
-                    attachmentDescription: "",
+                    nama: 'Surat Kuasa (jika dikuasakan)',
+                    ready: false,
+                    deskripsi: '',
                 },
                 {
-                    attachmentName: "Fotocopy KTP Penerima Kuasa",
-                    attachmentFile: undefined,
-                    attachmentDescription: "",
+                    nama: 'Fotocopy KTP Penerima Kuasa',
+                    ready: false,
+                    deskripsi: '',
                 },
             ],
         },

@@ -1,16 +1,16 @@
-"use client"
+'use client'
 import {
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { UseFormReturn } from "react-hook-form"
-import { X } from "lucide-react"
-import { AddCreditorValues } from "./validation"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { UseFormReturn } from 'react-hook-form'
+import { X } from 'lucide-react'
+import { AddCreditorValues } from './validation'
 
 type LegalRepresentativeInputsProps = {
     form: UseFormReturn<AddCreditorValues>
@@ -31,15 +31,12 @@ function LegalRepresentativeInputs({
             </button>
             <FormField
                 control={form.control}
-                name="legalRepresentativeName"
+                name="namaKuasaHukum"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Legal Representative&apos;s Name</FormLabel>
+                        <FormLabel>Nama Kuasa Hukum</FormLabel>
                         <FormControl>
-                            <Input
-                                placeholder="Enter Legal Representative's Name"
-                                {...field}
-                            />
+                            <Input placeholder="Bambang" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -47,12 +44,10 @@ function LegalRepresentativeInputs({
             />
             <FormField
                 control={form.control}
-                name="legalRepresentativeAddress"
+                name="alamatKuasaHukum"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>
-                            Legal Representative&apos;s Address
-                        </FormLabel>
+                        <FormLabel>Alamat Kuasa Hukum</FormLabel>
                         <FormControl>
                             <Textarea
                                 {...field}
@@ -65,12 +60,10 @@ function LegalRepresentativeInputs({
             />
             <FormField
                 control={form.control}
-                name="legalRepresentativePhoneNumber"
+                name="nomorTeleponKuasaHukum"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>
-                            Legal Representative&apos;s Phone Number
-                        </FormLabel>
+                        <FormLabel>Nomor Telepon Kuasa Hukum</FormLabel>
                         <FormControl>
                             <Input
                                 placeholder="Enter  Legal Representative's Phone Number"

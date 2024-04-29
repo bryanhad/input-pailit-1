@@ -1,10 +1,17 @@
-"use client"
+'use client'
 
-import React from "react"
-import { useFormContextAddCreditor } from "."
-import { useFieldArray } from "react-hook-form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import React from 'react'
+import { useFormContextAddCreditor } from '.'
+import { useFieldArray } from 'react-hook-form'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormMessage,
+} from '@/components/ui/form'
 
 function AttachmentsField() {
     const {
@@ -15,7 +22,7 @@ function AttachmentsField() {
     } = useFormContextAddCreditor()
 
     const { append, remove, fields } = useFieldArray({
-        name: "attachments",
+        name: 'attachments',
         control,
     })
 
@@ -24,37 +31,64 @@ function AttachmentsField() {
             {fields.map((field, attachmentIndex) => (
                 <div key={field.id} className="flex gap-3">
                     {/* Register the individual attachment form field */}
-                    <Input
-                        placeholder="Write your attachment name"
-                        {...register(
-                            `attachments.${attachmentIndex}.attachmentName`
+                    <FormField
+                        control={control}
+                        name={`attachments.${attachmentIndex}.nama`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Nama lampiran baru.."
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
                         )}
                     />
-                    <Input
-                        placeholder=""
-                        {...register(
-                            `attachments.${attachmentIndex}.attachmentFile`
+                    <FormField
+                        control={control}
+                        name={`attachments.${attachmentIndex}.ready`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
                         )}
                     />
-                    <Input
-                        {...register(
-                            `attachments.${attachmentIndex}.attachmentDescription`
+                    <FormField
+                        control={control}
+                        name={`attachments.${attachmentIndex}.deskripsi`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Keterangan (Cth: belum lengkap)"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
                         )}
                     />
                 </div>
             ))}
-            {errors.attachments?.message}
             <Button
-            type="button"
+                type="button"
                 onClick={() =>
                     append({
-                        attachmentName: "",
-                        attachmentFile: undefined,
-                        attachmentDescription: "",
+                        nama: '',
+                        ready: false,
+                        deskripsi: '',
                     })
                 }
             >
-                Add More Attachment
+                + Tambah Lampiran
             </Button>
         </div>
     )

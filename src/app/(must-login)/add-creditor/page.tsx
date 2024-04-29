@@ -3,7 +3,7 @@ import AddCreditorForm from "./_form/AddCreditorForm"
 
 function AddCreditorPage() {
     return (
-        <div className="">
+        <div>
             <AddCreditorForm />
         </div>
     )
