@@ -2,6 +2,7 @@
 
 import { Attachment, Creditor } from '@prisma/client'
 import puppeteer from 'puppeteer'
+import hb from 'handlebars'
 
 type ConvertHTMLToPDF = {
     htmlContent: string
@@ -38,6 +39,19 @@ export async function generatePDFFromHTML(
     // close the browser
     await browser.close()
 }
+
+async function generatePdf(pdfFileAsString:string) {
+    const data = {}
+    const template = hb.compile(pdfFileAsString, {strict:true})
+    const html = template(data)
+
+    const browser = await puppeteer.connect({
+        browserWSEndpoint: ''
+    })
+}
+
+
+
 
 export async function downloadPDFData(
     creditor: Creditor & { attachments: Attachment[] }
@@ -142,5 +156,14 @@ export async function downloadPDFData(
             </table>
         </div>
     `
-    await generatePDFFromHTML(html, `${creditor.slug}.pdf`)
+    const pdf = await generatePDFFromHTML(html, `${creditor.slug}.pdf`)
+
+    // create blob from the arrayBuffer
+    const blob = new Blob([pdf], {type: 'application/pdf'})
+
+    const file = new File([blob], `${creditor.slug}.pdf`, {
+        type: 'application/pdf'
+    })
+
+
 }
