@@ -1,9 +1,9 @@
 import db from '@/lib/db'
 import React from 'react'
-import DashboardTable from './_components/DashboardTable'
 import { Metadata } from 'next'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import DashboardTable from './_components/table/DashboardTable'
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -23,7 +23,9 @@ async function DashboardPage({
     // const totalPages = await fetchInvoicesPages(query);
 
     const creditorsWithAttachments = await db.creditor.findMany({
-      include: {attachments: true}
+        include: {
+            _count: {select: {attachments:true}}
+        }
     })
 
     return (
