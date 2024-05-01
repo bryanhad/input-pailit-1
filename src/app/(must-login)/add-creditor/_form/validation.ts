@@ -1,3 +1,4 @@
+import { ClaimType, CreditorType } from '@/types'
 import { z } from 'zod'
 
 const optionalEmailSchema = z
@@ -29,7 +30,8 @@ export const AddCreditorSchema = z
             .string()
             .min(1)
             .refine(
-                (input) => ['INSTANSI/PERUSAHAAN', 'PRIBADI'].includes(input),
+                (input) =>
+                    (Object.values(CreditorType) as string[]).includes(input),
                 {
                     message: 'Pilih jenis dari kreditor',
                 }
@@ -47,7 +49,7 @@ export const AddCreditorSchema = z
             .min(1)
             .refine(
                 (input) =>
-                    ['SEPARATIS', 'PREFEREN', 'KONKUREN'].includes(input),
+                    (Object.values(ClaimType) as string[]).includes(input),
                 { message: 'Sifat tagihan salah' }
             ),
         attachments: attachmentsSchema,

@@ -1,10 +1,10 @@
 import { Loader2 } from 'lucide-react'
 import { ComponentProps } from 'react'
-import { Button } from './ui/button'
+import { Button, ButtonProps } from './ui/button'
 
 type LoadingButtonProps = {
     loading: boolean
-} & ComponentProps<'button'>
+} & ButtonProps
 
 function LoadingButton({ loading, children, ...props }: LoadingButtonProps) {
     return (
