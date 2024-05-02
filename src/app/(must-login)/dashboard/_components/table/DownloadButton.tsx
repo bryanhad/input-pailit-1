@@ -2,47 +2,46 @@
 
 import LoadingButton from '@/components/LoadingButton'
 import { Button } from '@/components/ui/button'
+import { Attachment, Creditor } from '@prisma/client'
 import React, { useState } from 'react'
+import { getCreditorPDF } from './actions'
+import axios from 'axios'
 
-function DownloadButton() {
+function DownloadButton({ id }: { id: string }) {
     const [loading, setLoading] = useState(false)
 
     const handleDownloadPDF = async () => {
         setLoading(true)
         console.log('clicked!')
         try {
-            // HTML string to be sent to the server
-            const htmlString =
-                '<html><body><h1>Hello, chibaaaaaaai!</h1></body></html>'
+            const creditorWithAttahcments = await getCreditorPDF(id)
 
-            const response = await fetch('http://localhost:5000/generate-pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add any additional headers if needed
+            const response = await axios.post(
+                'http://localhost:5000/generate-pdf',
+                {
+                    data: creditorWithAttahcments,
                 },
-                // Convert HTML string to JSON and send it in the request body
-                body: JSON.stringify({ html: htmlString }),
-                // Add any additional options if needed
-            })
+                {
+                    responseType: 'arraybuffer', // Treat response as binary ArrayBuffer
+                }
+            )
+            console.log(response.data)
+            // Create a Blob from the Buffer
+            const blob = new Blob([response.data], { type: 'application/pdf' })
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch PDF')
-            }
+            // Create a temporary URL for the Blob
+            const url = window.URL.createObjectURL(blob)
 
-            const blob = await response.blob()
-            const url = URL.createObjectURL(blob)
-
+            // Create a temporary <a> element
             const link = document.createElement('a')
             link.href = url
-            link.download = 'generated.pdf'
+            link.download = 'file.pdf'
 
-            document.body.appendChild(link)
+            // Programmatically trigger the download
             link.click()
 
             // Clean up
-            URL.revokeObjectURL(url)
-            document.body.removeChild(link)
+            window.URL.revokeObjectURL(url)
         } catch (error) {
             console.error('Error downloading PDF:', error)
             // Handle error
@@ -52,7 +51,11 @@ function DownloadButton() {
     }
 
     return (
-        <LoadingButton variant={'outline'} loading={loading}>
+        <LoadingButton
+            onClick={() => handleDownloadPDF()}
+            variant={'outline'}
+            loading={loading}
+        >
             Downlaod
         </LoadingButton>
     )

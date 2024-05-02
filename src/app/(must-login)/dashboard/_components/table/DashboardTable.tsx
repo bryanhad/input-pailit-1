@@ -122,7 +122,7 @@ function DashboardTable({ creditors }: DashboardTableProps) {
                                     creditorId={creditor.id}
                                     creditorName={creditor.nama}
                                 />
-                                <DownloadButton />
+                                <DownloadButton id={creditor.id}/>
                             </div>
                         </TableCell>
                     </TableRow>
