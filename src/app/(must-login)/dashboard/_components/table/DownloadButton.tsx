@@ -17,9 +17,8 @@ function DownloadButton({ id }: { id: string }) {
             const creditorWithAttahcments = await getCreditorPDF(id)
 
             const response = await axios.post(
-                'http://localhost:5000/generate-pdf',
-                {
-                    data: creditorWithAttahcments,
+                'httpL//localhost:5000/pdf-generator',
+                {data: creditorWithAttahcments
                 },
                 {
                     responseType: 'arraybuffer', // Treat response as binary ArrayBuffer
