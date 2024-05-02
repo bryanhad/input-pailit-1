@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button"
 import Modal from "@/components/ui/modal"
 import React, { useState } from "react"
+import { deleteCreditor } from "./actions"
+import { useToast } from "@/components/ui/use-toast"
 
 type Props = {
     creditorName: string
@@ -11,10 +13,28 @@ type Props = {
 
 function DeleteButton({ creditorName, creditorId }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const { toast } = useToast()
+
+    async function handleApproveDelete() {
+        try {
+            await deleteCreditor(creditorId)
+            toast({
+                title: `Successfully deleted creditor '${creditorName}'.`,
+            })
+        } catch (err: any) {
+            toast({
+                variant: "destructive",
+                title: "Failed to delete creditor.",
+                description: err.message || "Something went wrong.",
+            })
+        } finally {
+            setIsModalOpen(false)
+        }
+    }
 
     return (
         <Modal
-        centerText
+            centerText
             className="items-center"
             open={isModalOpen}
             onOpenChange={async () => {
@@ -36,9 +56,16 @@ function DeleteButton({ creditorName, creditorId }: Props) {
             desc={`Delete entry of '${creditorName}'`}
         >
             <div className="flex gap-2 w-full">
-                <Button className="flex-1" variant={"destructive"}>Yes, delete permanently</Button>
                 <Button
-                    className="flex-1" variant={"outline"}
+                    onClick={() => handleApproveDelete()}
+                    className="flex-1"
+                    variant={"destructive"}
+                >
+                    Yes, delete permanently
+                </Button>
+                <Button
+                    className="flex-1"
+                    variant={"outline"}
                     onClick={() => setIsModalOpen(false)}
                 >
                     Cancel

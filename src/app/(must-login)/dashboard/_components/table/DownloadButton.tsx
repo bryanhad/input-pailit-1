@@ -1,50 +1,55 @@
-'use client'
+"use client"
 
-import LoadingButton from '@/components/LoadingButton'
-import { Button } from '@/components/ui/button'
-import { Attachment, Creditor } from '@prisma/client'
-import React, { useState } from 'react'
-import { getCreditorPDF } from './actions'
-import axios from 'axios'
+import LoadingButton from "@/components/LoadingButton"
+import { useToast } from "@/components/ui/use-toast"
+import axios from "axios"
+import { useState } from "react"
+import { getCreditorInfo } from "./actions"
+import { cn } from "@/lib/utils"
 
 function DownloadButton({ id }: { id: string }) {
     const [loading, setLoading] = useState(false)
+    const { toast } = useToast()
 
     const handleDownloadPDF = async () => {
         setLoading(true)
-        console.log('clicked!')
+        console.log("clicked!")
         try {
-            const creditorWithAttahcments = await getCreditorPDF(id)
+            const creditorWithAttahcments = await getCreditorInfo(id)
+            if (!creditorWithAttahcments) {
+                throw new Error(`Creditor with id '${id}' not found.`)
+            }
 
-            const response = await axios.post(
-                'http://localhost:5000/generate-pdf',
-                {
-                    data: creditorWithAttahcments,
-                },
-                {
-                    responseType: 'arraybuffer', // Treat response as binary ArrayBuffer
-                }
+            const res = await axios.post(
+                "http://localhost:5000/generate-pdf",
+                { data: creditorWithAttahcments },
+                { responseType: "arraybuffer" }
             )
-            console.log(response.data)
+            if (res.status < 200 && res.status >= 300) {
+                throw new Error('Failed to get PDF from server.')
+            }
             // Create a Blob from the Buffer
-            const blob = new Blob([response.data], { type: 'application/pdf' })
-
+            const blob = new Blob([res.data], { type: "application/pdf" })
             // Create a temporary URL for the Blob
             const url = window.URL.createObjectURL(blob)
-
-            // Create a temporary <a> element
-            const link = document.createElement('a')
+            const link = document.createElement("a")
             link.href = url
-            link.download = 'file.pdf'
-
-            // Programmatically trigger the download
+            link.download = `${creditorWithAttahcments.slug}.pdf`
             link.click()
-
-            // Clean up
             window.URL.revokeObjectURL(url)
-        } catch (error) {
-            console.error('Error downloading PDF:', error)
-            // Handle error
+
+            toast({
+                title: "Successfully downloaded PDF.",
+                description: `Check your browser's download history`
+            })
+
+        } catch (err: any) {
+            console.error("Error downloading PDF:", err)
+            toast({
+                variant: 'destructive',
+                title: "Failed to download PDF.",
+                description: err.message || 'Something went wrong.',
+            })
         } finally {
             setLoading(false)
         }
@@ -52,9 +57,11 @@ function DownloadButton({ id }: { id: string }) {
 
     return (
         <LoadingButton
+            className={cn({'animate-pulse cursor-not-allowed': loading})}
             onClick={() => handleDownloadPDF()}
-            variant={'outline'}
+            variant={"outline"}
             loading={loading}
+            loadingMessage="Generating PDF.."
         >
             Downlaod
         </LoadingButton>
