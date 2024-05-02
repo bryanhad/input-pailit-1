@@ -21,7 +21,7 @@ function DownloadButton({ id }: { id: string }) {
             }
 
             const res = await axios.post(
-                "http://localhost:5000/generate-pdf",
+                "https://pdf-generator.bryanhadinata.com/generate-pdf",
                 { data: creditorWithAttahcments },
                 { responseType: "arraybuffer" }
             )
