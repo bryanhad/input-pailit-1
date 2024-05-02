@@ -48,7 +48,7 @@ const placeholderCreditors: Creditor[] = [
         korespondensi: 'Jl. K.H. Mas Mansyur No. 30',
         totalTagihan: '200000000',
         sifatTagihan: ClaimType.Konkuren,
-        namaKuasaHukum: 'Dewi',
+        namaKuasaHukum: '',
         emailKuasaHukum: 'dewi_lampard@gmail.com',
         nomorTeleponKuasaHukum: '081234567895',
         alamatKuasaHukum: 'Jl. Surya Kencana No. 10',

@@ -20,23 +20,24 @@ function DownloadButton({ id }: { id: string }) {
                 throw new Error(`Creditor with id '${id}' not found.`)
             }
 
-            const res = await axios.post(
-                "https://pdf-generator.bryanhadinata.com/generate-pdf",
-                { data: creditorWithAttahcments },
-                { responseType: "arraybuffer" }
-            )
-            if (res.status < 200 && res.status >= 300) {
-                throw new Error('Failed to get PDF from server.')
-            }
-            // Create a Blob from the Buffer
-            const blob = new Blob([res.data], { type: "application/pdf" })
-            // Create a temporary URL for the Blob
-            const url = window.URL.createObjectURL(blob)
-            const link = document.createElement("a")
-            link.href = url
-            link.download = `${creditorWithAttahcments.slug}.pdf`
-            link.click()
-            window.URL.revokeObjectURL(url)
+            console.log(creditorWithAttahcments)
+            // const res = await axios.post(
+            //     "https://pdf-generator.bryanhadinata.com/generate-pdf",
+            //     { data: creditorWithAttahcments },
+            //     { responseType: "arraybuffer" }
+            // )
+            // if (res.status < 200 && res.status >= 300) {
+            //     throw new Error('Failed to get PDF from server.')
+            // }
+            // // Create a Blob from the Buffer
+            // const blob = new Blob([res.data], { type: "application/pdf" })
+            // // Create a temporary URL for the Blob
+            // const url = window.URL.createObjectURL(blob)
+            // const link = document.createElement("a")
+            // link.href = url
+            // link.download = `${creditorWithAttahcments.slug}.pdf`
+            // link.click()
+            // window.URL.revokeObjectURL(url)
 
             toast({
                 title: "Successfully downloaded PDF.",
