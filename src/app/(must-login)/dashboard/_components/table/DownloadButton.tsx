@@ -21,7 +21,9 @@ function DownloadButton({ id }: { id: string }) {
             }
 
             const res = await axios.post(
-                process.env.NEXT_PUBLIC_PDF_GENERATOR_URL as string,
+                process.env.NODE_ENV === 'development'
+                    ? (process.env.NEXT_PUBLIC_PDF_GENERATOR_URL_DEV as string)
+                    : (process.env.NEXT_PUBLIC_PDF_GENERATOR_URL_PROD as string),
                 { data: creditorWithAttahcments },
                 { responseType: 'arraybuffer' }
             )
