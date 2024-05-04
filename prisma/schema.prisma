@@ -5,7 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    // will enable to use postgres's full text search later, so we can search for jobs
+    previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -69,7 +71,7 @@ model Creditor {
     id String @id @default(cuid())
 
     nama                      String
-    slug                      String @unique
+    slug                      String  @unique
     jenis                     String
     NIKAtauNomorAktaPendirian String?
     alamat                    String?
@@ -84,6 +86,9 @@ model Creditor {
     nomorTeleponKuasaHukum String?
     alamatKuasaHukum       String?
 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
     attachments Attachment[]
 
     @@map("creditors")
@@ -92,11 +97,11 @@ model Creditor {
 model Attachment {
     id String @id @default(cuid())
 
-    nama        String
-    ready       Boolean
-    deskripsi   String?
-    Creditor    Creditor? @relation(fields: [creditorId], references: [id])
-    creditorId  String?
+    nama       String
+    ready      Boolean
+    deskripsi  String?
+    Creditor   Creditor? @relation(fields: [creditorId], references: [id])
+    creditorId String?
 
     @@map("attachments")
 }

@@ -1,0 +1,149 @@
+"use client"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { ReadonlyURLSearchParams } from "next/navigation"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+type PaginationProps = {
+    totalPages: number
+    totalData: number
+    itemsPerPage: number
+}
+
+export const createPageURL = (
+    pathname: string,
+    searchParams: ReadonlyURLSearchParams,
+    pageNumber: number | string,
+    pageSize?: number | string,
+    // order?: string
+) => {
+    const params = new URLSearchParams(searchParams)
+    params.set("page", pageNumber.toString())
+    if (pageSize) {
+        params.set("size", pageSize.toString())
+    }
+    // if (order) {
+    //     params.set("order", order)
+    // }
+    return `${pathname}?${params.toString()}`
+}
+
+function Pagination({
+    totalPages,
+    totalData,
+    itemsPerPage,
+}: PaginationProps) {
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const currentPage = Number(searchParams.get("page")) || 1
+    const currentPageSize = Number(searchParams.get("size")) || 10
+
+    // createPageUrl returns the pageUrl with the search params attached
+    function generatePageUrl(
+        pageNumber: number | string,
+        size?: number | string,
+    ) {
+        return createPageURL(pathname, searchParams, pageNumber, size)
+    }
+
+    return (
+        <div className="flex items-center justify-between px-2 my-4">
+            {totalData && (
+                <div className="flex-[1] text-sm text-muted-foreground md:block hidden">
+                    {currentPageSize <= totalData ? currentPageSize : totalData}{" "}
+                    of {totalData} row(s) shown.
+                </div>
+            )}
+            <div className="flex flex-col-reverse gap-3 md:flex-row items-center justify-between flex-[1]">
+                <div className="flex items-center space-x-2 flex-col md:flex-row gap-3">
+                    <p className="text-sm font-medium">Rows per page</p>
+                    <Select
+                        onValueChange={(value) => {
+                            router.push(generatePageUrl(1, value))
+                        }}
+                    >
+                        <SelectTrigger className="h-8 w-[70px]">
+                            <SelectValue placeholder={itemsPerPage} />
+                        </SelectTrigger>
+                        <SelectContent side="top">
+                            {[5, 10, 15].map((pageSize) => (
+                                <SelectItem
+                                    key={pageSize}
+                                    value={`${pageSize}`}
+                                >
+                                    {pageSize}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="md:flex hidden w-[100px] items-center justify-center text-sm font-medium">
+                    Page {currentPage} of {totalPages}
+                </div>
+                <div className="flex items-center gap-2">
+                    {/* GO TO FIRST PAGE */}
+                    {/* <Button
+                        variant="outline"
+                        className="hidden h-8 w-8 p-0 lg:flex"
+                        disabled={currentPage <= 1}
+                    >
+                        <Link href={generatePageUrl(currentPage - 1)}>
+                            <span className="sr-only">Go to first page</span>
+                            <DoubleArrowLeftIcon className="h-4 w-4" />
+                        </Link>
+                    </Button> */}
+                    {/* GO TO PREV PAGE */}
+                    <Button
+                        asChild
+                        variant="outline"
+                        className="h-8 w-8 p-0"
+                        disabled={currentPage <= 1}
+                    >
+                        <Link href={generatePageUrl(currentPage - 1)}>
+                            <span className="sr-only">Go to previous page</span>
+                            <ChevronLeft size={16} className="shrink-0" />
+                        </Link>
+                    </Button>
+
+                    <div className="md:hidden flex w-[100px] items-center justify-center text-sm font-medium">
+                        Page {currentPage} of {totalPages}
+                    </div>
+                    {/* GO TO NEXT PAGE */}
+                    <Button
+                        asChild
+                        variant="outline"
+                        className="h-8 w-8 p-0"
+                        disabled={currentPage >= totalPages}
+                    >
+                        <Link href={generatePageUrl(currentPage + 1)}>
+                            <span className="sr-only">Go to next page</span>
+                            <ChevronRight size={16} className="shrink-0" />
+                        </Link>
+                    </Button>
+                    {/* GO TO LAST PAGE */}
+                    {/* <Button
+                        variant="outline"
+                        className="hidden h-8 w-8 p-0 lg:flex"
+                        disabled={currentPage >= totalPages}
+                    >
+                        <Link href={generatePageUrl(currentPage + 1)}>
+                            <span className="sr-only">Go to last page</span>
+                            <DoubleArrowRightIcon className="h-4 w-4" />
+                        </Link>
+                    </Button> */}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default Pagination

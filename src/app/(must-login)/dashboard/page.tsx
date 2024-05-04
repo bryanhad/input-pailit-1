@@ -1,39 +1,46 @@
-import db from '@/lib/db'
-import React from 'react'
-import { Metadata } from 'next'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import DashboardTable from './_components/table/DashboardTable'
+import { Button } from "@/components/ui/button"
+import { Metadata } from "next"
+import Link from "next/link"
+import FilterOptions from "./_components/table/FilterOptions"
+import DashboardTable from "./_components/table/DashboardTable"
+import { CreditorFilterValues } from "./_components/table/validations"
 
 export const metadata: Metadata = {
-    title: 'Dashboard',
+    title: "Dashboard",
+}
+
+type DashboardPageProps = {
+    searchParams: {
+        q?: string
+        creditorType?: string
+        claimType?: string
+        page?: string
+        size?: string
+    }
 }
 
 async function DashboardPage({
-    searchParams,
-}: {
-    searchParams?: {
-        q?: string
-        page?: string
+    searchParams: { q, claimType, creditorType, page, size },
+}: DashboardPageProps) {
+    const filterValues: CreditorFilterValues = {
+        q,
+        creditorType,
+        claimType,
     }
-}) {
-    const query = searchParams?.q || ''
-    const currentPage = Number(searchParams?.page) || 1
-
-    // const totalPages = await fetchInvoicesPages(query);
-
-    const creditorsWithAttachments = await db.creditor.findMany({
-        include: {
-            _count: {select: {attachments:true}}
-        }
-    })
+    const currentPage = Number(page) || 1
+    const tableSize = Number(size) || 10
 
     return (
-        <div>
+        <div className="flex flex-col gap-4">
             <Button asChild>
-                <Link href={'/add-creditor'}>+ Kreditor</Link>
+                <Link href={"/add-creditor"}>+ Kreditor</Link>
             </Button>
-            <DashboardTable creditors={creditorsWithAttachments}  />
+            <FilterOptions defaultFilterValues={filterValues} />
+            <DashboardTable
+                filterValues={filterValues}
+                currentPage={currentPage}
+                tableSize={tableSize}
+            />
         </div>
     )
 }

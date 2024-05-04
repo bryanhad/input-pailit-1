@@ -1,7 +1,7 @@
 import { ClaimType, CreditorType } from '../src/types'
 import { Attachment, Creditor } from '@prisma/client'
 
-const placeholderCreditors: Creditor[] = [
+const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
     {
         id: '1',
         nama: 'Bambang Jarwo',
@@ -316,14 +316,14 @@ const placeholderAttachments: Attachment[] = [
         creditorId: '1',
         nama: 'Surat Permohonan Tagihan',
         ready: false,
-        deskripsi: '',
+        deskripsi: 'Sudah ada di berkas lengkap polll',
     },
     {
         id: '2',
         creditorId: '1',
         nama: 'Fotocopy KTP / Identitas',
         ready: false,
-        deskripsi: '',
+        deskripsi: 'Ini rada burem sih',
     },
     {
         id: '3',
