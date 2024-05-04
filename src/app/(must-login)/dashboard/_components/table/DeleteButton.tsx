@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast"
 
 type Props = {
     creditorName: string
-    creditorId: string
+    creditorId: number
 }
 
 function DeleteButton({ creditorName, creditorId }: Props) {

@@ -68,7 +68,7 @@ datasource db {
 // }
 
 model Creditor {
-    id String @id @default(cuid())
+    id Int @id @default(autoincrement())
 
     nama                      String
     slug                      String  @unique
@@ -101,7 +101,7 @@ model Attachment {
     ready      Boolean
     deskripsi  String?
     Creditor   Creditor? @relation(fields: [creditorId], references: [id])
-    creditorId String?
+    creditorId Int?
 
     @@map("attachments")
 }

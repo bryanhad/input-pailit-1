@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { getCreditorInfo } from './actions'
 import { cn } from '@/lib/utils'
 
-function DownloadButton({ id }: { id: string }) {
+function DownloadButton({ id }: { id: number }) {
     const [loading, setLoading] = useState(false)
     const { toast } = useToast()
 

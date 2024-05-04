@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { creditorFilterSchema } from './validations'
 import { redirect } from 'next/navigation'
 
-export async function getCreditorInfo(id: string) {
+export async function getCreditorInfo(id: number) {
     const creditorWithAttahcments = await db.creditor.findUnique({
         where: { id },
         include: { attachments: true },
@@ -52,7 +52,7 @@ export async function filterCreditors(formData: FormData) {
     // })
 }
  
-export async function deleteCreditor(id:string) {
+export async function deleteCreditor(id:number) {
     await db.creditor.delete({
         where: {id}
     })
