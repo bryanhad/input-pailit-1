@@ -1,52 +1,59 @@
-import React from "react"
-import { getEachClaimTypeDetail } from "./actions"
-import { capitalizeFirstLetter, formatCurrency } from "@/lib/utils"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { ClaimType } from "@/types"
+import { capitalizeFirstLetter, cn, formatCurrency } from '@/lib/utils'
+import { ClaimType } from '@/types'
+import { EachClaimTypeTotalClaims } from './actions'
 
-async function Cards() {
-    const claimDetails = await getEachClaimTypeDetail()
+type CardsProps = {
+    data: EachClaimTypeTotalClaims
+}
 
-    const preferenDetail = claimDetails.find(el => el.sifatTagihan === ClaimType.Preferen)
-    const konkurenDetail = claimDetails.find(el => el.sifatTagihan === ClaimType.Konkuren)
-    const separatisDetail = claimDetails.find(el => el.sifatTagihan === ClaimType.Separatis)
+async function Cards({
+    data: { claimTypes, totalClaimAmount, totalCreditors },
+}: CardsProps) {
+    const preferenDetail = claimTypes.find(
+        (el) => el.claimType === ClaimType.Preferen
+    )
+    const konkurenDetail = claimTypes.find(
+        (el) => el.claimType === ClaimType.Konkuren
+    )
+    const separatisDetail = claimTypes.find(
+        (el) => el.claimType === ClaimType.Separatis
+    )
 
     return (
         <>
-                <SummaryCard
-                    className={`bg-preferen/40`}
-                    title={capitalizeFirstLetter(ClaimType.Preferen)}
-                    content={formatCurrency(
-                        Number(preferenDetail?.totalClaimAmount),
-                        "IDR"
-                    )}
-                    footer={preferenDetail!.creditorCount}
-                />
-                <SummaryCard
-                    className={`bg-konkuren/40`}
-                    title={capitalizeFirstLetter(ClaimType.Konkuren)}
-                    content={formatCurrency(
-                        Number(konkurenDetail?.totalClaimAmount),
-                        "IDR"
-                    )}
-                    footer={konkurenDetail!.creditorCount}
-                />
-                <SummaryCard
-                    className={`bg-separatis/40`}
-                    title={capitalizeFirstLetter(ClaimType.Separatis)}
-                    content={formatCurrency(
-                        Number(separatisDetail?.totalClaimAmount),
-                        "IDR"
-                    )}
-                    footer={separatisDetail!.creditorCount}
-                />
+            <SummaryCard
+                className={`shadow-sm bg-preferen`}
+                claimType={`${capitalizeFirstLetter(ClaimType.Preferen)}`}
+                totalClaimOfAType={preferenDetail?.totalClaim || 0}
+                totalClaimOfAllCreditors={totalClaimAmount}
+                creditorCount={preferenDetail?.creditorCount || 0}
+                content={formatCurrency(
+                    Number(preferenDetail?.totalClaim),
+                    'IDR'
+                )}
+            />
+            <SummaryCard
+                className={`shadow-sm bg-konkuren`}
+                claimType={`${capitalizeFirstLetter(ClaimType.Konkuren)}`}
+                totalClaimOfAType={konkurenDetail?.totalClaim || 0}
+                totalClaimOfAllCreditors={totalClaimAmount}
+                creditorCount={konkurenDetail?.creditorCount || 0}
+                content={formatCurrency(
+                    Number(konkurenDetail?.totalClaim),
+                    'IDR'
+                )}
+            />
+            <SummaryCard
+                className={`shadow-sm bg-separatis md:max-xl:col-span-2`}
+                claimType={`${capitalizeFirstLetter(ClaimType.Separatis)}`}
+                totalClaimOfAType={separatisDetail?.totalClaim || 0}
+                totalClaimOfAllCreditors={totalClaimAmount}
+                creditorCount={separatisDetail?.creditorCount || 0}
+                content={formatCurrency(
+                    Number(separatisDetail?.totalClaim),
+                    'IDR'
+                )}
+            />
         </>
     )
 }
@@ -54,24 +61,43 @@ async function Cards() {
 export default Cards
 
 type SummaryCardProps = {
-    title: string
+    claimType: string
     content: string
-    footer: string
+    totalClaimOfAType: number
+    totalClaimOfAllCreditors: number
+    creditorCount: number
     className?: string
 }
 
-function SummaryCard({ title, content, footer, className }: SummaryCardProps) {
+function SummaryCard({
+    claimType,
+    creditorCount,
+    className,
+    totalClaimOfAType,
+    totalClaimOfAllCreditors,
+}: SummaryCardProps) {
+    const percentage = (
+        (totalClaimOfAType / totalClaimOfAllCreditors) *
+        100
+    ).toFixed(2)
     return (
-        <Card className={className}>
-            <CardHeader>
-                <CardTitle>{title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p>{content}</p>
-            </CardContent>
-            <CardFooter>
-                <p className="text-muted-foreground">{footer}</p>
-            </CardFooter>
-        </Card>
+        <div
+            className={cn(
+                'text-white flex flex-col gap-2 flex-1 p-4',
+                className
+            )}
+        >
+            <div className="flex justify-between items-end gap-4">
+                <p className="text-2xl">{claimType}</p>
+                <p className="font-light text-xl hidden">{`${percentage}%`}</p>
+            </div>
+            <div className="flex justify-between items-end gap-4">
+                <p className="text-sm font-light">count: {creditorCount}</p>
+                <p className="font-light text-xl">{`${percentage}%`}</p>
+            </div>
+            <p className="text-2xl font-light md:text-xl lg:text-2xl">
+                {formatCurrency(totalClaimOfAType, 'IDR')}
+            </p>
+        </div>
     )
 }

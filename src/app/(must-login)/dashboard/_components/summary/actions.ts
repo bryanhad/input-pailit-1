@@ -1,23 +1,7 @@
-"use server"
+'use server'
 
-import db from "@/lib/db"
-import { CreditorType } from "@/types"
-
-export async function getEachClaimTypeDetail() {
-    const res: {
-        sifatTagihan: string
-        creditorCount: string
-        totalClaimAmount: string
-    }[] = await db.$queryRaw`
-    SELECT
-        "sifatTagihan",
-        COUNT(*)::text AS "creditorCount",
-        SUM(CAST("totalTagihan" AS DECIMAL))::text AS "totalClaimAmount"
-    FROM creditors
-    GROUP BY "sifatTagihan";
-    `
-    return res
-}
+import db from '@/lib/db'
+import { ClaimType, CreditorType } from '@/types'
 
 export async function getEachCreditorTypeCount() {
     const res: { jenis: CreditorType; count: string }[] = await db.$queryRaw`
@@ -29,33 +13,48 @@ export async function getEachCreditorTypeCount() {
     return res
 }
 
-export type DoughnutChartData = {
-    claimType: "SEPARATIS" | "PREFEREN" | "KONKUREN" | "TOTAL"
-    totalClaim: string
-}[]
+export type EachClaimTypeTotalClaims = {
+    totalClaimAmount: number;
+    totalCreditors: number;
+    claimTypes: {
+        totalClaim: number;
+        creditorCount: number;
+        claimType: 'SEPARATIS' | 'PREFEREN' | 'KONKUREN' | 'TOTAL';
+    }[];
+}
 
-export async function getDoughnutChartData() {
-    const res: DoughnutChartData = await db.$queryRaw`
+export async function getEachClaimTypeTotalClaims() {
+    const res: {
+        creditorCount: string
+        claimType: 'SEPARATIS' | 'PREFEREN' | 'KONKUREN' | 'TOTAL'
+        totalClaim: string
+    }[] = await db.$queryRaw`
         SELECT 
             "sifatTagihan" AS "claimType",
+            COUNT(*)::text AS "creditorCount",
             SUM(CAST("totalTagihan" AS DECIMAL)) AS "totalClaim"
         FROM creditors 
         GROUP BY "sifatTagihan"
         UNION ALL 
-        SELECT 
-            'TOTAL' AS "sifatTagihan",
-            SUM(CAST("totalTagihan" AS DECIMAL)) AS "totalClaim"
-        FROM creditors;
+            SELECT 
+                'TOTAL' AS "claimType",
+                COUNT(*)::text AS "creditorCount",
+                SUM(CAST("totalTagihan" AS DECIMAL)) AS "totalClaim"
+            FROM creditors;
     `
 
     return {
-        totalCreditorsClaim: res.find((el) => el.claimType === "TOTAL")!
-            .totalClaim,
-        groupedData: res
-            .filter((el) => el.claimType !== "TOTAL")
-            .map((el) => Number(el.totalClaim)),
-        labels: res
-            .filter((el) => el.claimType !== "TOTAL")
-            .map((el) => el.claimType),
+        totalClaimAmount:
+            Number(res.find((el) => el.claimType === 'TOTAL')!.totalClaim) || 0,
+        totalCreditors:
+            Number(res.find((el) => el.claimType === 'TOTAL')!.creditorCount) ||
+            0,
+        claimTypes: res
+            .filter((el) => el.claimType !== 'TOTAL')
+            .map((el) => ({
+                ...el,
+                totalClaim: Number(el.totalClaim),
+                creditorCount: Number(el.creditorCount),
+            })),
     }
 }

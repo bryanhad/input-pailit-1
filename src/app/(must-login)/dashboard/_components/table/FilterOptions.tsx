@@ -20,7 +20,7 @@ function FilterOptions({
             action={filterCreditors}
             key={JSON.stringify(defaultFilterValues)}
         >
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-col">
                 <Input
                     id="q"
                     name="q"

@@ -32,9 +32,9 @@ async function DashboardPage({
     const tableSize = Number(size) || 10
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 bg-white px-4">
             <Summaries/>
-            <Button asChild>
+            <Button asChild variant={'success'}>
                 <Link href={"/add-creditor"}>+ Kreditor</Link>
             </Button>
             <FilterOptions defaultFilterValues={filterValues} />

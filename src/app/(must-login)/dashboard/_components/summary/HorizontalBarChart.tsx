@@ -28,12 +28,18 @@ export const options = {
     resizeDelay: 200,
     plugins: {
         legend: {
-            position: "right" as const,
+            position: "bottom" as const,
         },
         title: {
             display: true,
-            text: "Jenis Kreditor PT Pailit (dalam Pailit)",
+            text: "Detail Jenis Kreditor PT Pailit (dalam Pailit)",
         },
+    },
+    layout: {
+        // padding: {
+        //     left: 10,
+        //     right: 50,
+        // },
     },
     maintainAspectRatio: false,
 }
@@ -54,7 +60,7 @@ function HorizontalBarChart({ data }: HorizontalBarChartProps) {
                     .filter((el) => el.jenis === CreditorType.Instansi)
                     .map((el) => el.count),
                 // borderColor: "rgb(255, 99, 132)",
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
+                backgroundColor: "hsl(46 97% 77%)",
             },
             {
                 label: capitalizeFirstLetter(CreditorType.Pribadi),
@@ -62,7 +68,7 @@ function HorizontalBarChart({ data }: HorizontalBarChartProps) {
                     .filter((el) => el.jenis === CreditorType.Pribadi)
                     .map((el) => el.count),
                 // borderColor: "rgb(53, 162, 235)",
-                backgroundColor: "rgba(53, 162, 235, 0.5)",
+                backgroundColor: "hsl(269 97% 90%)",
             },
         ],
     }
