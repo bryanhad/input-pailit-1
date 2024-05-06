@@ -12,10 +12,10 @@ async function Summaries() {
 
     return (
         <div className="flex flex-col md:flex-row">
-            <div className="flex-[2] self-center">
+            <div className="flex-[2] flex items-center justify-center">
                 <DoughnutChart data={res} className='p-2'/>
             </div>
-            <div className="flex-[3] flex flex-col gap-4">
+            <div className="flex-[4] flex flex-col gap-4">
                 <div className="flex-1">
                     <HorizontalBarChart data={res2} />
                 </div>

@@ -1,3 +1,9 @@
+import { Button } from "@/components/ui/button"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import {
     Table,
     TableBody,
@@ -7,35 +13,28 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Creditor } from "@prisma/client"
-import {
-    CircleCheck,
-    CircleX,
-    Building2,
-    UserRound,
-    BookText,
-} from "lucide-react"
-import DownloadButton from "./DownloadButton"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import db from "@/lib/db"
 import {
     capitalizeFirstLetter,
     cn,
     formatCurrency,
     formatNumber,
 } from "@/lib/utils"
-import DeleteButton from "./DeleteButton"
 import { ClaimType, CreditorType } from "@/types"
-import React from "react"
-import { CreditorFilterValues } from "./validations"
-import { Prisma } from "@prisma/client"
-import db from "@/lib/db"
-import Pagination from "./Pagination"
+import { Creditor, Prisma } from "@prisma/client"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+    BookText,
+    Building2,
+    CircleCheck,
+    CircleX,
+    UserRound,
+} from "lucide-react"
+import Link from "next/link"
+import React from "react"
+import DeleteButton from "./DeleteButton"
+import DownloadButton from "./DownloadButton"
+import Pagination from "./Pagination"
+import { CreditorFilterValues } from "./validations"
 
 type DashboardTableProps = {
     filterValues: CreditorFilterValues
@@ -147,13 +146,13 @@ async function DashboardTable({
                                     <div
                                         className={cn(
                                             {
-                                                "border border-purple-500/60 text-purple-500/60":
+                                                "bg-separatis text-white":
                                                     creditor.sifatTagihan ===
                                                     ClaimType.Separatis,
-                                                "border border-sky-500/60 text-sky-500/60":
+                                                "bg-konkuren text-white":
                                                     creditor.sifatTagihan ===
                                                     ClaimType.Konkuren,
-                                                "border border-green-500/60 text-green-500/60":
+                                                "bg-preferen text-white":
                                                     creditor.sifatTagihan ===
                                                     ClaimType.Preferen,
                                             },
@@ -168,7 +167,7 @@ async function DashboardTable({
                                 Bang Jarwo
                             </TableCell>
                             <TableCell className="text-right">
-                                09 Sep 2023
+                                {JSON.stringify(creditor.createdAt, null, 2)}
                             </TableCell>
                             <TableCell>
                                 <div className="flex gap-2 justify-end">
@@ -270,7 +269,9 @@ function SimplePopover({
             >
                 {children}
             </PopoverTrigger>
-            <PopoverContent className="text-[11px] w-max px-2 py-1">{tip}</PopoverContent>
+            <PopoverContent className="text-[11px] w-max px-2 py-1">
+                {tip}
+            </PopoverContent>
         </Popover>
     )
 }

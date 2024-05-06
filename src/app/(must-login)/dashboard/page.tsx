@@ -5,6 +5,7 @@ import Summaries from "./_components/summary/Summaries"
 import DashboardTable from "./_components/table/DashboardTable"
 import FilterOptions from "./_components/table/FilterOptions"
 import { CreditorFilterValues } from "./_components/table/validations"
+import FilterOptionsModal from "./_components/table/FilterOptionsModal"
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -33,11 +34,13 @@ async function DashboardPage({
 
     return (
         <div className="flex flex-col gap-4 bg-white px-4">
-            <Summaries/>
-            <Button asChild variant={'success'}>
-                <Link href={"/add-creditor"}>+ Kreditor</Link>
-            </Button>
-            <FilterOptions defaultFilterValues={filterValues} />
+            <Summaries />
+            <div className="flex justify-between">
+                <FilterOptionsModal defaultFilterValues={filterValues} />
+                <Button asChild variant={"success"}>
+                    <Link href={"/add-creditor"}>+ Kreditor</Link>
+                </Button>
+            </div>
             <DashboardTable
                 filterValues={filterValues}
                 currentPage={currentPage}

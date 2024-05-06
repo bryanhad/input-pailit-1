@@ -1,14 +1,15 @@
-'use client'
-import { cn, formatCurrency } from '@/lib/utils'
+"use client"
+import { cn, formatCurrency } from "@/lib/utils"
 import {
     ArcElement,
     ChartData,
     Chart as ChartJS,
     Legend,
     Tooltip,
-} from 'chart.js'
-import { Doughnut } from 'react-chartjs-2'
-import { EachClaimTypeTotalClaims } from './actions'
+} from "chart.js"
+import { Doughnut } from "react-chartjs-2"
+import { EachClaimTypeTotalClaims } from "./actions"
+import { PieChart } from "lucide-react"
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -21,24 +22,24 @@ function DoughnutChart({
     data: { claimTypes, totalClaimAmount, totalCreditors },
     className,
 }: DoughnutChartProps) {
-    const data: ChartData<'doughnut'> = {
-        labels: ['Preferen', 'Konkuren', 'Separatis'],
+    const data: ChartData<"doughnut"> = {
+        labels: ["Preferen", "Konkuren", "Separatis"],
         datasets: [
             {
-                label: 'Rp',
+                label: "Rp",
                 // Array of totalClaim (Preferen, Konkuren, Separatis)
                 data: [
-                    claimTypes.find((el) => el.claimType === 'PREFEREN')
+                    claimTypes.find((el) => el.claimType === "PREFEREN")
                         ?.totalClaim || 0,
-                    claimTypes.find((el) => el.claimType === 'KONKUREN')
+                    claimTypes.find((el) => el.claimType === "KONKUREN")
                         ?.totalClaim || 0,
-                    claimTypes.find((el) => el.claimType === 'SEPARATIS')
+                    claimTypes.find((el) => el.claimType === "SEPARATIS")
                         ?.totalClaim || 0,
                 ],
                 backgroundColor: [
-                    'hsl(142 68% 67%)',
-                    'hsl(199 89% 73%)',
-                    'hsl(351 95% 73%)',
+                    "hsl(142 68% 67%)",
+                    "hsl(199 89% 73%)",
+                    "hsl(351 95% 73%)",
                 ],
                 borderWidth: 1,
             },
@@ -46,9 +47,9 @@ function DoughnutChart({
     }
 
     const options = {
-        cutout: '85%',
+        cutout: "85%",
         resizeDelay: 200,
-        radius: '90%',
+        radius: "80%",
         responsive: true,
         plugins: {
             tooltip: {
@@ -57,7 +58,7 @@ function DoughnutChart({
                         return `${(
                             (ctx.parsed / totalClaimAmount) *
                             100
-                        ).toFixed(2)}% | ${formatCurrency(ctx.parsed, 'IDR')}`
+                        ).toFixed(2)}% | ${formatCurrency(ctx.parsed, "IDR")}`
                     },
                 },
             },
@@ -66,16 +67,16 @@ function DoughnutChart({
             },
             title: {
                 display: true,
-                text: 'Detail Tagihan PT Pailit (dalam Pailit)',
+                text: "Detail Tagihan PT Pailit (dalam Pailit)",
             },
         },
         // aspectRatio: 1.5,
         layout: {
             padding: {
                 top: 10,
-                bottom: 20,
-                right: 15,
-                left: 5,
+                bottom: 5,
+                right: 35,
+                left: 15,
             },
         },
     }
@@ -86,12 +87,12 @@ function DoughnutChart({
                 const { ctx, data, width, height } = chart
                 ctx.save()
                 const fontSize = (height / 270).toFixed(2)
-                ctx.font = fontSize + 'em sans-serif'
-                ctx.textAlign = 'center'
-                ctx.Baseline = 'middle'
+                ctx.font = fontSize + "em sans-serif"
+                ctx.textAlign = "center"
+                ctx.Baseline = "middle"
                 const totalClaimText = `${formatCurrency(
-                    totalClaimAmount + 100000435234,
-                    'IDR'
+                    totalClaimAmount,
+                    "IDR"
                 )}`
                 ctx.fillText(
                     totalClaimText,
@@ -103,7 +104,7 @@ function DoughnutChart({
         },
         // https://www.youtube.com/watch?v=ussXnf3l-U0&ab_channel=ChartJS
         {
-            id: 'doughnutSliceLabel',
+            id: "doughnutSliceLabel",
             beforeDatasetsDraw: (chart: any, args: any, plugins: any) => {
                 const { ctx, data, height } = chart
 
@@ -131,7 +132,7 @@ function DoughnutChart({
                             -10 + outerRadius * Math.sin(centerAngle)
 
                         const fontSize = (height / 500).toFixed(2)
-                        ctx.font = 'bold ' + fontSize + 'em sans-serif'
+                        ctx.font = "bold " + fontSize + "em sans-serif"
 
                         // ctx.font = 'bold 15px sans-serif'
                         const textWidth = ctx.measureText(
@@ -152,8 +153,8 @@ function DoughnutChart({
                         // ctx.fill()
 
                         ctx.fillStyle = data.datasets[0].backgroundColor[index]
-                        ctx.textAlign = 'center'
-                        ctx.textBaseline = 'middle'
+                        ctx.textAlign = "center"
+                        ctx.textBaseline = "middle"
                         ctx.fillText(
                             data.labels[index],
                             xCoordinate + centerWidth / 3,
@@ -167,16 +168,23 @@ function DoughnutChart({
     ]
 
     return (
-        <div className={cn("relative", className)}>
+        <div className={cn("relative w-[80vw] max-w-[400px]", className)}>
             {/* <p className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] text-2xl font-bold">
                 {formatCurrency(totalClaimAmount, 'IDR')}
             </p> */}
-            <Doughnut
-                className="relative z-10"
-                options={options}
-                data={data}
-                plugins={plugins}
-            />
+            {totalClaimAmount ? (
+                <Doughnut
+                    className="relative z-10"
+                    options={options}
+                    data={data}
+                    plugins={plugins}
+                />
+            ) : (
+                <div className="flex flex-col justify-center text-muted-foreground/20 items-center">
+                    <PieChart className="shrink-0" size={250} />
+                    <p className="font-semibold text-3xl">No Data To Show</p>
+                </div>
+            )}
         </div>
     )
 }

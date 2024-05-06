@@ -2,7 +2,7 @@
 
 import db from '@/lib/db'
 import { revalidatePath } from 'next/cache'
-import { creditorFilterSchema } from './validations'
+import { CreditorFilterValues, creditorFilterSchema } from './validations'
 import { redirect } from 'next/navigation'
 
 export async function getCreditorInfo(id: number) {
@@ -14,12 +14,11 @@ export async function getCreditorInfo(id: number) {
   return creditorWithAttahcments
 }
 
-export async function filterCreditors(formData: FormData) {
+export async function filterCreditors({ q, claimType, creditorType}: CreditorFilterValues) {
     // const offset = (currentPage - 1) * itemsPerPage
-    const formValues = Object.fromEntries(formData.entries());
+    // const formValues = Object.fromEntries(formData.entries());
 
-    const {q, claimType, creditorType} = creditorFilterSchema.parse(formValues)
-
+    // const {q, claimType, creditorType} = creditorFilterSchema.parse(formValues)
 
     const searchParams = new URLSearchParams({
         // the code below is to ensure to pass the object conditionally..
