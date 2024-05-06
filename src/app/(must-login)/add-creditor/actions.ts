@@ -28,7 +28,7 @@ export async function addCreditor(values: AddCreditorValues) {
 
     const attachmentsToBeUploaded = attachments.map((attachment) => {
         return {
-            creditorId: '1',
+            creditorId: 1,
             ...attachment,
         }
     })
