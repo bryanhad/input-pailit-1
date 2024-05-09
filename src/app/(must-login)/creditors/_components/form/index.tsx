@@ -2,46 +2,48 @@
  * HOOK
  */
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import React from 'react'
-import { useForm, FormProvider, useFormContext } from 'react-hook-form'
-import { AddCreditorSchema, AddCreditorValues } from './validation'
+import { zodResolver } from "@hookform/resolvers/zod"
+import React from "react"
+import { useForm, FormProvider, useFormContext } from "react-hook-form"
+import { AddCreditorSchema, CreditorFormValues } from "./validation"
 
-export const useAddCreditorForm = () => {
-    return useForm<AddCreditorValues>({
+export const useAddCreditorForm = (defaultFormValue?: CreditorFormValues) => {
+    return useForm<CreditorFormValues>({
         resolver: zodResolver(AddCreditorSchema),
         defaultValues: {
-            jenis: 'INSTANSI/PERUSAHAAN',
-            nama: undefined,
-            NIKAtauNomorAktaPendirian: undefined,
-            alamat: undefined,
-            email: undefined,
-            nomorTelepon: undefined,
-            korespondensi: undefined,
-            totalTagihan: 0,
-            sifatTagihan: 'SEPARATIS',
-            alamatKuasaHukum: undefined,
-            emailKuasaHukum: undefined,
-            namaKuasaHukum: undefined,
-            nomorTeleponKuasaHukum: undefined,
-            attachments: [
+            jenis: defaultFormValue?.jenis || "INSTANSI/PERUSAHAAN",
+            nama: defaultFormValue?.nama || undefined,
+            NIKAtauNomorAktaPendirian:
+                defaultFormValue?.NIKAtauNomorAktaPendirian || undefined,
+            alamat: defaultFormValue?.alamat || undefined,
+            email: defaultFormValue?.email || undefined,
+            nomorTelepon: defaultFormValue?.nomorTelepon || undefined,
+            korespondensi: defaultFormValue?.korespondensi || undefined,
+            totalTagihan: defaultFormValue?.totalTagihan || 0,
+            sifatTagihan: defaultFormValue?.sifatTagihan || "SEPARATIS",
+            alamatKuasaHukum: defaultFormValue?.alamatKuasaHukum || undefined,
+            emailKuasaHukum: defaultFormValue?.emailKuasaHukum || undefined,
+            namaKuasaHukum: defaultFormValue?.namaKuasaHukum || undefined,
+            nomorTeleponKuasaHukum:
+                defaultFormValue?.nomorTeleponKuasaHukum || undefined,
+            attachments: defaultFormValue?.attachments || [
                 {
-                    nama: 'Surat Permohonan Tagihan',
+                    nama: "Surat Permohonan Tagihan",
                     ready: false,
                     deskripsi: undefined,
                 },
                 {
-                    nama: 'Fotocopy KTP / Identitas',
+                    nama: "Fotocopy KTP / Identitas",
                     ready: false,
                     deskripsi: undefined,
                 },
                 {
-                    nama: 'Surat Kuasa (jika dikuasakan)',
+                    nama: "Surat Kuasa (jika dikuasakan)",
                     ready: false,
                     deskripsi: undefined,
                 },
                 {
-                    nama: 'Fotocopy KTP Penerima Kuasa',
+                    nama: "Fotocopy KTP Penerima Kuasa",
                     ready: false,
                     deskripsi: undefined,
                 },
@@ -64,5 +66,5 @@ export const FormProviderAddCreditor = ({
 }
 
 export const useFormContextAddCreditor = () => {
-    return useFormContext<AddCreditorValues>()
+    return useFormContext<CreditorFormValues>()
 }

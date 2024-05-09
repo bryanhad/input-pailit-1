@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Control, UseFieldArrayRemove, useFieldArray } from 'react-hook-form'
 import { useFormContextAddCreditor } from '.'
 import { useState } from 'react'
-import { AddCreditorValues } from './validation'
+import { CreditorFormValues } from './validation'
 import { Pencil, X, Check } from 'lucide-react'
 
 function AttachmentsField() {
@@ -113,7 +113,7 @@ function AttachmentNameField({
     onCheckClicked,
     removeAttachment,
 }: {
-    control: Control<AddCreditorValues>
+    control: Control<CreditorFormValues>
     index: number
     defaultValue: string
     onCheckClicked: (

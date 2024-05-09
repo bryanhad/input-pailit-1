@@ -13,29 +13,34 @@ import {
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
 import { capitalizeFirstLetter } from '@/lib/utils'
+import { ClaimType, CreditorType } from '@/types'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { FormProviderAddCreditor, useAddCreditorForm } from '.'
+import { UseFormReturn } from 'react-hook-form'
+import { FormProviderAddCreditor } from '.'
 import AttachmentsField from './AttachmentsField'
 import LegalRepresentativeInputs from './LegalRepresentativeInputs'
-import { AddCreditorValues } from './validation'
-import { ClaimType, CreditorType } from '@/types'
-import { useToast } from '@/components/ui/use-toast'
-import { useRouter } from 'next/navigation'
 import { addCreditor } from './actions'
+import { CreditorFormValues } from './validation'
 
-function AddCreditorForm() {
+type CreditorFormProps = {
+    title: string
+    form: UseFormReturn<CreditorFormValues>
+    action: (values: CreditorFormValues) => Promise<void>
+}
+
+function CreditorForm({form, title, action}:CreditorFormProps) {
     const { toast } = useToast()
     const router = useRouter()
 
     const [withLegalRepresentative, setWithLegalRepresentative] =
-        useState<boolean>()
+        useState<boolean>(!!form.getValues('namaKuasaHukum'))
 
-    const form = useAddCreditorForm()
-
-    async function onSubmit(values: AddCreditorValues) {
+    async function onSubmit(values: CreditorFormValues) {
         try {
-            await addCreditor(values)
+            await action(values)
             toast({
                 title: 'Successfully Added Creditor:',
                 description: values.nama,
@@ -52,7 +57,7 @@ function AddCreditorForm() {
     function handleNumberInputChange(
         e: React.ChangeEvent<HTMLInputElement>,
         onChange: (...event: any[]) => void,
-        field: keyof AddCreditorValues
+        field: keyof CreditorFormValues
     ) {
         const value = parseInt(e.target.value)
         if (isNaN(value) || value < 1) {
@@ -70,7 +75,7 @@ function AddCreditorForm() {
     function handlePhoneNumberInputChange(
         e: React.ChangeEvent<HTMLInputElement>,
         onChange: (...event: any[]) => void,
-        field: keyof AddCreditorValues
+        field: keyof CreditorFormValues
     ) {
         const value = parseInt(e.target.value)
         if (isNaN(value) && e.target.value !== '') {
@@ -90,7 +95,7 @@ function AddCreditorForm() {
                     >
                         <div className=" space-y-3">
                             <h2 className="font-bold text-2xl">
-                                Detail Kreditor
+                                {title}
                             </h2>
                             <FormField
                                 control={form.control}
@@ -364,4 +369,4 @@ function AddCreditorForm() {
     )
 }
 
-export default AddCreditorForm
+export default CreditorForm
