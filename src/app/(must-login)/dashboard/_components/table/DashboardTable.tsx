@@ -80,7 +80,7 @@ async function DashboardTable({
         include: {
             _count: { select: { attachments: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { number: "desc" },
         where: whereFilter,
     })
 
@@ -124,7 +124,7 @@ async function DashboardTable({
                     {creditors.map((creditor) => (
                         <TableRow key={creditor.id}>
                             <TableCell className="text-right">
-                                {creditor.id}
+                                {creditor.number}
                             </TableCell>
                             <TableCell className="font-medium">
                                 <KreditorInfo

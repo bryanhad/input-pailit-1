@@ -6,8 +6,9 @@ import axios from 'axios'
 import { useState } from 'react'
 import { getCreditorInfo } from './actions'
 import { cn } from '@/lib/utils'
+import { Creditor } from '@prisma/client'
 
-function DownloadButton({ id }: { id: number }) {
+function DownloadButton({ id }: { id: Creditor['id'] }) {
     const [loading, setLoading] = useState(false)
     const { toast } = useToast()
 

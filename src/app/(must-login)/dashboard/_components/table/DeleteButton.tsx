@@ -5,10 +5,11 @@ import Modal from "@/components/ui/modal"
 import React, { useState } from "react"
 import { deleteCreditor } from "./actions"
 import { useToast } from "@/components/ui/use-toast"
+import { Creditor } from "@prisma/client"
 
 type Props = {
-    creditorName: string
-    creditorId: number
+    creditorName: Creditor['nama']
+    creditorId: Creditor['id']
 }
 
 function DeleteButton({ creditorName, creditorId }: Props) {
