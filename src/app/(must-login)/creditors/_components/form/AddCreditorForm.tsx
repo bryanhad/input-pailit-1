@@ -21,8 +21,8 @@ import LegalRepresentativeInputs from './LegalRepresentativeInputs'
 import { AddCreditorValues } from './validation'
 import { ClaimType, CreditorType } from '@/types'
 import { useToast } from '@/components/ui/use-toast'
-import { addCreditor } from '../actions'
 import { useRouter } from 'next/navigation'
+import { addCreditor } from './actions'
 
 function AddCreditorForm() {
     const { toast } = useToast()

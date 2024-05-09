@@ -1,6 +1,6 @@
 import React from "react"
-import AddCreditorForm from "./_form/AddCreditorForm"
 import H1 from "@/components/ui/h1"
+import AddCreditorForm from "../_components/form/AddCreditorForm"
 
 function AddCreditorPage() {
     return (

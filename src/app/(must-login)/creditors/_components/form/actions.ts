@@ -1,7 +1,7 @@
 'use server'
 
 import { toSlug } from '@/lib/utils'
-import { AddCreditorSchema, AddCreditorValues } from './_form/validation'
+import { AddCreditorSchema, AddCreditorValues } from './validation'
 import { nanoid } from 'nanoid'
 import db from '@/lib/db'
 import { revalidatePath } from 'next/cache'

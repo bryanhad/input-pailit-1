@@ -38,7 +38,7 @@ async function DashboardPage({
             <div className="flex justify-between">
                 <FilterOptionsModal defaultFilterValues={filterValues} />
                 <Button asChild variant={"success"}>
-                    <Link href={"/add-creditor"}>+ Kreditor</Link>
+                    <Link href={"/creditors/add"}>+ Kreditor</Link>
                 </Button>
             </div>
             <DashboardTable
