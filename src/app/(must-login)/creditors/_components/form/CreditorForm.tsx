@@ -28,10 +28,11 @@ import { CreditorFormValues } from './validation'
 type CreditorFormProps = {
     title: string
     form: UseFormReturn<CreditorFormValues>
-    action: (values: CreditorFormValues) => Promise<void>
+    action: (values: CreditorFormValues, ...params:any[]) => Promise<void>
+    creditorId?:string
 }
 
-function CreditorForm({form, title, action}:CreditorFormProps) {
+function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
     const { toast } = useToast()
     const router = useRouter()
 
@@ -40,7 +41,7 @@ function CreditorForm({form, title, action}:CreditorFormProps) {
 
     async function onSubmit(values: CreditorFormValues) {
         try {
-            await action(values)
+            await action(values, form.formState.dirtyFields, creditorId)
             toast({
                 title: 'Successfully Added Creditor:',
                 description: values.nama,

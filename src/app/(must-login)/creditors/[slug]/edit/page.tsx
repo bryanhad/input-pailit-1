@@ -37,7 +37,7 @@ async function EditCreditorPage({params: {slug}}:EditCreditorPageProps) {
 
   return (
     <div>
-        <EditCreditorForm defaultValues={sanitizedCreditor}/>
+        <EditCreditorForm defaultValues={sanitizedCreditor} creditorId={creditorValues.id}/>
     </div>
   )
 }

@@ -57,3 +57,5 @@ export const AddCreditorSchema = z
     .and(kuasaHukumSchema.optional())
 
 export type CreditorFormValues = { totalTagihan: string | number } & Omit<z.infer<typeof AddCreditorSchema>, 'totalTagihan'>
+
+export type EditCreditorFormValues = {}
