@@ -153,6 +153,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                                     </FormItem>
                                 )}
                             />
+                            {/* TODO: show the label relative to what the user choses the creditor type! */}
                             <FormField
                                 control={form.control}
                                 name="NIKAtauNomorAktaPendirian"

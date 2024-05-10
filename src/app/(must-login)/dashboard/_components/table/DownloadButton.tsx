@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { getCreditorInfo } from './actions'
 import { cn } from '@/lib/utils'
 import { Creditor } from '@prisma/client'
+import { Download } from 'lucide-react'
 
 function DownloadButton({ id }: { id: Creditor['id'] }) {
     const [loading, setLoading] = useState(false)
@@ -24,7 +25,8 @@ function DownloadButton({ id }: { id: Creditor['id'] }) {
             const res = await axios.post(
                 process.env.NODE_ENV === 'development'
                     ? (process.env.NEXT_PUBLIC_PDF_GENERATOR_URL_DEV as string)
-                    : (process.env.NEXT_PUBLIC_PDF_GENERATOR_URL_PROD as string),
+                    : (process.env
+                          .NEXT_PUBLIC_PDF_GENERATOR_URL_PROD as string),
                 { data: creditorWithAttahcments },
                 { responseType: 'arraybuffer' }
             )
@@ -59,13 +61,16 @@ function DownloadButton({ id }: { id: Creditor['id'] }) {
 
     return (
         <LoadingButton
-            className={cn({ 'animate-pulse cursor-not-allowed': loading })}
+            className={cn({
+                'animate-pulse cursor-not-allowed flex items-center': loading,
+            })}
             onClick={() => handleDownloadPDF()}
             variant={'outline'}
             loading={loading}
             loadingMessage="Generating PDF.."
         >
-            Downlaod
+            <p>Downlaod PDF</p>
+            <Download size={16} className="shrink-0 pb-[1px]" />
         </LoadingButton>
     )
 }

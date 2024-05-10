@@ -175,7 +175,7 @@ async function DashboardTable({
                                         <Link
                                             href={`/creditors/${creditor.slug}`}
                                         >
-                                            Edit
+                                            View
                                         </Link>
                                     </Button>
                                     <DeleteButton
