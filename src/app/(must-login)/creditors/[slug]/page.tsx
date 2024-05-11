@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
@@ -6,18 +6,21 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table'
-import db from '@/lib/db'
-import { capitalizeFirstLetter, cn, formatCurrency } from '@/lib/utils'
-import { CreditorType } from '@/types'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import DownloadButton from '../../dashboard/_components/table/DownloadButton'
+} from "@/components/ui/table"
+import db from "@/lib/db"
+import { capitalizeFirstLetter, cn, formatCurrency } from "@/lib/utils"
+import { CreditorType } from "@/types"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import DownloadButton from "../../dashboard/_components/table/DownloadButton"
 type CreditorDetailPageProps = { params: { slug: string } }
-import { Pencil } from 'lucide-react'
-import H1 from '@/components/ui/h1'
-import H2 from '@/components/ui/h2'
-import MainWrapper from '@/components/ui/main-wrapper'
+import { Pencil } from "lucide-react"
+import H1 from "@/components/ui/h1"
+import H2 from "@/components/ui/h2"
+import MainWrapper from "@/components/ui/main-wrapper"
+import ClaimTypeBadge from "@/components/ClaimTypeBadge"
+import { Checkbox } from "@/components/ui/checkbox"
+import CreditorTypeBadge from "@/components/CreditorTypeBadge"
 
 async function CreditorDetailPage({
     params: { slug },
@@ -32,10 +35,22 @@ async function CreditorDetailPage({
     return (
         <MainWrapper>
             {/* <p className="font-light">ID: {creditor.id}</p> */}
-            <div
-                className="flex flex-col gap-2 md:flex-row md:gap-6"
-            >
-                <H1>{creditor.nama}</H1>
+            <div className="flex flex-col gap-4 items-start md:flex-row md:gap-6">
+                <div className="flex flex-col gap-5 items-start">
+                    <div className="flex items-center gap-3">
+                    <CreditorTypeBadge
+                        size={26}
+                        className="p-2 border-2 border-slate-600"
+                        jenisKreditor={creditor.jenis}
+                    />
+                    <H1>{creditor.nama}</H1>
+
+                    </div>
+                    <div className="flex gap-2">
+                        <p>Sifat Tagihan:</p>
+                        <ClaimTypeBadge sifatTagihan={creditor.sifatTagihan} />
+                    </div>
+                </div>
                 <div className="flex gap-2">
                     <Button asChild>
                         <Link href={`/creditors/${slug}/edit`}>
@@ -68,8 +83,8 @@ async function CreditorDetailPage({
                         <FieldValuePair
                             fieldName={
                                 creditor.jenis === CreditorType.Instansi
-                                    ? 'Nomor Akta Pendirian'
-                                    : 'NIK'
+                                    ? "Nomor Akta Pendirian"
+                                    : "NIK"
                             }
                             value={creditor.NIKAtauNomorAktaPendirian}
                         />
@@ -93,12 +108,8 @@ async function CreditorDetailPage({
                             fieldName="Total Tagihan"
                             value={formatCurrency(
                                 Number(creditor.totalTagihan),
-                                'IDR'
+                                "IDR"
                             )}
-                        />
-                        <FieldValuePair
-                            fieldName="Sifat Tagihan"
-                            value={capitalizeFirstLetter(creditor.sifatTagihan)}
                         />
                     </div>
                 </Section>
@@ -123,7 +134,10 @@ async function CreditorDetailPage({
                     </div>
                 </Section>
 
-                <Section title="Lampiran" className="lg:col-span-2">
+                <Section
+                    title="Lampiran"
+                    className="lg:col-span-2 overflow-auto"
+                >
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -131,7 +145,7 @@ async function CreditorDetailPage({
                                 <TableHead className="w-[300px]">
                                     Nama Lampiran
                                 </TableHead>
-                                <TableHead className="w-[100px]">
+                                <TableHead className="w-[100px] text-center">
                                     Ready
                                 </TableHead>
                                 <TableHead>Deskripsi</TableHead>
@@ -146,9 +160,24 @@ async function CreditorDetailPage({
                                             {nama}
                                         </TableCell>
                                         <TableCell>
-                                            {JSON.stringify(ready)}
+                                            <div className="flex justify-center mr-4">
+                                                <Checkbox
+                                                    disabled
+                                                    checked={ready}
+                                                />
+                                            </div>
                                         </TableCell>
-                                        <TableCell>{deskripsi}</TableCell>
+                                        <TableCell>
+                                            <p>
+                                                {deskripsi ? (
+                                                    deskripsi
+                                                ) : (
+                                                    <span className="ml-2">
+                                                        -
+                                                    </span>
+                                                )}
+                                            </p>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             )}
@@ -168,10 +197,18 @@ type FieldValuePairProps = {
 }
 function FieldValuePair({ fieldName, value }: FieldValuePairProps) {
     return (
-        <div className="flex gap-2">
-            <p className="w-[120px] text-slate-500">{fieldName}</p>
-            <span>:</span>
-            <p className="flex-1 w-full">{value || '-'}</p>
+        <div
+            className={cn(
+                "flex gap-1 flex-col md:flex-row border rounded-md p-2",
+                { "border-black border-2": fieldName === "Total Tagihan" }
+            )}
+        >
+            <p className="min-w-[180px] font-semibold">
+                {fieldName}
+                <span className="ml-2 md:hidden">:</span>
+            </p>
+            <span className="hidden md:block">:</span>
+            <p className="flex-1 w-full text-sm pt-[3px]">{value || "-"}</p>
         </div>
     )
 }
@@ -188,7 +225,7 @@ function Section({
     className?: string
 }) {
     return (
-        <div className={cn('flex flex-col gap-4', className)}>
+        <div className={cn("flex flex-col gap-4 w-full", className)}>
             {useH1 ? <H1>{title}</H1> : <H2>{title}</H2>}
             {children}
         </div>

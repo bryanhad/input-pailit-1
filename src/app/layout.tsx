@@ -4,6 +4,7 @@ import { Inter as FontSans } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import Navbar from './_components/Navbar'
 import { Toaster } from '@/components/ui/toaster'
+import BreadCrumbsLink from '@/components/BreadCrumbsLink'
 
 const fontSans = FontSans({
     subsets: ['latin'],
@@ -33,6 +34,7 @@ export default function RootLayout({
             >
                 <Navbar />
                 <main className="mt-6 flex-1 w-full max-w-[1400px] px-4 pb-2">
+                <BreadCrumbsLink/>
                     {children}
                 </main>
                 <Toaster />
