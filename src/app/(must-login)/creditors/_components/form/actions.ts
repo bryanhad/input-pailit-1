@@ -61,7 +61,6 @@ export async function addCreditor(values: CreditorFormValues) {
     revalidatePath("/dashboard")
 }
 
-// TODO: FIX EDIT CREDITOR FUNCTION!
 export async function editCreditor(
     values: CreditorFormValues,
     dirtyFields: {
@@ -70,29 +69,7 @@ export async function editCreditor(
     },
     creditorId: string
 ) {
-    const {
-        attachments,
-        totalTagihan,
-        nama,
-        jenis,
-        sifatTagihan,
-        NIKAtauNomorAktaPendirian,
-        alamat,
-        alamatKuasaHukum,
-        email,
-        emailKuasaHukum,
-        korespondensi,
-        namaKuasaHukum,
-        nomorTelepon,
-        nomorTeleponKuasaHukum,
-    } = AddCreditorSchema.parse(values)
     const submitedFormValues = AddCreditorSchema.parse(values)
-    console.log({
-        namaKuasaHukum,
-        alamatKuasaHukum,
-        nomorTeleponKuasaHukum,
-        emailKuasaHukum,
-    })
 
     const toBeUpdatedFields: Partial<CreditorFormValues & { slug: string }> = {}
 
@@ -127,9 +104,11 @@ export async function editCreditor(
         where: { creditorId },
     })
     // INSERT ALL NEW ATTACHMENTS, IF ANY
-    const attachmentsToBeUploaded = attachments.map((attachment) => {
-        return { creditorId, ...attachment }
-    })
+    const attachmentsToBeUploaded = submitedFormValues.attachments.map(
+        (attachment) => {
+            return { creditorId, ...attachment }
+        }
+    )
     const addNewAttachments = db.attachment.createMany({
         data: attachmentsToBeUploaded,
     })
