@@ -1,11 +1,11 @@
-'use server'
+"use server"
 
-import { toSlug } from '@/lib/utils'
-import { AddCreditorSchema, CreditorFormValues } from './validation'
-import { nanoid } from 'nanoid'
-import db from '@/lib/db'
-import { revalidatePath } from 'next/cache'
-import { Attachment } from '@prisma/client'
+import { toSlug } from "@/lib/utils"
+import { AddCreditorSchema, CreditorFormValues } from "./validation"
+import { nanoid } from "nanoid"
+import db from "@/lib/db"
+import { revalidatePath } from "next/cache"
+import { Attachment } from "@prisma/client"
 
 export async function addCreditor(values: CreditorFormValues) {
     const {
@@ -29,7 +29,7 @@ export async function addCreditor(values: CreditorFormValues) {
 
     const attachmentsToBeUploaded = attachments.map((attachment) => {
         return {
-            creditorId: '1',
+            creditorId: "1",
             ...attachment,
         }
     })
@@ -58,7 +58,7 @@ export async function addCreditor(values: CreditorFormValues) {
         },
     })
 
-    revalidatePath('/dashboard')
+    revalidatePath("/dashboard")
 }
 
 // TODO: FIX EDIT CREDITOR FUNCTION!
@@ -66,7 +66,7 @@ export async function editCreditor(
     values: CreditorFormValues,
     dirtyFields: {
         nama: boolean
-        attachments: Omit<Attachment, 'id' | 'creditorId'>[]
+        attachments: Omit<Attachment, "id" | "creditorId">[]
     },
     creditorId: string
 ) {
@@ -87,6 +87,12 @@ export async function editCreditor(
         nomorTeleponKuasaHukum,
     } = AddCreditorSchema.parse(values)
     const submitedFormValues = AddCreditorSchema.parse(values)
+    console.log({
+        namaKuasaHukum,
+        alamatKuasaHukum,
+        nomorTeleponKuasaHukum,
+        emailKuasaHukum,
+    })
 
     const toBeUpdatedFields: Partial<CreditorFormValues & { slug: string }> = {}
 
@@ -96,18 +102,18 @@ export async function editCreditor(
             // Check if the key exists in submitedFormValues
             if (key in submitedFormValues) {
                 const typedKey = key as keyof CreditorFormValues
-                if (typedKey === 'nama') {
+                if (typedKey === "nama") {
                     toBeUpdatedFields.nama = submitedFormValues.nama
                     toBeUpdatedFields.slug = `${toSlug(
                         submitedFormValues.nama
                     )}-${creditorId}`
                 } else if (
-                    typedKey !== 'attachments' &&
-                    typedKey !== 'totalTagihan'
+                    typedKey !== "attachments" &&
+                    typedKey !== "totalTagihan"
                 ) {
                     toBeUpdatedFields[typedKey] =
                         submitedFormValues[typedKey]?.trim()
-                } else if (typedKey === 'totalTagihan') {
+                } else if (typedKey === "totalTagihan") {
                     toBeUpdatedFields.totalTagihan = String(
                         submitedFormValues[typedKey]
                     )
@@ -130,7 +136,14 @@ export async function editCreditor(
     // UPDATE THE CREDITOR DETAILS
     const updateCreditor = db.creditor.update({
         where: { id: creditorId },
-        data: toBeUpdatedFields as any,
+        data: {
+            ...toBeUpdatedFields,
+            namaKuasaHukum: submitedFormValues.namaKuasaHukum || null,
+            emailKuasaHukum: submitedFormValues.emailKuasaHukum || null,
+            alamatKuasaHukum: submitedFormValues.alamatKuasaHukum || null,
+            nomorTeleponKuasaHukum:
+                submitedFormValues.nomorTeleponKuasaHukum || null,
+        } as any,
     })
 
     await db.$transaction([
@@ -139,5 +152,5 @@ export async function editCreditor(
         updateCreditor,
     ])
 
-    revalidatePath('/dashboard')
+    revalidatePath("/dashboard")
 }

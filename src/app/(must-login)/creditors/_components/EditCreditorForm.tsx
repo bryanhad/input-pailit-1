@@ -6,14 +6,25 @@ import { addCreditor, editCreditor } from "./form/actions"
 import { CreditorFormValues } from "./form/validation"
 
 type EditCreditorFormProps = {
-    defaultValues: CreditorFormValues,
-    creditorId?:string
+    defaultValues: CreditorFormValues
+    creditorId?: string
 }
 
-function EditCreditorForm({ defaultValues, creditorId }: EditCreditorFormProps) {
+function EditCreditorForm({
+    defaultValues,
+    creditorId,
+}: EditCreditorFormProps) {
     const form = useAddCreditorForm(defaultValues)
 
-    return <CreditorForm form={form} title="Edit Creditor" action={editCreditor} creditorId={creditorId}/>
+    return (
+        <CreditorForm
+            form={form}
+            title="Edit Creditor"
+            action={editCreditor}
+            creditorId={creditorId}
+            creditorName={defaultValues.nama}
+        />
+    )
 }
 
 export default EditCreditorForm

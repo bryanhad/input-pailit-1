@@ -17,7 +17,7 @@ const attachmentsSchema = z.array(
 )
 
 const kuasaHukumSchema = z.object({
-    namaKuasaHukum: z.string().min(4).max(255).optional(),
+    namaKuasaHukum: z.string().min(1, 'Nama kuasa hukum harus diisi').max(255).optional(),
     emailKuasaHukum: optionalEmailSchema,
     nomorTeleponKuasaHukum: z.string().min(5).max(255).optional(),
     alamatKuasaHukum: z.string().min(5).max(255).optional(),
@@ -25,7 +25,7 @@ const kuasaHukumSchema = z.object({
 
 export const AddCreditorSchema = z
     .object({
-        nama: z.string().min(3).max(255),
+        nama: z.string().min(1, 'Nama kreditor harus diisi').max(255),
         jenis: z
             .string()
             .min(1)

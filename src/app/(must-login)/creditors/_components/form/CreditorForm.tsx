@@ -1,7 +1,6 @@
-'use client'
+"use client"
 
-import LoadingButton from '@/components/LoadingButton'
-import { Button } from '@/components/ui/button'
+import LoadingButton from "@/components/LoadingButton"
 import {
     Form,
     FormControl,
@@ -9,49 +8,52 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { capitalizeFirstLetter } from '@/lib/utils'
-import { ClaimType, CreditorType } from '@/types'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { UseFormReturn } from 'react-hook-form'
-import { FormProviderAddCreditor } from '.'
-import AttachmentsField from './AttachmentsField'
-import LegalRepresentativeInputs from './LegalRepresentativeInputs'
-import { addCreditor } from './actions'
-import { CreditorFormValues } from './validation'
-import AttachmentsFieldNew from './AttachmentsFieldNew'
+} from "@/components/ui/form"
+import H1 from "@/components/ui/h1"
+import { Input } from "@/components/ui/input"
+import MainWrapper from "@/components/ui/main-wrapper"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/components/ui/use-toast"
+import { capitalizeFirstLetter } from "@/lib/utils"
+import { ClaimType, CreditorType } from "@/types"
+import { useRouter } from "next/navigation"
+import { UseFormReturn } from "react-hook-form"
+import { FormProviderAddCreditor } from "."
+import AttachmentsFieldNew from "./AttachmentsFieldNew"
+import LegalRepresentativeInputs from "./LegalRepresentativeInputs"
+import { CreditorFormValues } from "./validation"
 
 type CreditorFormProps = {
     title: string
     form: UseFormReturn<CreditorFormValues>
-    action: (values: CreditorFormValues, ...params:any[]) => Promise<void>
-    creditorId?:string
+    action: (values: CreditorFormValues, ...params: any[]) => Promise<void>
+    creditorId?: string
+    creditorName?: string
 }
 
-function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
+function CreditorForm({
+    form,
+    title,
+    action,
+    creditorId,
+    creditorName,
+}: CreditorFormProps) {
     const { toast } = useToast()
     const router = useRouter()
-
-    const [withLegalRepresentative, setWithLegalRepresentative] =
-        useState<boolean>(!!form.getValues('namaKuasaHukum'))
 
     async function onSubmit(values: CreditorFormValues) {
         try {
             await action(values, form.formState.dirtyFields, creditorId)
             toast({
-                title: 'Successfully Added Creditor:',
+                title: "Successfully Added Creditor:",
                 description: values.nama,
             })
-            router.push('/dashboard')
+            router.push("/dashboard")
         } catch (err) {
             toast({
-                title: 'Oh no!',
-                description: 'Something went wrong!',
+                title: "Oh no!",
+                description: "Something went wrong!",
             })
         }
     }
@@ -80,7 +82,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
         field: keyof CreditorFormValues
     ) {
         const value = parseInt(e.target.value)
-        if (isNaN(value) && e.target.value !== '') {
+        if (isNaN(value) && e.target.value !== "") {
             return
         }
         onChange(e.target.value)
@@ -89,16 +91,15 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
 
     return (
         <FormProviderAddCreditor>
-            <section className="mx-auto space-y-6 p-4 border border-input rounded-xl bg-white">
+            <MainWrapper>
+                {creditorName && <H1>{creditorName}</H1>}
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="grid grid-cols-1 xl:grid-cols-2 gap-3 xl:gap-10"
                     >
-                        <div className=" space-y-3">
-                            <h2 className="font-bold text-2xl">
-                                {title}
-                            </h2>
+                        <div className="space-y-3">
+                            <h2 className="font-bold text-2xl">{title}</h2>
                             <FormField
                                 control={form.control}
                                 name="jenis"
@@ -218,7 +219,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                                         <FormControl>
                                             <Input
                                                 value={form.watch(
-                                                    'nomorTelepon'
+                                                    "nomorTelepon"
                                                 )}
                                                 placeholder="Masukkan nomor telepon kreditor"
                                                 {...restOfFieldValues}
@@ -226,7 +227,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                                                     handlePhoneNumberInputChange(
                                                         e,
                                                         restOfFieldValues.onChange,
-                                                        'nomorTelepon'
+                                                        "nomorTelepon"
                                                     )
                                                 }
                                             />
@@ -266,7 +267,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                                                 <p className="px-3">Rp</p>
                                                 <Input
                                                     value={form.watch(
-                                                        'totalTagihan'
+                                                        "totalTagihan"
                                                     )}
                                                     variant="withIcon"
                                                     placeholder="Add Product's Price"
@@ -275,7 +276,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                                                         handleNumberInputChange(
                                                             e,
                                                             restOfFieldValues.onChange,
-                                                            'totalTagihan'
+                                                            "totalTagihan"
                                                         )
                                                     }
                                                 />
@@ -329,33 +330,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                             />
                         </div>
                         <div className="space-y-4 max-xl:pt-4">
-                            {!withLegalRepresentative && (
-                                <Button
-                                    className="block "
-                                    type="button"
-                                    variant={'success'}
-                                    onClick={() =>
-                                        setWithLegalRepresentative(
-                                            (prev) => !prev
-                                        )
-                                    }
-                                >
-                                    + Kuasa Hukum
-                                </Button>
-                            )}
-                            {withLegalRepresentative && (
-                                <>
-                                    <h2 className="font-bold text-2xl">
-                                        Kuasa Hukum
-                                    </h2>
-                                    <LegalRepresentativeInputs
-                                        onCloseClicked={() =>
-                                            setWithLegalRepresentative(false)
-                                        }
-                                        form={form}
-                                    />
-                                </>
-                            )}
+                            <LegalRepresentativeInputs />
                             <h2 className="font-bold text-2xl">Lampiran</h2>
                             {/* <AttachmentsField /> */}
                             <AttachmentsFieldNew />
@@ -368,7 +343,7 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                         </div>
                     </form>
                 </Form>
-            </section>
+            </MainWrapper>
         </FormProviderAddCreditor>
     )
 }

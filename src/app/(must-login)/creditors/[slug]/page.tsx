@@ -35,8 +35,8 @@ async function CreditorDetailPage({
     return (
         <MainWrapper>
             {/* <p className="font-light">ID: {creditor.id}</p> */}
-            <div className="flex flex-col gap-4 items-start md:flex-row md:gap-6">
-                <div className="flex flex-col gap-5 items-start">
+            <div className="flex flex-col gap-4 items-start md:flex-row md:justify-between md:gap-6">
+                <div className="flex flex-col gap-4 items-start">
                     <div className="flex items-center gap-3">
                     <CreditorTypeBadge
                         size={26}
@@ -44,7 +44,6 @@ async function CreditorDetailPage({
                         jenisKreditor={creditor.jenis}
                     />
                     <H1>{creditor.nama}</H1>
-
                     </div>
                     <div className="flex gap-2">
                         <p>Sifat Tagihan:</p>
@@ -69,7 +68,7 @@ async function CreditorDetailPage({
   
             </div> */}
 
-            <section className="grid lg:grid-cols-2 gap-6">
+            <section className="grid lg:grid-cols-2 gap-6 mt-2">
                 <Section title="Detail Kreditor">
                     <div className="flex flex-col gap-2">
                         <FieldValuePair
@@ -203,7 +202,7 @@ function FieldValuePair({ fieldName, value }: FieldValuePairProps) {
                 { "border-black border-2": fieldName === "Total Tagihan" }
             )}
         >
-            <p className="min-w-[180px] font-semibold">
+            <p className="min-w-[180px] font-medium">
                 {fieldName}
                 <span className="ml-2 md:hidden">:</span>
             </p>
