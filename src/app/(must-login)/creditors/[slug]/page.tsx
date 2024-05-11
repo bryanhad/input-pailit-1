@@ -199,7 +199,7 @@ function FieldValuePair({ fieldName, value }: FieldValuePairProps) {
         <div
             className={cn(
                 "flex gap-1 flex-col md:flex-row border rounded-md p-2",
-                { "border-black border-2": fieldName === "Total Tagihan" }
+                { "bg-black text-white border-2": fieldName === "Total Tagihan" }
             )}
         >
             <p className="min-w-[180px] font-medium">

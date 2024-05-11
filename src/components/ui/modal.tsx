@@ -28,7 +28,7 @@ type ModalProps = {
 )
 
 function Modal({
-    centerText=false,
+    centerText = false,
     open,
     onOpenChange,
     children,

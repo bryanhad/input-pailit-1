@@ -111,7 +111,7 @@ function LegalRepresentativeInputs() {
                         </Button>
                     }
                 >
-                    <div className="flex gap-2 w-full">
+                    <div className="flex gap-2 w-full flex-wrap">
                         <Button
                             onClick={() => handleApprove()}
                             className="flex-1"
