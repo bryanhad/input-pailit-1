@@ -33,7 +33,7 @@ function BreadCrumbsLink() {
     const pathname = usePathname()
     const pathnameSegments = generatePathSegments(pathname)
     if (pathname !== '/dashboard') return (
-        <div className="w-full my-2">
+        <div className="w-full mb-4">
         <Breadcrumb>
             <BreadcrumbList>
                 {/* <BreadcrumbItem>

@@ -24,6 +24,7 @@ import AttachmentsField from './AttachmentsField'
 import LegalRepresentativeInputs from './LegalRepresentativeInputs'
 import { addCreditor } from './actions'
 import { CreditorFormValues } from './validation'
+import AttachmentsFieldNew from './AttachmentsFieldNew'
 
 type CreditorFormProps = {
     title: string
@@ -356,7 +357,8 @@ function CreditorForm({form, title, action, creditorId}:CreditorFormProps) {
                                 </>
                             )}
                             <h2 className="font-bold text-2xl">Lampiran</h2>
-                            <AttachmentsField />
+                            {/* <AttachmentsField /> */}
+                            <AttachmentsFieldNew />
                             <LoadingButton
                                 type="submit"
                                 loading={form.formState.isSubmitting}

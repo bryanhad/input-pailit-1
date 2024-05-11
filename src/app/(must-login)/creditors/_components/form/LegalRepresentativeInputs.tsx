@@ -10,11 +10,11 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { UseFormReturn } from 'react-hook-form'
 import { X } from 'lucide-react'
-import { AddCreditorValues } from './validation'
+import { CreditorFormValues } from './validation'
 import { Button } from '@/components/ui/button'
 
 type LegalRepresentativeInputsProps = {
-    form: UseFormReturn<AddCreditorValues>
+    form: UseFormReturn<CreditorFormValues>
     onCloseClicked: () => void
 }
 
@@ -24,6 +24,8 @@ function LegalRepresentativeInputs({
 }: LegalRepresentativeInputsProps) {
     return (
         <div className="border border-input p-4 rounded-md relative">
+            {/* TODO: IF THE Kuasa Hukum fields are filled, pop-up a modal to ask the user wether they really want to 
+            delete the kuasa hukum or not! */}
             <Button
                 className="p-1 size-7 absolute right-0 top-0 rounded-tl-none rounded-br-none"
                 onClick={onCloseClicked}
