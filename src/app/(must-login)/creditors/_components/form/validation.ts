@@ -1,23 +1,23 @@
-import { ClaimType, CreditorType } from '@/types'
-import { z } from 'zod'
+import { ClaimType, CreditorType } from "@/types"
+import { z } from "zod"
 
 const optionalEmailSchema = z
     .string()
     .max(100)
     .email()
     .optional()
-    .or(z.literal(''))
+    .or(z.literal(""))
 
 const attachmentsSchema = z.array(
     z.object({
-        nama: z.string().min(1, 'Nama lampiran tidak boleh kosong').max(100),
+        nama: z.string().min(1, "Nama lampiran tidak boleh kosong").max(100),
         ready: z.coerce.boolean(),
         deskripsi: z.string().max(255).optional(),
     })
 )
 
 const kuasaHukumSchema = z.object({
-    namaKuasaHukum: z.string().min(4).max(255).optional(),
+    namaKuasaHukum: z.string().min(1, 'Nama kuasa hukum harus diisi').max(255).optional(),
     emailKuasaHukum: optionalEmailSchema,
     nomorTeleponKuasaHukum: z.string().min(5).max(255).optional(),
     alamatKuasaHukum: z.string().min(5).max(255).optional(),
@@ -25,7 +25,7 @@ const kuasaHukumSchema = z.object({
 
 export const AddCreditorSchema = z
     .object({
-        nama: z.string().min(3).max(255),
+        nama: z.string().min(1, 'Nama kreditor harus diisi').max(255),
         jenis: z
             .string()
             .min(1)
@@ -33,27 +33,29 @@ export const AddCreditorSchema = z
                 (input) =>
                     (Object.values(CreditorType) as string[]).includes(input),
                 {
-                    message: 'Pilih jenis dari kreditor',
+                    message: "Pilih jenis dari kreditor",
                 }
             ),
         NIKAtauNomorAktaPendirian: z.string().optional(),
-        alamat: z.string().min(5).max(255).optional().or(z.literal('')),
+        alamat: z.string().min(5).max(255).optional().or(z.literal("")),
         email: optionalEmailSchema,
-        nomorTelepon: z.string().min(5).max(255).optional().or(z.literal('')),
+        nomorTelepon: z.string().min(5).max(255).optional().or(z.literal("")),
         korespondensi: z.string().optional(),
         totalTagihan: z.coerce
             .number()
-            .min(100, 'Minimum total tagihan adalah Rp 100'),
+            .min(100, "Minimum total tagihan adalah Rp 100"),
         sifatTagihan: z
             .string()
             .min(1)
             .refine(
                 (input) =>
                     (Object.values(ClaimType) as string[]).includes(input),
-                { message: 'Sifat tagihan salah' }
+                { message: "Sifat tagihan salah" }
             ),
         attachments: attachmentsSchema,
     })
     .and(kuasaHukumSchema.optional())
 
-export type AddCreditorValues = z.infer<typeof AddCreditorSchema>
+export type CreditorFormValues = { totalTagihan: string | number } & Omit<z.infer<typeof AddCreditorSchema>, 'totalTagihan'>
+
+export type EditCreditorFormValues = {}

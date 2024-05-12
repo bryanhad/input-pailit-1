@@ -1,18 +1,18 @@
 import { cn } from "@/lib/utils";
 import React, { ComponentProps } from "react";
 
-function H1({ className, children, ...props }: ComponentProps<"h1">) {
+function H2({ className, children, ...props }: ComponentProps<"h2">) {
     return (
-        <h1
+        <h2
             {...props}
             className={cn(
-                "text-3xl font-bold tracking-tight lg:text-4xl",
+                "text-lg font-semibold tracking-tight lg:text-xl",
                 className,
             )}
         >
             {children}
-        </h1>
+        </h2>
     );
 }
 
-export default H1;
+export default H2;

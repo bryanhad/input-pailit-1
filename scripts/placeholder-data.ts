@@ -1,9 +1,9 @@
 import { ClaimType, CreditorType } from '../src/types'
 import { Attachment, Creditor } from '@prisma/client'
 
-const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
+const placeholderCreditors: Partial<Omit<Creditor, 'createdAt' | 'updatedAt' | 'number'> & {id?:string}>[] = [
     {
-        id: 1,
+        id: '1',
         nama: 'Bambang Jarwo',
         slug: 'bambang-jarwo-1',
         jenis: CreditorType.Pribadi,
@@ -20,7 +20,7 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Cendana No. 5',
     },
     {
-        id: 2,
+        id: '2',
         nama: 'PT Anjay Jaya',
         slug: 'pt-anjay-jaya-2',
         jenis: CreditorType.Instansi,
@@ -37,7 +37,7 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Thamrin No. 25',
     },
     {
-        id: 3,
+        id: '3',
         nama: 'Cindy Kartika',
         slug: 'cindy-kartika-3',
         jenis: CreditorType.Pribadi,
@@ -54,7 +54,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: null,
     },
     {
-        id: 4,
         nama: 'PT si Paling PT',
         slug: 'pt-si-paling-pt-4',
         jenis: CreditorType.Instansi,
@@ -71,7 +70,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Pemuda No. 15',
     },
     {
-        id: 5,
         nama: 'Eva Susanti',
         slug: 'eva-susanti-5',
         jenis: CreditorType.Pribadi,
@@ -88,7 +86,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Mawar No. 20',
     },
     {
-        id: 6,
         nama: 'PT Putri Putrian',
         slug: 'pt-putri-putrian-6',
         jenis: CreditorType.Instansi,
@@ -105,7 +102,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Surya Sumantri No. 30',
     },
     {
-        id: 7,
         nama: 'Gita Wulandari',
         slug: 'gita-wulandari-7',
         jenis: CreditorType.Instansi,
@@ -122,7 +118,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Asia Afrika No. 45',
     },
     {
-        id: 8,
         nama: 'PT Aku Belum Makan',
         slug: 'pt-aku-belum-makan-8',
         jenis: CreditorType.Instansi,
@@ -139,7 +134,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Siliwangi No. 50',
     },
     {
-        id: 9,
         nama: 'Irene Tan',
         slug: 'itene-tan-9',
         jenis: CreditorType.Pribadi,
@@ -156,7 +150,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Slamet Riyadi No. 55',
     },
     {
-        id: 10,
         nama: 'PT Sudah Jam 1 Belum Tidur',
         slug: 'pt-sudah-jam-1-belum-tidur-10',
         jenis: CreditorType.Instansi,
@@ -173,7 +166,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: null,
     },
     {
-        id: 11,
         nama: 'Kartika Wati',
         slug: 'kartika-wati-11',
         jenis: CreditorType.Pribadi,
@@ -190,7 +182,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Yos Sudarso No. 75',
     },
     {
-        id: 12,
         nama: 'PT Tolong Saya Sudah Ngantuk',
         slug: 'pt-tolong-saya-sudah-ngantuk-12',
         jenis: CreditorType.Instansi,
@@ -207,7 +198,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: null,
     },
     {
-        id: 13,
         nama: 'Mamang Ganteng',
         slug: 'mamang-ganteng-13',
         jenis: CreditorType.Instansi,
@@ -224,7 +214,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: null,
     },
     {
-        id: 14,
         nama: 'PT Aduh Gimana Ya',
         slug: 'pt-aduh-gimana-ya-14',
         jenis: CreditorType.Instansi,
@@ -241,7 +230,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: null,
     },
     {
-        id: 15,
         nama: 'Oscar Banu',
         slug: 'oscar-banu-15',
         jenis: CreditorType.Pribadi,
@@ -258,7 +246,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Jatinegara No. 115',
     },
     {
-        id: 16,
         nama: 'PT Indah Jaya Makmur',
         slug: 'pt-indah-jaya-makmur-16',
         jenis: CreditorType.Instansi,
@@ -275,7 +262,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Merdeka No. 125',
     },
     {
-        id: 17,
         nama: 'PT Anjay Muke Gile Tbk',
         slug: 'pt-anjay-muke-gile-tbk-17',
         jenis: CreditorType.Instansi,
@@ -292,7 +278,6 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
         alamatKuasaHukum: 'Jl. Merdeka No. 145',
     },
     {
-        id: 18,
         nama: 'Qori Hidayat',
         slug: 'qori-hidayat-18',
         jenis: CreditorType.Pribadi,
@@ -313,70 +298,70 @@ const placeholderCreditors: Omit<Creditor, 'createdAt' | 'updatedAt'>[] = [
 const placeholderAttachments: Attachment[] = [
     {
         id: '1',
-        creditorId: 1,
+        creditorId: '1',
         nama: 'Surat Permohonan Tagihan',
         ready: false,
         deskripsi: 'Sudah ada di berkas lengkap polll',
     },
     {
         id: '2',
-        creditorId: 1,
+        creditorId: '1',
         nama: 'Fotocopy KTP / Identitas',
         ready: false,
         deskripsi: 'Ini rada burem sih',
     },
     {
         id: '3',
-        creditorId: 1,
+        creditorId: '1',
         nama: 'Surat Kuasa (jika dikuasakan)',
         ready: false,
         deskripsi: '',
     },
     {
         id: '4',
-        creditorId: 1,
+        creditorId: '1',
         nama: 'Fotocopy KTP Penerima Kuasa',
         ready: false,
         deskripsi: '',
     },
     {
         id: '5',
-        creditorId: 1,
+        creditorId: '1',
         nama: 'Surat Pernah Makan Nasi Goreng',
         ready: false,
         deskripsi: '',
     },
     {
         id: '6',
-        creditorId: 2,
+        creditorId: '2',
         nama: 'Surat Permohonan Tagihan',
         ready: false,
         deskripsi: '',
     },
     {
         id: '7',
-        creditorId: 2,
+        creditorId: '2',
         nama: 'Fotocopy KTP / Identitas',
         ready: false,
         deskripsi: '',
     },
     {
         id: '8',
-        creditorId: 3,
+        creditorId: '3',
         nama: 'Fotocopy KTP / Identitas',
         ready: false,
         deskripsi: '',
     },
     {
         id: '9',
-        creditorId: 3,
+        creditorId: '3',
         nama: 'Surat Kuasa (jika dikuasakan)',
         ready: false,
         deskripsi: '',
     },
     {
         id: '10',
-        creditorId: 3,
+        creditorId: '3',
         nama: 'Fotocopy KTP Penerima Kuasa',
         ready: false,
         deskripsi: '',

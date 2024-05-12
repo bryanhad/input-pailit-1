@@ -1,9 +1,7 @@
+import ClaimTypeBadge from "@/components/ClaimTypeBadge"
+import CreditorTypeBadge from "@/components/CreditorTypeBadge"
+import SimplePopover from "@/components/SimplePopover"
 import { Button } from "@/components/ui/button"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
 import {
     Table,
     TableBody,
@@ -15,22 +13,16 @@ import {
 } from "@/components/ui/table"
 import db from "@/lib/db"
 import {
-    capitalizeFirstLetter,
-    cn,
     formatCurrency,
-    formatNumber,
+    formatNumber
 } from "@/lib/utils"
-import { ClaimType, CreditorType } from "@/types"
 import { Creditor, Prisma } from "@prisma/client"
 import {
     BookText,
-    Building2,
     CircleCheck,
-    CircleX,
-    UserRound,
+    CircleX
 } from "lucide-react"
 import Link from "next/link"
-import React from "react"
 import DeleteButton from "./DeleteButton"
 import DownloadButton from "./DownloadButton"
 import Pagination from "./Pagination"
@@ -80,7 +72,7 @@ async function DashboardTable({
         include: {
             _count: { select: { attachments: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { number: "desc" },
         where: whereFilter,
     })
 
@@ -124,7 +116,7 @@ async function DashboardTable({
                     {creditors.map((creditor) => (
                         <TableRow key={creditor.id}>
                             <TableCell className="text-right">
-                                {creditor.id}
+                                {creditor.number}
                             </TableCell>
                             <TableCell className="font-medium">
                                 <KreditorInfo
@@ -143,24 +135,9 @@ async function DashboardTable({
                             </TableCell>
                             <TableCell>
                                 <div className="flex justify-start">
-                                    <div
-                                        className={cn(
-                                            {
-                                                "bg-separatis text-white":
-                                                    creditor.sifatTagihan ===
-                                                    ClaimType.Separatis,
-                                                "bg-konkuren text-white":
-                                                    creditor.sifatTagihan ===
-                                                    ClaimType.Konkuren,
-                                                "bg-preferen text-white":
-                                                    creditor.sifatTagihan ===
-                                                    ClaimType.Preferen,
-                                            },
-                                            "py-[2px] px-3 text-sm rounded-md"
-                                        )}
-                                    >
-                                        {creditor.sifatTagihan}
-                                    </div>
+                                    <ClaimTypeBadge
+                                        sifatTagihan={creditor.sifatTagihan}
+                                    />
                                 </div>
                             </TableCell>
                             <TableCell className="text-right">
@@ -175,7 +152,7 @@ async function DashboardTable({
                                         <Link
                                             href={`/creditors/${creditor.slug}`}
                                         >
-                                            Edit
+                                            View
                                         </Link>
                                     </Button>
                                     <DeleteButton
@@ -208,17 +185,7 @@ function KreditorInfo({
 }) {
     return (
         <div className="flex items-center gap-4">
-            <SimplePopover
-                className="rounded-full p-1"
-                tip={capitalizeFirstLetter(creditor.jenis)}
-            >
-                {creditor.jenis === CreditorType.Instansi && (
-                    <Building2 size={16} className="shrink-0" />
-                )}
-                {creditor.jenis === CreditorType.Pribadi && (
-                    <UserRound size={16} className="shrink-0" />
-                )}
-            </SimplePopover>
+            <CreditorTypeBadge jenisKreditor={creditor.jenis} />
             <div className="flex items-start flex-col w-[200px] gap-1">
                 <p className="max-w-full truncate text-sm flex-1 text-muted-foreground">
                     {creditor.nama}
@@ -250,28 +217,5 @@ function KreditorInfo({
                 </div>
             </div>
         </div>
-    )
-}
-
-function SimplePopover({
-    children,
-    tip,
-    className,
-}: {
-    children: React.ReactNode
-    tip: string
-    className?: string
-}) {
-    return (
-        <Popover>
-            <PopoverTrigger
-                className={cn("border py-[2px] px-2 rounded-md", className)}
-            >
-                {children}
-            </PopoverTrigger>
-            <PopoverContent className="text-[11px] w-max px-2 py-1">
-                {tip}
-            </PopoverContent>
-        </Popover>
     )
 }

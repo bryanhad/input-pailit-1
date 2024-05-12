@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Control, UseFieldArrayRemove, useFieldArray } from 'react-hook-form'
 import { useFormContextAddCreditor } from '.'
 import { useState } from 'react'
-import { AddCreditorValues } from './validation'
+import { CreditorFormValues } from './validation'
 import { Pencil, X, Check } from 'lucide-react'
 
 function AttachmentsField() {
@@ -94,7 +94,7 @@ function AttachmentsField() {
                     append({
                         nama: '',
                         ready: false,
-                        deskripsi: '',
+                        deskripsi: undefined,
                     })
                 }
             >
@@ -113,7 +113,7 @@ function AttachmentNameField({
     onCheckClicked,
     removeAttachment,
 }: {
-    control: Control<AddCreditorValues>
+    control: Control<CreditorFormValues>
     index: number
     defaultValue: string
     onCheckClicked: (
@@ -129,6 +129,8 @@ function AttachmentNameField({
 
     return (
         <>
+        {/* TODO: WHILE EDITING, IF THE USER PRESSED ENTER, IT SHOULD NOT SUBMIT THE FORM. */}
+        {/* INSTEAD, IT SHOULD TRIGGER onCHeckClicked. */}
             {isEditing ? (
                 <FormField
                     control={control}
@@ -140,7 +142,7 @@ function AttachmentNameField({
                             <FormControl>
                                 <div className="flex gap-2">
                                     <Input
-                                        className="text-sm lg:text-base"
+                                        className="text-sm lg:text-base "
                                         placeholder="Masukkan nama lampiran.."
                                         value={name}
                                         onChange={(e) => {
@@ -178,7 +180,7 @@ function AttachmentNameField({
                 />
             ) : (
                 <div className="flex-1 lg:max-w-[400px] w-full flex gap-2 items-center">
-                    <p className="pr-4 text-sm lg:text-base max-lg:flex-1 ">
+                    <p className="pr-4 text-sm lg:text-base flex-1 ">
                         {defaultValue}
                     </p>
                     <Button

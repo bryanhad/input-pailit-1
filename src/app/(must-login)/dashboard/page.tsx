@@ -6,6 +6,7 @@ import DashboardTable from "./_components/table/DashboardTable"
 import FilterOptions from "./_components/table/FilterOptions"
 import { CreditorFilterValues } from "./_components/table/validations"
 import FilterOptionsModal from "./_components/table/FilterOptionsModal"
+import MainWrapper from "@/components/ui/main-wrapper"
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -33,12 +34,12 @@ async function DashboardPage({
     const tableSize = Number(size) || 10
 
     return (
-        <div className="flex flex-col gap-4 bg-white px-4">
+        <MainWrapper>
             <Summaries />
             <div className="flex justify-between">
                 <FilterOptionsModal defaultFilterValues={filterValues} />
                 <Button asChild variant={"success"}>
-                    <Link href={"/add-creditor"}>+ Kreditor</Link>
+                    <Link href={"/creditors/add"}>+ Kreditor</Link>
                 </Button>
             </div>
             <DashboardTable
@@ -46,7 +47,7 @@ async function DashboardPage({
                 currentPage={currentPage}
                 tableSize={tableSize}
             />
-        </div>
+        </MainWrapper>
     )
 }
 

@@ -76,7 +76,7 @@ function DoughnutChart({
                 top: 10,
                 bottom: 5,
                 right: 35,
-                left: 15,
+                left: 35,
             },
         },
     }

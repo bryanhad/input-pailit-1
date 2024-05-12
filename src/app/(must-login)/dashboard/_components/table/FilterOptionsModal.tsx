@@ -16,6 +16,7 @@ function FilterOptionsModal({ defaultFilterValues }: Props) {
     }
 
     return (
+        // TODO: BUTTON TO CLEAR ALL FILTER
         <Modal
             centerText
             className="items-center"
