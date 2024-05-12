@@ -34,6 +34,7 @@ export async function addCreditor(values: CreditorFormValues) {
         }
     })
 
+    // TODO: USE A GOD DAMN TRANSACTION BRO!!
     await db.attachment.createMany({
         data: attachmentsToBeUploaded,
         skipDuplicates: true,

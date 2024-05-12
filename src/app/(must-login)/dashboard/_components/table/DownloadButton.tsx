@@ -15,7 +15,6 @@ function DownloadButton({ id }: { id: Creditor['id'] }) {
 
     const handleDownloadPDF = async () => {
         setLoading(true)
-        console.log('clicked!')
         try {
             const creditorWithAttahcments = await getCreditorInfo(id)
             if (!creditorWithAttahcments) {

@@ -45,12 +45,6 @@ function FilterOptions({
             ...(creditorType && { creditorType }),
         })
 
-        // console.log()
-        // console.log(pageSearchParams.get('claimType'))
-        // console.log(pageSearchParams.get('creditorType'))
-
-        // await filterCreditors(values)
-        // console.log(searchParams.toString())
         router.push(`/dashboard?${searchParams.toString()}`)
         onSubmitClicked()
     }
