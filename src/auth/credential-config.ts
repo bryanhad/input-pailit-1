@@ -1,10 +1,15 @@
-import { emailSchema } from "@/components/auth/validation"
+import { emailSchema } from "@/auth/validation"
 import db from "@/lib/db"
+import { CredentialsSignin } from "next-auth"
 import { CredentialsConfig } from "next-auth/providers/credentials"
+
+class InvalidLoginError extends CredentialsSignin {
+    code = "Invalid identifier or password"
+  }
 
 export const credentialsOptions: Partial<CredentialsConfig> = {
     credentials: {
-        email: {},
+        email: {label: 'email'},
     },
     authorize: async (credentials) => {
         try {

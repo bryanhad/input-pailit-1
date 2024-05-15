@@ -1,10 +1,10 @@
-import db from "@/lib/db"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import NextAuth, { NextAuthConfig } from "next-auth"
-import Credentials from "next-auth/providers/credentials"
-import Nodemailer from "next-auth/providers/nodemailer"
-import { credentialsOptions } from "./credential-config"
-import { nodeMailerOptions } from "./node-mailer-config"
+import db from '@/lib/db'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import NextAuth, { NextAuthConfig } from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
+import Nodemailer from 'next-auth/providers/nodemailer'
+import { credentialsOptions } from './credential-config'
+import { nodeMailerOptions } from './node-mailer-config'
 
 const authOptions: NextAuthConfig = {
     adapter: PrismaAdapter(db),
@@ -14,32 +14,24 @@ const authOptions: NextAuthConfig = {
         // TO LOGIN VIA EMAIL, ONLY WORKS IF THE USER HAS ALREADY CLICKED THE MAGIC LINK
         Credentials(credentialsOptions),
     ],
-    secret: process.env.AUTH_SECRET,
+    // secret: process.env.AUTH_SECRET,
     callbacks: {
         async signIn({ user, account, email, credentials, profile }) {
+            const verificationToken = await db.verificationToken.
             // if provider = nodemailer, then just allow it. *ADMIN is creating a new user*
             // if provider =
-
             console.log({ user, account, email, credentials, profile })
+            console.log(
+                '++++++++++++++++++++++++++++++++++++++ LOGIN VIA:',
+                account?.provider
+            )
 
-
-            // console.log("INI SIGN IN VIA APA YA?")
             // if (account?.provider === "nodemailer") {
             //     console.log({ user, account, email, credentials, profile })
             //     return true
             // }
-            // console.log(account?.provider)
-            // console.log(account?.provider)
-            // console.log({ user, account, email, credentials, profile })
-            // if (!user.email) return false
-            // const userExists = await db.user.findUnique({
-            //     where: { email: user.email },
-            // })
-            // if (userExists) {
-            //     return true //if the email exists in the User collection, email them a magic login link
-            // } else {
-            //     return false
-            // }
+
+            return true
         },
     },
 }

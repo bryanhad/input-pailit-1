@@ -1,5 +1,5 @@
-"use client"
-import { Button } from "@/components/ui/button"
+'use client'
+import { Button } from '@/components/ui/button'
 import {
     Form,
     FormControl,
@@ -7,14 +7,14 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { useState } from "react"
-import H2 from "../ui/h2"
-import { signIn } from "next-auth/react"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useState } from 'react'
+import H2 from '../ui/h2'
+import { signIn } from 'next-auth/react'
 
 const formSchema = z.object({
     email: z.string().min(2).max(50),
@@ -26,17 +26,20 @@ function AddNewUserForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: "",
+            email: '',
         },
     })
 
     async function onSubmit({ email }: z.infer<typeof formSchema>) {
         try {
-            const res = await signIn("nodemailer", {
+            
+
+            const res = await signIn('nodemailer', {
                 email,
                 redirect: false,
-                redirectTo: "/dashboard",
+                redirectTo: '/dashboard',
             })
+            console.log(res)
             if (res?.error) {
                 throw new Error('FAILED TO SIGN IN VIA NODEMAILER BROK')
             }
@@ -46,7 +49,7 @@ function AddNewUserForm() {
                 console.log(err.message)
                 return alert(err.message)
             }
-            alert("What the fuck.")
+            alert('What the fuck.')
         }
     }
 
