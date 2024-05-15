@@ -1,4 +1,5 @@
 'use client'
+import { sendVerificationEmail } from '@/auth/actions'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -10,17 +11,18 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useState } from 'react'
 import H2 from '../ui/h2'
-import { signIn } from 'next-auth/react'
+import { useToast } from '../ui/use-toast'
 
 const formSchema = z.object({
     email: z.string().min(2).max(50),
 })
 
 function AddNewUserForm() {
+    const { toast } = useToast()
     const [isEmailSent, setIsEmailSent] = useState<boolean>(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -32,24 +34,17 @@ function AddNewUserForm() {
 
     async function onSubmit({ email }: z.infer<typeof formSchema>) {
         try {
-            
-
-            const res = await signIn('nodemailer', {
-                email,
-                redirect: false,
-                redirectTo: '/dashboard',
+            const res = await sendVerificationEmail(email)
+            toast({
+                title: 'Hooray!',
+                description: res,
             })
-            console.log(res)
-            if (res?.error) {
-                throw new Error('FAILED TO SIGN IN VIA NODEMAILER BROK')
-            }
-            alert(`SUCCESS SEND EMAIL TO ${email}`)
-        } catch (err) {
-            if (err instanceof Error) {
-                console.log(err.message)
-                return alert(err.message)
-            }
-            alert('What the fuck.')
+        } catch (err: any) {
+            toast({
+                variant: 'destructive',
+                title: 'Oh Noose!',
+                description: err.message,
+            })
         }
     }
 
