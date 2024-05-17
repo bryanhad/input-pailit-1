@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { signInSchema } from "../../auth/validation"
+import { loginWithEmail } from "@/auth/actions"
 
 function SignInForm() {
     const router = useRouter()
@@ -26,16 +27,26 @@ function SignInForm() {
     })
 
     async function onSubmit({ email }: z.infer<typeof signInSchema>) {
-        try {
-            const res = await signIn("credentials", {email, callbackUrl: '/dashboard', redirect:false})
-            if (res?.error) {
-                throw new Error('WHAT THE FUCK')
+        // try {
+            try {
+                const res = await loginWithEmail(email)
+                console.log(res)
+                if (res?.error) {
+                    res.error
+                }
+            } catch (err) {
+                
+                console.log(err)
+                
             }
-            alert("SUCCESS LOGIN")
-            router.push('/dashboard')
-        } catch (err) {
-            alert("NGAPAIN LU KESINI???")
-        }
+            // if (res?.error) {
+            //     throw new Error('WHAT THE FUCK')
+            // }
+            // alert("SUCCESS LOGIN")
+            // router.push('/dashboard')
+        // } catch (err) {
+        //     alert("NGAPAIN LU KESINI???")
+        // }
     }
 
     return (

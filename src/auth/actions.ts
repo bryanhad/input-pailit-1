@@ -3,7 +3,8 @@ import db from '@/lib/db'
 import crypto from 'crypto'
 import { createTransport } from 'nodemailer'
 import { formatDistanceToNow } from 'date-fns'
-import { VerificationToken } from '@prisma/client'
+import {signIn} from '@/auth'
+import { CustomError } from './credential-config'
 
 function generateToken() {
     return crypto.randomBytes(32).toString('hex')
@@ -185,4 +186,17 @@ export async function consumeToken(token: string) {
             }),
         }
     })
+}
+
+export async function loginWithEmail(email:string) {
+    try {
+        const res = await signIn("credentials", {email, callbackUrl: '/dashboard', redirect:false})
+        return res
+    } catch (err) {
+        console.log(err)
+        if (err instanceof CustomError) {
+           return {error: err.code}
+        }
+        return 'error bruh'
+    }
 }

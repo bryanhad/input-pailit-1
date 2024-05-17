@@ -15,25 +15,26 @@ const authOptions: NextAuthConfig = {
         Credentials(credentialsOptions),
     ],
     // secret: process.env.AUTH_SECRET,
-    // callbacks: {
-    //     async signIn({ user, account, email, credentials, profile }) {
-    //         // const verificationToken = await db.verificationToken.
-    //         // if provider = nodemailer, then just allow it. *ADMIN is creating a new user*
-    //         // if provider =
-    //         console.log({ user, account, email, credentials, profile })
-    //         console.log(
-    //             '++++++++++++++++++++++++++++++++++++++ LOGIN VIA:',
-    //             account?.provider
-    //         )
+    callbacks: {
+        async signIn({ user, account, email, credentials, profile }) {
+            // if (user.)
+            // const verificationToken = await db.verificationToken.
+            // if provider = nodemailer, then just allow it. *ADMIN is creating a new user*
+            // if provider =
+            console.log({ user, account, email, credentials, profile })
+            console.log(
+                '++++++++++++++++++++++++++++++++++++++ LOGIN VIA:',
+                account?.provider
+            )
 
-    //         // if (account?.provider === "nodemailer") {
-    //         //     console.log({ user, account, email, credentials, profile })
-    //         //     return true
-    //         // }
+            // if (account?.provider === "nodemailer") {
+            //     console.log({ user, account, email, credentials, profile })
+            //     return true
+            // }
 
-    //         return true
-    //     },
-    // },
+            return true
+        },
+    },
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authOptions)
