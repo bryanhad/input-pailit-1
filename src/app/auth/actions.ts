@@ -1,13 +1,18 @@
-'use server'
-import db from '@/lib/db'
-import crypto from 'crypto'
-import { createTransport } from 'nodemailer'
-import { formatDistanceToNow } from 'date-fns'
-import {signIn} from '@/auth'
-import { CustomError } from './credential-config'
+"use server"
+import db from "@/lib/db"
+import crypto from "crypto"
+import { createTransport } from "nodemailer"
+import { formatDistanceToNow } from "date-fns"
+import { signIn } from "@/app/auth"
+import {
+    EmptyPasswordError,
+    InvalidTokenError,
+    LoginError,
+} from "./constructors"
+import bcrypt from "bcrypt"
 
 function generateToken() {
-    return crypto.randomBytes(32).toString('hex')
+    return crypto.randomBytes(32).toString("hex")
 }
 
 async function storeToken(email: string) {
@@ -44,7 +49,7 @@ export async function sendVerificationEmail(email: string) {
         where: { email, AND: { sessions: {} } },
     })
     if (existingUser) {
-        throw new Error('User with this email already exists.')
+        throw new Error("User with this email already exists.")
     }
     const token = await storeToken(email)
 
@@ -69,22 +74,22 @@ export async function sendVerificationEmail(email: string) {
     })
     const failed = result.rejected.concat(result.pending).filter(Boolean)
     if (failed.length) {
-        throw new Error(`Email(s) (${failed.join(', ')}) could not be sent`)
+        throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
     }
-    return 'Verification email successfully sent.'
+    return "Verification email successfully sent."
 }
 
 function html({ url, host }: { url: string; host: string }) {
-    const escapedHost = host.replace(/\./g, '&#8203;.')
+    const escapedHost = host.replace(/\./g, "&#8203;.")
 
     // const brandColor = theme.brandColor || "#346df1"
     const color = {
-        background: '#f9f9f9',
-        text: '#444',
-        mainBackground: '#fff',
-        buttonBackground: '#346df1',
-        buttonBorder: '#346df1',
-        buttonText: '#fff',
+        background: "#f9f9f9",
+        text: "#444",
+        mainBackground: "#fff",
+        buttonBackground: "#346df1",
+        buttonBorder: "#346df1",
+        buttonText: "#fff",
     }
 
     return `
@@ -134,7 +139,17 @@ export async function consumeToken(token: string) {
         },
     })
     if (!verificationToken) {
-        throw new Error('Token is invalid or has expired')
+        const session = await db.session.findUnique({
+            where: { sessionToken: token },
+            include: { user: { select: { password: true } } },
+        })
+        if (session && !session.user.password) {
+            throw new EmptyPasswordError("", "", session.userId)
+        }
+        throw new InvalidTokenError(
+            "Invalid Token",
+            "Either token has been used, invalid, or has expired."
+        )
     }
 
     return db.$transaction(async (tx) => {
@@ -165,7 +180,7 @@ export async function consumeToken(token: string) {
             session = await tx.session.create({
                 data: {
                     userId: user.id,
-                    sessionToken: generateToken(),
+                    sessionToken: token,
                     expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
                 },
             })
@@ -188,15 +203,46 @@ export async function consumeToken(token: string) {
     })
 }
 
-export async function loginWithEmail(email:string) {
+export async function updateUserNameAndPasswordThenSignIn(
+    userId: string,
+    name: string,
+    password: string
+) {
+    // 1. get the user and verify it
+    const user = await db.user.findUnique({ where: { id: userId } })
+    if (!user) {
+        throw new LoginError(
+            "User Not Found",
+            `user with id '${userId}' is not found`
+        )
+    }
+    const hashedPassword = await bcrypt.hash(password, 10)
+    await db.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword, name },
+    })
+    await signIn('credentials', {
+        email: user.email,
+        password,
+        redirect: false
+    })
+    return name
+}
+
+export async function loginWithCredentials(email: string, password: string) {
     try {
-        const res = await signIn("credentials", {email, callbackUrl: '/dashboard', redirect:false})
-        return res
+       await signIn("credentials", {
+            email,
+            password,
+            callbackUrl: "/dashboard",
+            redirect: false,
+        })
     } catch (err) {
-        console.log(err)
-        if (err instanceof CustomError) {
-           return {error: err.code}
+        if (err instanceof LoginError) {
+            return { error: { name: err.name, message: err.message } }
         }
-        return 'error bruh'
+        return {
+            error: { name: "Server Error", message: "Something went wrong" },
+        }
     }
 }

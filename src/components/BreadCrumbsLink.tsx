@@ -32,7 +32,7 @@ function generatePathSegments(url: string): PathSegment[] {
 function BreadCrumbsLink() {
     const pathname = usePathname()
     const pathnameSegments = generatePathSegments(pathname)
-    if (pathname !== '/dashboard') return (
+    if (pathname !== '/dashboard' && !pathname.includes('confirmation') && !pathname.includes('on-boarding')) return (
         <div className="w-full mb-4">
         <Breadcrumb>
             <BreadcrumbList>

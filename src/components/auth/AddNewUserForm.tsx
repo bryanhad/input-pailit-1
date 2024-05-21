@@ -1,6 +1,6 @@
-'use client'
-import { sendVerificationEmail } from '@/auth/actions'
-import { Button } from '@/components/ui/button'
+"use client"
+import { sendVerificationEmail } from "@/app/auth/actions"
+import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
@@ -8,14 +8,14 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import H2 from '../ui/h2'
-import { useToast } from '../ui/use-toast'
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import H2 from "../ui/h2"
+import { useToast } from "../ui/use-toast"
 
 const formSchema = z.object({
     email: z.string().min(2).max(50),
@@ -28,7 +28,7 @@ function AddNewUserForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: '',
+            email: "",
         },
     })
 
@@ -36,13 +36,13 @@ function AddNewUserForm() {
         try {
             const res = await sendVerificationEmail(email)
             toast({
-                title: 'Hooray!',
+                title: "Hooray!",
                 description: res,
             })
         } catch (err: any) {
             toast({
-                variant: 'destructive',
-                title: 'Oh Noose!',
+                variant: "destructive",
+                title: "Oh Noose!",
                 description: err.message,
             })
         }

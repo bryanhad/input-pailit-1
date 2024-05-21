@@ -14,39 +14,34 @@ import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { signInSchema } from "../../auth/validation"
-import { loginWithEmail } from "@/auth/actions"
+import { credentialsSchema, CredentialsValue } from "../../app/auth/validation"
+import { loginWithCredentials } from "@/app/auth/actions"
+import { useToast } from "../ui/use-toast"
 
 function SignInForm() {
     const router = useRouter()
-    const form = useForm<z.infer<typeof signInSchema>>({
-        resolver: zodResolver(signInSchema),
+    const { toast } = useToast()
+    const form = useForm<CredentialsValue>({
+        resolver: zodResolver(credentialsSchema),
         defaultValues: {
             email: "",
+            password: "",
         },
     })
 
-    async function onSubmit({ email }: z.infer<typeof signInSchema>) {
-        // try {
-            try {
-                const res = await loginWithEmail(email)
-                console.log(res)
-                if (res?.error) {
-                    res.error
-                }
-            } catch (err) {
-                
-                console.log(err)
-                
-            }
-            // if (res?.error) {
-            //     throw new Error('WHAT THE FUCK')
-            // }
-            // alert("SUCCESS LOGIN")
-            // router.push('/dashboard')
-        // } catch (err) {
-        //     alert("NGAPAIN LU KESINI???")
-        // }
+    async function onSubmit({ email, password }: CredentialsValue) {
+        const res = await loginWithCredentials(email, password)
+        if (res?.error) {
+            return toast({
+                variant: "destructive",
+                title: res.error.name,
+                description: res.error.message,
+            })
+        }
+        toast({
+            title: 'Wellcome Bro!'
+        })
+        router.push('/dashboard')
     }
 
     return (
@@ -61,6 +56,23 @@ function SignInForm() {
                             <FormControl>
                                 <Input
                                     placeholder="shadcn@gmail.com"
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder="shadcn@gmail.com"
+                                    type="password"
                                     {...field}
                                 />
                             </FormControl>

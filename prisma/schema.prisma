@@ -21,6 +21,7 @@ datasource db {
 model User {
     id            String    @id @default(cuid())
     name          String?
+    password      String?
     email         String    @unique
     emailVerified DateTime?
     image         String?
@@ -45,9 +46,9 @@ model Session {
 }
 
 model VerificationToken {
-    email String
-    token      String
-    expires    DateTime
+    email   String
+    token   String
+    expires DateTime
 
     @@id([email, token])
     @@map("verification_tokens")
