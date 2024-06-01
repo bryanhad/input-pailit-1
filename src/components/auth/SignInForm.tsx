@@ -34,12 +34,12 @@ function SignInForm() {
         if (res?.error) {
             return toast({
                 variant: "destructive",
-                title: res.error.name,
+                title: res.error.title,
                 description: res.error.message,
             })
         }
         toast({
-            title: 'Wellcome Bro!'
+            title: `Wellcome ${email}!`
         })
         router.push('/dashboard')
     }

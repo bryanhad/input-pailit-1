@@ -46,11 +46,10 @@ model Session {
 }
 
 model VerificationToken {
-    email   String
+    email   String @id
     token   String
     expires DateTime
 
-    @@id([email, token])
     @@map("verification_tokens")
 }
 

@@ -21,7 +21,7 @@ export const onBoardingSchema = z
     .object({
         name: z.string().min(3, "Name must be atleast 3 characters long"),
         password: passwordSchema,
-        confirmPassword: z.string().min(1, "Verify password is required"),
+        confirmPassword: z.string().min(1, "Confirming password is required"),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "Passwords must match",

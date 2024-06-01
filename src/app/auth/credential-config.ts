@@ -2,7 +2,12 @@ import { credentialsSchema } from "@/app/auth/validation"
 import db from "@/lib/db"
 import { CredentialsConfig } from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
-import { LoginError, ExpiredSessionErrror, EmptyPasswordError } from "./constructors"
+import {
+    LoginError,
+    ExpiredSessionError,
+    EmptyPasswordError,
+} from "./constructors"
+import { sendVerificationEmail } from "./actions"
 
 export const credentialsOptions: Partial<CredentialsConfig> = {
     credentials: {
@@ -11,40 +16,39 @@ export const credentialsOptions: Partial<CredentialsConfig> = {
     },
     authorize: async (credentials) => {
         const { email, password } = credentialsSchema.parse(credentials)
-        console.log(email, password)
         const user = await db.user.findUnique({
             where: { email },
             include: { sessions: { select: { expires: true } } },
         })
+        // TODO: remove comment
+        // if (!user) {
+        //     throw new LoginError("Bad Request", "Invalid email or password.")
+        // }
 
-        if (!user) {
+        if (!user || !user.password) {
+            console.log('PASSWORD MASIH KOSONG')
+            // TODO: remove comment
+            // throw new EmptyPasswordError(
+            //     "Empty Password",
+            //     "User must set a password.",
+            //     user.id
+            // )
             throw new LoginError("Bad Request", "Invalid email or password.")
         }
-
-        if (!user.password) {
-            throw new EmptyPasswordError(
-                "Empty Password",
-                "User must set a password.",
-                user.id
-            )
-        }
-
-        console.log('sampe sini?1')
-        const isPasswordValid = await bcrypt.compare(password, user.password)
-        console.log({dbPassword: user.password, inputPassword: password})
-        if (!isPasswordValid) {
-            console.log(isPasswordValid)
-            throw new LoginError("Bad Request", "Invalid email or password.")
-        }
-        console.log('sampe sini?2')
-
         if (new Date() > user.sessions[0].expires) {
-            throw new ExpiredSessionErrror(
+            // if user's session already expired..
+            await sendVerificationEmail(user.email)
+            throw new ExpiredSessionError(
                 "Session Expired",
-                "We've sent a verification email. Please check your inbox."
+                `Your session has expired. Check 
+                your email inbox for a refresh link.`
             )
         }
-        console.log('sampe sini?3')
+
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+        if (!isPasswordValid) {
+            throw new LoginError("Bad Request", "Invalid email or password.")
+        }
 
         return user
     },

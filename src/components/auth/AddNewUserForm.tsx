@@ -1,5 +1,5 @@
 "use client"
-import { sendVerificationEmail } from "@/app/auth/actions"
+import { sendVerificationEmailToNewUser } from "@/app/auth/actions"
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -33,19 +33,19 @@ function AddNewUserForm() {
     })
 
     async function onSubmit({ email }: z.infer<typeof formSchema>) {
-        try {
-            const res = await sendVerificationEmail(email)
+            const res = await sendVerificationEmailToNewUser(email)
+            if (res?.error) {
+                return toast({
+                    variant: "destructive",
+                    title: res.error.title,
+                    description: res.error.message,
+                })
+            }
+
             toast({
                 title: "Hooray!",
-                description: res,
+                description: res.success,
             })
-        } catch (err: any) {
-            toast({
-                variant: "destructive",
-                title: "Oh Noose!",
-                description: err.message,
-            })
-        }
     }
 
     return (

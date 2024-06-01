@@ -16,20 +16,51 @@ function generateToken() {
 }
 
 async function storeToken(email: string) {
-    const existingToken = await db.verificationToken.findFirst({
-        where: {
-            email,
-            expires: { gt: new Date() },
-        },
+    // TODO: remove comment
+    // const existingToken = await db.verificationToken.findFirst({
+    //     where: {
+    //         email,
+    //         expires: { gt: new Date() },
+    //     },
+    // })
+
+    // query verification token by users email
+    const usersToken = await db.verificationToken.findFirst({
+        where: { email },
     })
-    if (existingToken) {
-        const timeLeft = formatDistanceToNow(existingToken.expires, {
-            addSuffix: true,
-        })
-        throw new Error(
-            `Magic link already sent. You can send it again ${timeLeft}.`
-        )
+    if (usersToken) {
+        if (usersToken.expires >= new Date()) {
+            //if the token is still valid (NOT EXPIRED)
+            const timeLeft = formatDistanceToNow(usersToken.expires, {
+                addSuffix: true,
+            })
+            throw new LoginError(
+                "Magic link already sent",
+                `You can send it again ${timeLeft}.`
+            )
+        } else {
+            //if the token has EXPIRED
+            //UPDATE the usersToken. generate a new token and refresh the expiry date.
+            const newToken = generateToken()
+            const expires = new Date(Date.now() + 24 * 3600 * 1000) // Token expires in 1 day (24 hours)
+
+            await db.verificationToken.update({
+                where: { email },
+                data: { token: newToken, expires },
+            })
+
+            return newToken
+        }
     }
+    // TODO: remove comment
+    // if (existingToken) {
+    //     const timeLeft = formatDistanceToNow(existingToken.expires, {
+    //         addSuffix: true,
+    //     })
+    //     throw new Error(
+    //         `Magic link already sent. You can send it again ${timeLeft}.`
+    //     )
+    // }
 
     const token = generateToken()
     const expires = new Date(Date.now() + 24 * 3600 * 1000) // Token expires in 1 day (24 hours)
@@ -44,13 +75,31 @@ async function storeToken(email: string) {
     return token
 }
 
-export async function sendVerificationEmail(email: string) {
-    const existingUser = await db.user.findUnique({
-        where: { email, AND: { sessions: {} } },
-    })
-    if (existingUser) {
-        throw new Error("User with this email already exists.")
+export async function sendVerificationEmailToNewUser(email: string) {
+    try {
+        const existingUser = await db.user.findUnique({
+            where: { email },
+        })
+        if (existingUser) {
+            throw new LoginError(
+                "Cannot use this email",
+                "User with this email already exists."
+            )
+        }
+        await sendVerificationEmail(email)
+
+        return { success: "Verification email successfully sent." }
+    } catch (err: LoginError | Error | unknown) {
+        if (err instanceof LoginError) {
+            return { error: { title: err.title, message: err.message } }
+        }
+        return {
+            error: { title: "Server Error", message: "Something went wrong" },
+        }
     }
+}
+
+export async function sendVerificationEmail(email: string) {
     const token = await storeToken(email)
 
     const transporter = createTransport({
@@ -74,9 +123,11 @@ export async function sendVerificationEmail(email: string) {
     })
     const failed = result.rejected.concat(result.pending).filter(Boolean)
     if (failed.length) {
-        throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
+        throw new LoginError(
+            "Failed to send email",
+            `Email(s) (${failed.join(", ")}) could not be sent`
+        )
     }
-    return "Verification email successfully sent."
 }
 
 function html({ url, host }: { url: string; host: string }) {
@@ -139,21 +190,23 @@ export async function consumeToken(token: string) {
         },
     })
     if (!verificationToken) {
-        const session = await db.session.findUnique({
+        const sessionWithUser = await db.session.findUnique({
             where: { sessionToken: token },
             include: { user: { select: { password: true } } },
         })
-        if (session && !session.user.password) {
-            throw new EmptyPasswordError("", "", session.userId)
+        if (sessionWithUser && !sessionWithUser.user.password) {
+            // if the session exist and user's password is empty
+            // on the front end, if it catches EmptyPasswordError, it will redirect the user to the on-boarding page.
+            throw new EmptyPasswordError("", "", sessionWithUser.userId)
         }
         throw new InvalidTokenError(
             "Invalid Token",
-            "Either token has been used, invalid, or has expired."
+            "The token has either been used, expired, or is invalid."
         )
     }
 
-    return db.$transaction(async (tx) => {
-        // Upsert user
+    return await db.$transaction(async (tx) => {
+        // FIND OR CREATE USER
         const user = await tx.user.upsert({
             where: { email: verificationToken.email },
             update: {},
@@ -163,40 +216,26 @@ export async function consumeToken(token: string) {
             },
         })
 
-        let session = await tx.session.findFirst({
-            where: { userId: user.id },
+        const session1 = await tx.session.upsert({
+            where: { sessionToken: token },
+            update: {
+                expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Reset session expiration to 30 days
+            },
+            create: {
+                userId: user.id,
+                sessionToken: token,
+                expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
+            },
         })
 
-        if (session) {
-            // Update session expiration time
-            session = await tx.session.update({
-                where: { sessionToken: token },
-                data: {
-                    expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Reset session expiration to 30 days
-                },
-            })
-        } else {
-            // Create session if it doesn't exist
-            session = await tx.session.create({
-                data: {
-                    userId: user.id,
-                    sessionToken: token,
-                    expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
-                },
-            })
-        }
         await tx.verificationToken.delete({
-            where: {
-                email_token: {
-                    email: verificationToken.email,
-                    token: verificationToken.token,
-                },
-            },
+            where: { email: verificationToken.email },
         })
 
         return {
             email: user.email,
-            expires: formatDistanceToNow(session.expires, {
+            userId: user.id,
+            expires: formatDistanceToNow(session1.expires, {
                 addSuffix: true,
             }),
         }
@@ -208,41 +247,49 @@ export async function updateUserNameAndPasswordThenSignIn(
     name: string,
     password: string
 ) {
-    // 1. get the user and verify it
-    const user = await db.user.findUnique({ where: { id: userId } })
-    if (!user) {
-        throw new LoginError(
-            "User Not Found",
-            `user with id '${userId}' is not found`
-        )
+    try {
+        // 1. get the user and verify it
+        const user = await db.user.findUnique({ where: { id: userId } })
+        if (!user) {
+            throw new LoginError(
+                "User Not Found",
+                `user with id '${userId}' is not found`
+            )
+        }
+        const hashedPassword = await bcrypt.hash(password, 10)
+        await db.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword, name },
+        })
+        await signIn("credentials", {
+            email: user.email,
+            password,
+            redirect: false,
+        })
+    } catch (err: LoginError | Error | unknown) {
+        if (err instanceof LoginError) {
+            return { error: { title: err.title, message: err.message } }
+        }
+        return {
+            error: { title: "Server Error", message: "Something went wrong" },
+        }
     }
-    const hashedPassword = await bcrypt.hash(password, 10)
-    await db.user.update({
-        where: { id: userId },
-        data: { password: hashedPassword, name },
-    })
-    await signIn('credentials', {
-        email: user.email,
-        password,
-        redirect: false
-    })
-    return name
 }
 
 export async function loginWithCredentials(email: string, password: string) {
     try {
-       await signIn("credentials", {
+        await signIn("credentials", {
             email,
             password,
             callbackUrl: "/dashboard",
             redirect: false,
         })
-    } catch (err) {
+    } catch (err: LoginError | Error | unknown) {
         if (err instanceof LoginError) {
-            return { error: { name: err.name, message: err.message } }
+            return { error: { title: err.title, message: err.message } }
         }
         return {
-            error: { name: "Server Error", message: "Something went wrong" },
+            error: { title: "Server Error", message: "Something went wrong" },
         }
     }
 }

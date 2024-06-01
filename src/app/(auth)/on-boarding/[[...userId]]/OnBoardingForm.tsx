@@ -35,30 +35,44 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
     })
 
     async function onSubmit({ name, password }: OnBoardingValues) {
-        try {
-            const userName = await updateUserNameAndPasswordThenSignIn(
+        // try {
+            const res = await updateUserNameAndPasswordThenSignIn(
                 userId,
                 name,
                 password
             )
-            toast({
-                title: `Wellcome on board ${userName}!`,
-            })
-            router.push('/dashboard')
-        } catch (err) {
-            if (err instanceof LoginError) {
-                toast({
+            if (res?.error) {
+                return toast({
                     variant: "destructive",
-                    title: err.title,
-                    description: err.message,
+                    title: res.error.title,
+                    description: res.error.message,
                 })
             }
             toast({
-                variant: "destructive",
-                title: 'Oh noose!',
-                description: 'Something went wrong!',
+                title: `Wellcome on board ${name}!`,
             })
-        }
+            router.push('/dashboard')
+            // TODO: remove comment
+        // } catch (err: any) {
+            
+            // toast({
+            //     variant: "destructive",
+            //     title: err.title || 'Oh noose!',
+            //     description: err.message || 'Something went wrong.',
+            // })
+            // if (err instanceof LoginError) {
+            //     toast({
+            //         variant: "destructive",
+            //         title: err.title,
+            //         description: err.message,
+            //     })
+            // }
+            // toast({
+            //     variant: "destructive",
+            //     title: 'Oh noose!',
+            //     description: 'Something went wrong!',
+            // })
+        // }
     }
 
     return (

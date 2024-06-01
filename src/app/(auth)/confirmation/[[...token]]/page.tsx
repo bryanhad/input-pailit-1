@@ -1,5 +1,7 @@
 import { consumeToken } from "@/app/auth/actions"
 import { EmptyPasswordError, InvalidTokenError } from "@/app/auth/constructors"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 async function EmailConfirmationPage({
@@ -9,7 +11,7 @@ async function EmailConfirmationPage({
 }) {
     const token = params.token ? params.token[0] : undefined
     if (!token) {
-        return <div>NO ADA TOKEN!!!!</div>
+        redirect("/")
     }
 
     try {
@@ -18,6 +20,11 @@ async function EmailConfirmationPage({
             <div>
                 HOORAY! {res.email} is now valid! it is valid until{" "}
                 {res.expires}
+                <Button asChild>
+                    <Link href={`/on-boarding/${res.userId}`}>
+                        COMPLETE ACCOUNT SET UP
+                    </Link>
+                </Button>
             </div>
         )
     } catch (err) {

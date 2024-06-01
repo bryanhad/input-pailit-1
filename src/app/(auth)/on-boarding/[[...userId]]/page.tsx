@@ -11,7 +11,7 @@ async function OnBoardingPage({
     // 1. secure the userId from url params
     const userId = params.userId ? params.userId[0] : undefined
     if (!userId) {
-        return <div>NO ADA USERID!!!!</div>
+        redirect("/")
     }
     // 2. get user from userId and verify it
     const user = await db.user.findUnique({where: {id:userId}})
