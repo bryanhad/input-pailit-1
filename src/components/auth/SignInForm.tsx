@@ -39,9 +39,15 @@ function SignInForm() {
             })
         }
         toast({
-            title: `Wellcome ${email}!`
+            title: `Wellcome on board ${res.success}!`,
         })
-        router.push('/dashboard')
+        // I DON'T KNOW HOW TO REDIRECT THE USER AFTER SUCCESSFUL LOGIN VIA THE signIn FUNCTION FROM AUTHJS V5!! D:<
+        // THE DOCS DOESN'T FOCKING WORKKK??!!!! this is my reference for the doc: https://authjs.dev/getting-started/session-management/login
+        // SO IN DESPERATION I USE THE ABOMINATION BELOW! AND SURPRISINGLY IT WORKS AHAHAHAHA
+        // IT IS WHAT IT IS COUNTER: 1 :D
+        setTimeout(() => {
+            router.push('/dashboard')
+        }, 100);
     }
 
     return (

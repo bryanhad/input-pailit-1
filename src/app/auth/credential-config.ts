@@ -20,19 +20,8 @@ export const credentialsOptions: Partial<CredentialsConfig> = {
             where: { email },
             include: { sessions: { select: { expires: true } } },
         })
-        // TODO: remove comment
-        // if (!user) {
-        //     throw new LoginError("Bad Request", "Invalid email or password.")
-        // }
 
         if (!user || !user.password) {
-            console.log('PASSWORD MASIH KOSONG')
-            // TODO: remove comment
-            // throw new EmptyPasswordError(
-            //     "Empty Password",
-            //     "User must set a password.",
-            //     user.id
-            // )
             throw new LoginError("Bad Request", "Invalid email or password.")
         }
         if (new Date() > user.sessions[0].expires) {
@@ -49,7 +38,6 @@ export const credentialsOptions: Partial<CredentialsConfig> = {
         if (!isPasswordValid) {
             throw new LoginError("Bad Request", "Invalid email or password.")
         }
-
         return user
     },
 }

@@ -35,44 +35,28 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
     })
 
     async function onSubmit({ name, password }: OnBoardingValues) {
-        // try {
-            const res = await updateUserNameAndPasswordThenSignIn(
-                userId,
-                name,
-                password
-            )
-            if (res?.error) {
-                return toast({
-                    variant: "destructive",
-                    title: res.error.title,
-                    description: res.error.message,
-                })
-            }
-            toast({
-                title: `Wellcome on board ${name}!`,
+        const res = await updateUserNameAndPasswordThenSignIn(
+            userId,
+            name,
+            password
+        )
+        if (res?.error) {
+            return toast({
+                variant: "destructive",
+                title: res.error.title,
+                description: res.error.message,
             })
+        }
+        toast({
+            title: `Wellcome on board ${name}!`,
+        })
+        // I DON'T KNOW HOW TO REDIRECT THE USER AFTER SUCCESSFUL LOGIN VIA THE signIn FUNCTION FROM AUTHJS V5!! D:<
+        // THE DOCS DOESN'T FOCKING WORKKK??!!!! this is my reference for the doc: https://authjs.dev/getting-started/session-management/login
+        // SO IN DESPERATION I USE THE ABOMINATION BELOW! AND SURPRISINGLY IT WORKS AHAHAHAHA
+        // IT IS WHAT IT IS COUNTER: 1 :D
+        setTimeout(() => {
             router.push('/dashboard')
-            // TODO: remove comment
-        // } catch (err: any) {
-            
-            // toast({
-            //     variant: "destructive",
-            //     title: err.title || 'Oh noose!',
-            //     description: err.message || 'Something went wrong.',
-            // })
-            // if (err instanceof LoginError) {
-            //     toast({
-            //         variant: "destructive",
-            //         title: err.title,
-            //         description: err.message,
-            //     })
-            // }
-            // toast({
-            //     variant: "destructive",
-            //     title: 'Oh noose!',
-            //     description: 'Something went wrong!',
-            // })
-        // }
+        }, 100);
     }
 
     return (

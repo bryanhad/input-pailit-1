@@ -278,12 +278,17 @@ export async function updateUserNameAndPasswordThenSignIn(
 
 export async function loginWithCredentials(email: string, password: string) {
     try {
+        const user = await db.user.findUnique({ where: { email }, select: {name:true} })
+        if (!user) {
+            throw new LoginError("Bad Request", "Invalid email or password.")
+        }
         await signIn("credentials", {
-            email,
+            email: email,
             password,
-            callbackUrl: "/dashboard",
             redirect: false,
+            callbackUrl: "/dashboard",
         })
+        return {success:user.name}
     } catch (err: LoginError | Error | unknown) {
         if (err instanceof LoginError) {
             return { error: { title: err.title, message: err.message } }
