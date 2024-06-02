@@ -10,12 +10,24 @@ import {
     LoginError,
 } from "./constructors"
 import bcrypt from "bcrypt"
+import { generateToken } from "@/lib/utils"
 
-function generateToken() {
-    return crypto.randomBytes(32).toString("hex")
+export async function createVerificationTokenTEST(
+    email: string,
+) {
+    const token = 'TEEEEEST'
+    const expires = new Date(Date.now() + 30 * 24 * 3600 * 1000) // Reset session expiration to 30 days
+    if (email !== 'emailTerlarang@gmail.com') {
+        await db.verificationToken.create({
+            data: {email, token, expires}
+        })
+        return email
+    } else {
+        throw new LoginError('Email is Forbidden', 'Cannot use that email!')
+    }
 }
 
-async function storeToken(email: string) {
+export async function storeToken(email: string) {
     // TODO: remove comment
     // const existingToken = await db.verificationToken.findFirst({
     //     where: {
@@ -278,7 +290,10 @@ export async function updateUserNameAndPasswordThenSignIn(
 
 export async function loginWithCredentials(email: string, password: string) {
     try {
-        const user = await db.user.findUnique({ where: { email }, select: {name:true} })
+        const user = await db.user.findUnique({
+            where: { email },
+            select: { name: true },
+        })
         if (!user) {
             throw new LoginError("Bad Request", "Invalid email or password.")
         }
@@ -288,7 +303,7 @@ export async function loginWithCredentials(email: string, password: string) {
             redirect: false,
             callbackUrl: "/dashboard",
         })
-        return {success:user.name}
+        return { success: user.name }
     } catch (err: LoginError | Error | unknown) {
         if (err instanceof LoginError) {
             return { error: { title: err.title, message: err.message } }

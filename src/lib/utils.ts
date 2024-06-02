@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { customAlphabet } from 'nanoid';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -34,4 +35,13 @@ export function toSlug(str: string) {
 
 export function capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+// Define a custom alphabet for hexadecimal characters
+const hexAlphabet = '0123456789abcdef';
+// Create a nanoid generator function for a 64-character token (32 bytes in hex)
+const nanoid = customAlphabet(hexAlphabet, 64);
+
+export function generateToken() {
+    return nanoid();
 }
