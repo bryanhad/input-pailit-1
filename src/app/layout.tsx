@@ -25,7 +25,7 @@ export default function RootLayout({
             <body className={inter.className}>
                 <div className="min-h-screen min-w-[280px] bg-background font-sans antialiased flex flex-col items-center bg-slate-100">
                     <Navbar />
-                    <main className="mt-6 flex-1 w-full max-w-[1400px] px-4 pb-2">
+                    <main className="mt-6 flex-1 w-full max-w-[1400px] px-4 pb-2 flex flex-col">
                         <BreadCrumbsLink />
                         {children}
                     </main>

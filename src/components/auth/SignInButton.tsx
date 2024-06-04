@@ -6,8 +6,8 @@ function SignInButton() {
   return (
     <Modal
         buttonCustom={
-            <Button variant={"outline"}>
-                Hey User, Sign In!
+            <Button>
+                Sign In
             </Button>
         }
     >
