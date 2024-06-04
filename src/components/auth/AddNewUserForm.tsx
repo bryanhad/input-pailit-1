@@ -1,6 +1,5 @@
-"use client"
-import { sendVerificationEmailToNewUser } from "@/app/auth/actions"
-import { Button } from "@/components/ui/button"
+'use client'
+import { sendVerificationEmailToNewUser } from '@/app/auth/actions'
 import {
     Form,
     FormControl,
@@ -8,14 +7,15 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import H2 from "../ui/h2"
-import { useToast } from "../ui/use-toast"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import LoadingButton from '../LoadingButton'
+import H2 from '../ui/h2'
+import { useToast } from '../ui/use-toast'
 
 const formSchema = z.object({
     email: z.string().min(2).max(50),
@@ -23,29 +23,31 @@ const formSchema = z.object({
 
 function AddNewUserForm() {
     const { toast } = useToast()
-    const [isEmailSent, setIsEmailSent] = useState<boolean>(false)
+    const [isPending, startTransition] = useTransition()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: "",
+            email: '',
         },
     })
 
     async function onSubmit({ email }: z.infer<typeof formSchema>) {
+        startTransition(async () => {
             const res = await sendVerificationEmailToNewUser(email)
             if (res?.error) {
-                return toast({
-                    variant: "destructive",
+                toast({
+                    variant: 'destructive',
                     title: res.error.title,
                     description: res.error.message,
                 })
+                return
             }
-
             toast({
-                title: "Hooray!",
+                title: 'Hooray!',
                 description: res.success,
             })
+        })
     }
 
     return (
@@ -71,7 +73,9 @@ function AddNewUserForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Sign In</Button>
+                <LoadingButton type="submit" loading={isPending}>
+                    Add New User
+                </LoadingButton>
             </form>
         </Form>
     )

@@ -1,41 +1,17 @@
 "use server"
-import db from "@/lib/db"
-import crypto from "crypto"
-import { createTransport } from "nodemailer"
-import { formatDistanceToNow } from "date-fns"
 import { signIn } from "@/app/auth"
+import db from "@/lib/db"
+import { generateToken } from "@/lib/utils"
+import bcrypt from "bcrypt"
+import { formatDistanceToNow } from "date-fns"
+import { createTransport } from "nodemailer"
 import {
     EmptyPasswordError,
     InvalidTokenError,
     LoginError,
 } from "./constructors"
-import bcrypt from "bcrypt"
-import { generateToken } from "@/lib/utils"
-
-export async function createVerificationTokenTEST(
-    email: string,
-) {
-    const token = 'TEEEEEST'
-    const expires = new Date(Date.now() + 30 * 24 * 3600 * 1000) // Reset session expiration to 30 days
-    if (email !== 'emailTerlarang@gmail.com') {
-        await db.verificationToken.create({
-            data: {email, token, expires}
-        })
-        return email
-    } else {
-        throw new LoginError('Email is Forbidden', 'Cannot use that email!')
-    }
-}
 
 export async function storeToken(email: string) {
-    // TODO: remove comment
-    // const existingToken = await db.verificationToken.findFirst({
-    //     where: {
-    //         email,
-    //         expires: { gt: new Date() },
-    //     },
-    // })
-
     // query verification token by users email
     const usersToken = await db.verificationToken.findFirst({
         where: { email },
@@ -64,15 +40,6 @@ export async function storeToken(email: string) {
             return newToken
         }
     }
-    // TODO: remove comment
-    // if (existingToken) {
-    //     const timeLeft = formatDistanceToNow(existingToken.expires, {
-    //         addSuffix: true,
-    //     })
-    //     throw new Error(
-    //         `Magic link already sent. You can send it again ${timeLeft}.`
-    //     )
-    // }
 
     const token = generateToken()
     const expires = new Date(Date.now() + 24 * 3600 * 1000) // Token expires in 1 day (24 hours)

@@ -15,7 +15,7 @@ export const prismaMock =
     prismaClientInstance as unknown as DeepMockProxy<PrismaClient>
 
 // Utility function to handle partials
-export function mockResolvedValuePartial<T>({
+export function mockResolvedValue_ReturnPartial<T>({
     mockMethod,
     partialReturn,
 }: {

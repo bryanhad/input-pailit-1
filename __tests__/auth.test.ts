@@ -1,27 +1,26 @@
-import { createVerificationTokenTEST, sendVerificationEmailToNewUser } from "../src/app/auth/actions"
-import { mockResolvedValuePartial, prismaMock } from "../__mocks__/prisma.mock"
-import { generateToken } from "@/lib/utils"
+import { sendVerificationEmailToNewUser } from "../src/app/auth/actions"
+import { mockResolvedValue_ReturnPartial, prismaMock } from "../__mocks__/prisma.mock"
 import { User } from "@prisma/client"
 
-describe("testing function createVerificationTokenTEST()", () => {
-    beforeEach(() => {
-        jest.clearAllMocks()
-    })
-    it("should return a string", async () => {
-        const TEST_EMAIL = "emailtest@gmail.com"
-        const testVerificationToken = {
-            email: TEST_EMAIL,
-            token: "TEEEEEST",
-            expires: new Date(Date.now() + 30 * 24 * 3600 * 1000),
-        }
+// describe("testing function createVerificationTokenTEST()", () => {
+//     beforeEach(() => {
+//         jest.clearAllMocks()
+//     })
+//     it("should return a string", async () => {
+//         const TEST_EMAIL = "emailtest@gmail.com"
+//         const testVerificationToken = {
+//             email: TEST_EMAIL,
+//             token: "TEEEEEST",
+//             expires: new Date(Date.now() + 30 * 24 * 3600 * 1000),
+//         }
 
-        prismaMock.verificationToken.create.mockResolvedValue(
-            testVerificationToken
-        )
+//         prismaMock.verificationToken.create.mockResolvedValue(
+//             testVerificationToken
+//         )
 
-        await expect(createVerificationTokenTEST(TEST_EMAIL)).resolves.toEqual(TEST_EMAIL)
-    })
-})
+//         await expect(createVerificationTokenTEST(TEST_EMAIL)).resolves.toEqual(TEST_EMAIL)
+//     })
+// })
 
 describe("Admin tries to create user with an email of existing user", () => {
     beforeEach(() => {
@@ -30,7 +29,7 @@ describe("Admin tries to create user with an email of existing user", () => {
 
       it('should throw an error if user already exists', async () => {
         const testEmail = 'TEST_MAIL@gmail.com' 
-        mockResolvedValuePartial<User>({mockMethod: prismaMock.user.findUnique, partialReturn: {email:testEmail}});
+        mockResolvedValue_ReturnPartial<User>({mockMethod: prismaMock.user.findUnique, partialReturn: {email:testEmail}});
     
         const res = await sendVerificationEmailToNewUser(testEmail);
     

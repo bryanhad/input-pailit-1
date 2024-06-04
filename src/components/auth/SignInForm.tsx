@@ -1,4 +1,5 @@
 "use client"
+import { loginWithCredentials } from "@/app/auth/actions"
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -10,17 +11,18 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { credentialsSchema, CredentialsValue } from "../../app/auth/validation"
-import { loginWithCredentials } from "@/app/auth/actions"
+import { CredentialsValue, credentialsSchema } from "../../app/auth/validation"
 import { useToast } from "../ui/use-toast"
+import { useTransition } from "react"
+import LoadingButton from "../LoadingButton"
 
 function SignInForm() {
     const router = useRouter()
     const { toast } = useToast()
+    const [isPending, startTransition] = useTransition()
+
     const form = useForm<CredentialsValue>({
         resolver: zodResolver(credentialsSchema),
         defaultValues: {
@@ -30,24 +32,27 @@ function SignInForm() {
     })
 
     async function onSubmit({ email, password }: CredentialsValue) {
-        const res = await loginWithCredentials(email, password)
-        if (res?.error) {
-            return toast({
-                variant: "destructive",
-                title: res.error.title,
-                description: res.error.message,
+        startTransition(async () => {
+            const res = await loginWithCredentials(email, password)
+            if (res?.error) {
+                toast({
+                    variant: "destructive",
+                    title: res.error.title,
+                    description: res.error.message,
+                })
+                return
+            }
+            toast({
+                title: `Wellcome on board ${res.success}!`,
             })
-        }
-        toast({
-            title: `Wellcome on board ${res.success}!`,
+            // I DON'T KNOW HOW TO REDIRECT THE USER AFTER SUCCESSFUL LOGIN VIA THE signIn FUNCTION FROM AUTHJS V5!! D:<
+            // THE DOCS DOESN'T FOCKING WORKKK??!!!! this is my reference for the doc: https://authjs.dev/getting-started/session-management/login
+            // SO IN DESPERATION I USE THE ABOMINATION BELOW! AND SURPRISINGLY IT WORKS AHAHAHAHA
+            // IT IS WHAT IT IS COUNTER: 1 :D            
+            setTimeout(() => {
+                router.push('/dashboard')
+            }, 100);
         })
-        // I DON'T KNOW HOW TO REDIRECT THE USER AFTER SUCCESSFUL LOGIN VIA THE signIn FUNCTION FROM AUTHJS V5!! D:<
-        // THE DOCS DOESN'T FOCKING WORKKK??!!!! this is my reference for the doc: https://authjs.dev/getting-started/session-management/login
-        // SO IN DESPERATION I USE THE ABOMINATION BELOW! AND SURPRISINGLY IT WORKS AHAHAHAHA
-        // IT IS WHAT IT IS COUNTER: 1 :D
-        setTimeout(() => {
-            router.push('/dashboard')
-        }, 100);
     }
 
     return (
@@ -86,7 +91,9 @@ function SignInForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Sign In</Button>
+                  <LoadingButton type='submit' loading={isPending}>
+                Sign In Bro
+                </LoadingButton>
             </form>
         </Form>
     )
