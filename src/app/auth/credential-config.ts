@@ -11,8 +11,8 @@ import { sendVerificationEmail } from "./actions"
 
 export const credentialsOptions: Partial<CredentialsConfig> = {
     credentials: {
-        email: { label: "email" },
-        password: { label: "Password" },
+        email: {},
+        password: {},
     },
     authorize: async (credentials) => {
         const { email, password } = credentialsSchema.parse(credentials)
@@ -38,6 +38,14 @@ export const credentialsOptions: Partial<CredentialsConfig> = {
         if (!isPasswordValid) {
             throw new LoginError("Bad Request", "Invalid email or password.")
         }
-        return user
+
+        const user2 = {
+            _id: "612b4646c41e9e9f5068727a",
+            email: "email@test.com",
+            name: "admin",
+          };
+        //   return user2;
+        console.log(user2)
+        return user2
     },
 }

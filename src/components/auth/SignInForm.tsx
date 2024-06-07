@@ -18,7 +18,11 @@ import { useToast } from '../ui/use-toast'
 import { useTransition } from 'react'
 import LoadingButton from '../LoadingButton'
 
-function SignInForm() {
+type SignInFormProps = {
+    onSuccess: () => void
+}
+
+function SignInForm({onSuccess}:SignInFormProps) {
     const router = useRouter()
     const { toast } = useToast()
     const [isPending, startTransition] = useTransition()
@@ -50,8 +54,9 @@ function SignInForm() {
             // SO IN DESPERATION I USE THE ABOMINATION BELOW! AND SURPRISINGLY IT WORKS AHAHAHAHA
             // IT IS WHAT IT IS COUNTER: 1 :D
             setTimeout(() => {
+                onSuccess()
                 router.push('/dashboard')
-            }, 100)
+            }, 50)
         })
     }
 
