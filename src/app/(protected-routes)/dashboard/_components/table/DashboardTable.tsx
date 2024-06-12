@@ -127,7 +127,7 @@ async function DashboardTable({
                                     }}
                                 />
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="font-semibold">
                                 {formatCurrency(
                                     Number(creditor.totalTagihan),
                                     "IDR"
