@@ -13,7 +13,6 @@ import { CreditorType } from "@/types"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import DownloadButton from "../../dashboard/_components/table/DownloadButton"
-type CreditorDetailPageProps = { params: { slug: string } }
 import { Pencil } from "lucide-react"
 import H1 from "@/components/ui/h1"
 import H2 from "@/components/ui/h2"
@@ -21,10 +20,15 @@ import MainWrapper from "@/components/ui/main-wrapper"
 import ClaimTypeBadge from "@/components/ClaimTypeBadge"
 import { Checkbox } from "@/components/ui/checkbox"
 import CreditorTypeBadge from "@/components/CreditorTypeBadge"
+import { mustLogin } from "@/auth/actions"
+
+type CreditorDetailPageProps = { params: { slug: string } }
 
 async function CreditorDetailPage({
     params: { slug },
 }: CreditorDetailPageProps) {
+    await mustLogin()
+
     const creditor = await db.creditor.findUnique({
         where: { slug },
         include: { attachments: true },

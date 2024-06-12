@@ -1,9 +1,10 @@
-import React from "react"
-import H1 from "@/components/ui/h1"
-import AddCreditorForm from "../_components/AddCreditorForm"
 import MainWrapper from "@/components/ui/main-wrapper"
+import AddCreditorForm from "../_components/AddCreditorForm"
+import { mustLogin } from "@/auth/actions"
 
-function AddCreditorPage() {
+async function AddCreditorPage() {
+    await mustLogin()
+
     return (
         <MainWrapper title="Add Creditor">
             <AddCreditorForm />

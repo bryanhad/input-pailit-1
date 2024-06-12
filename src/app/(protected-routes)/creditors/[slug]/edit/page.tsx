@@ -1,16 +1,16 @@
-import db from "@/lib/db"
-import { notFound } from "next/navigation"
-import React from "react"
-import EditCreditorForm from "../../_components/EditCreditorForm"
-import MainWrapper from "@/components/ui/main-wrapper"
-import CreditorTypeBadge from "@/components/CreditorTypeBadge"
 import SimplePopover from "@/components/SimplePopover"
+import MainWrapper from "@/components/ui/main-wrapper"
+import db from "@/lib/db"
 import { PencilIcon } from "lucide-react"
-import H1 from "@/components/ui/h1"
+import { notFound } from "next/navigation"
+import EditCreditorForm from "../../_components/EditCreditorForm"
+import { mustLogin } from "@/auth/actions"
 
 type EditCreditorPageProps = { params: { slug: string } }
 
 async function EditCreditorPage({ params: { slug } }: EditCreditorPageProps) {
+    await mustLogin()
+
     const creditor = await db.creditor.findFirst({
         where: { slug },
         include: { attachments: true },
@@ -45,7 +45,6 @@ async function EditCreditorPage({ params: { slug } }: EditCreditorPageProps) {
 
     return (
         <MainWrapper
- 
             titleIcon={
                 <SimplePopover
                 tip="editing form"
