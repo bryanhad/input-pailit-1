@@ -12,21 +12,18 @@ function ClaimTypeBadge({ className, sifatTagihan }: ClaimTypeBadgeProps) {
         <div
             className={cn(
                 {
-                    "bg-separatis text-white":
+                    "bg-separatis/20 border border-separatis text-separatis":
                         sifatTagihan === ClaimType.Separatis,
-                    "bg-konkuren text-white":
+                    "bg-konkuren/20 border border-konkuren text-konkuren":
                         sifatTagihan === ClaimType.Konkuren,
-                    "bg-preferen text-white":
+                    "bg-preferen/20 border border-preferen text-preferen":
                         sifatTagihan === ClaimType.Preferen,
                 },
-                "py-[2px] px-3 text-sm rounded-md flex items-center",
+                "py-[2px] px-3 text-sm font-semibold rounded-full flex items-center",
                 className
             )}
         >
-            <p>
-            {sifatTagihan}
-
-            </p>
+            <p>{sifatTagihan}</p>
         </div>
     )
 }
