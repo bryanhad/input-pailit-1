@@ -8,3 +8,8 @@ export enum ClaimType {
     Preferen = 'PREFEREN',
     Konkuren = 'KONKUREN',
 }
+
+export enum Role {
+    Admin = 'ADMIN',
+    User = 'USER'
+}

@@ -45,3 +45,14 @@ const nanoid = customAlphabet(hexAlphabet, 64);
 export function generateToken() {
     return nanoid();
 }
+
+export function getNameInitial(name:string) {
+    const formattedName = name.replace(/\s+/g, ' ').trim()
+
+    const words = formattedName.split(' ')
+
+    if (words.length === 1) {
+      return name[0]
+    }
+    return `${words[0][0]}${words[1][0]}`
+}

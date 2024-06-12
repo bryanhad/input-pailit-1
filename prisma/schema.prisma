@@ -26,6 +26,7 @@ model User {
     emailVerified DateTime?
     image         String?
     sessions      Session[]
+    role          String @default("USER")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -46,7 +47,7 @@ model Session {
 }
 
 model VerificationToken {
-    email   String @id
+    email   String   @id
     token   String
     expires DateTime
 
