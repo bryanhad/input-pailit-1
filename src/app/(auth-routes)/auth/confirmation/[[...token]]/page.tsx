@@ -1,7 +1,5 @@
-import { auth } from "@/auth"
-import { consumeToken } from "@/auth/actions"
+import { consumeToken, mustNotLogin } from "@/auth/actions"
 import { ErrorTypeExtended, LoginError } from "@/auth/errors"
-import { DEFAULT_LOGIN_REDIRECT } from "@/auth/routes"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -11,11 +9,7 @@ async function EmailConfirmationPage({
 }: {
     params: { token?: string[] }
 }) {
-    const session = await auth()
-    // if the user is signed in, redirect them to '/dashboard'
-    if (session) {
-        redirect(DEFAULT_LOGIN_REDIRECT)
-    }
+    await mustNotLogin()
 
     const token = params.token ? params.token[0] : undefined
     if (!token) {

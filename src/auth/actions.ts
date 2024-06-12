@@ -13,15 +13,15 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/auth/routes"
 import db from "@/lib/db"
 import bcrypt from "bcryptjs"
 import { formatDistanceToNow } from "date-fns"
-import { Session } from "next-auth"
 import { redirect } from "next/navigation"
 import { sendEmailThroughNodeMailerTransport, storeToken } from "./lib"
 import { LoginFormValues, loginSchema } from "./validation"
 
+
+
 /**
  * Checks whether the user has signed in or not.
  * If the user is NOT SIGNED IN => redirect to '/'
- * @returns {Promise<Session>}
  */
 export async function mustLogin() {
     const session = await auth()
@@ -30,7 +30,19 @@ export async function mustLogin() {
         redirect("/auth/sign-in")
     }
 
-    return session
+    return session.user
+}
+
+/**
+ * Checks whether the user has signed in or not.
+ * If the user is SIGNED IN => redirect to '/dashboard'
+ */
+export async function mustNotLogin() {
+    const session = await auth()
+    // if user is not logged in
+    if (session) {
+        redirect(DEFAULT_LOGIN_REDIRECT)
+    }
 }
 
 export async function sendVerificationEmail(email: string) {

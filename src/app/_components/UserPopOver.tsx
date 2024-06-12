@@ -18,8 +18,8 @@ function UserPopover({ user }: UserPopOverProps) {
             className="right-0 translate-x-0"
             buttonTrigger={
                 <Button variant={"ghost"}>
-                    <div className="flex max-w-40">
-                        <Avatar className="mr-2 size-5">
+                    <div className="flex max-w-40 items-center">
+                        <Avatar className="mr-2 size-7">
                             <AvatarImage src={user.image || ""} />
                             <AvatarFallback className="capitalize">
                                 {getNameInitial(user.name || "no name")}
@@ -43,7 +43,7 @@ function UserPopover({ user }: UserPopOverProps) {
                 <div className="flex flex-col gap-2">
                     <Button asChild variant={"ghost"} className="justify-start">
                         <Link
-                            href={"/"}
+                            href={"/users/me"}
                             className="flex items-center font-light"
                         >
                             <Settings size={12} className="mr-2 shrink-0" />

@@ -14,9 +14,9 @@ async function NewNavbar() {
                     href={session ? "/dashboard" : "/"}
                     className="flex items-center"
                 >
-                    <h1 className="relative text-xl font-bold sm:text-2xl md:text-3xl">
+                    <h1 className="relative font-bold sm:text-lg md:text-xl">
                         PT. Bakso Jaya Mantab
-                        <span className="absolute bottom-[2px] right-0 translate-x-[110%] text-sm font-light text-black sm:text-lg md:text-xl">
+                        <span className="absolute bottom-[2px] right-0 translate-x-[110%] text-sm font-light text-black sm:text-sm md:text-base">
                             (dalam pailit)
                         </span>
                     </h1>
