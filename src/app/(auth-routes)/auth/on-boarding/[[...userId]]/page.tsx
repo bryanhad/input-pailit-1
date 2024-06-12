@@ -3,12 +3,20 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 import OnBoardingForm from './OnBoardingForm'
 import MainWrapper from '@/components/ui/main-wrapper'
+import { DEFAULT_LOGIN_REDIRECT } from '@/auth/routes'
+import { auth } from '@/auth'
 
 async function OnBoardingPage({
     params,
 }: {
     params: { userId?: string[] }
 }) {
+    const session = await auth()
+    // if the user is signed in, redirect them to '/dashboard'
+    if (session) {
+        redirect(DEFAULT_LOGIN_REDIRECT)
+    }
+    
     // 1. secure the userId from url params
     const userId = params.userId ? params.userId[0] : undefined
     if (!userId) {

@@ -106,9 +106,11 @@ function Pagination({
                     <Button
                         variant="outline"
                         className="h-8 w-8 p-0"
-                        disabled={currentPage<=1}
+                        disabled={currentPage <= 1}
                         onClick={() =>
-                            router.push(generatePageUrl(currentPage - 1))
+                            router.push(generatePageUrl(currentPage - 1), {
+                                scroll: false,
+                            })
                         }
                     >
                         <span className="sr-only">Go to previous page</span>
@@ -134,9 +136,11 @@ function Pagination({
                     <Button
                         variant="outline"
                         className="h-8 w-8 p-0"
-                        disabled={currentPage>=totalAvailablePages}
+                        disabled={currentPage >= totalAvailablePages}
                         onClick={() =>
-                            router.push(generatePageUrl(currentPage + 1))
+                            router.push(generatePageUrl(currentPage + 1), {
+                                scroll: false,
+                            })
                         }
                     >
                         <span className="sr-only">Go to next page</span>

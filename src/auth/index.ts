@@ -50,7 +50,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return token
         },
         session({ session, token, user }) {
-            console.log({token,user,session})
+            // console.log({token,user,session})
             if (token.role) {
                 session.user.role = token.role as string
             }

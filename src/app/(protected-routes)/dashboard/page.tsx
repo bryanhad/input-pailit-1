@@ -1,12 +1,12 @@
+import { mustLogin } from "@/auth/actions"
 import { Button } from "@/components/ui/button"
+import MainWrapper from "@/components/ui/main-wrapper"
 import { Metadata } from "next"
 import Link from "next/link"
 import Summaries from "./_components/summary/Summaries"
 import DashboardTable from "./_components/table/DashboardTable"
-import FilterOptions from "./_components/table/FilterOptions"
-import { CreditorFilterValues } from "./_components/table/validations"
 import FilterOptionsModal from "./_components/table/FilterOptionsModal"
-import MainWrapper from "@/components/ui/main-wrapper"
+import { CreditorFilterValues } from "./_components/table/validations"
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -25,6 +25,8 @@ type DashboardPageProps = {
 async function DashboardPage({
     searchParams: { q, claimType, creditorType, page, size },
 }: DashboardPageProps) {
+    await mustLogin()
+
     const filterValues: CreditorFilterValues = {
         q,
         creditorType,

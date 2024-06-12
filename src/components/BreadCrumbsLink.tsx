@@ -35,8 +35,7 @@ function BreadCrumbsLink() {
     if (
         pathname !== '/' &&
         pathname !== "/dashboard" &&
-        !pathname.includes("confirmation") &&
-        !pathname.includes("on-boarding")
+        !pathname.includes('/auth')
     )
         return (
             <div className="w-full mb-4">

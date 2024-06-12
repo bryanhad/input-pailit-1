@@ -7,7 +7,7 @@ function AddNewUserPage() {
     return (
         <MainWrapper title="Add New User">
             <>
-               <AddNewUserDescription/>
+                <AddNewUserDescription />
                 <AddNewUserForm />
             </>
         </MainWrapper>

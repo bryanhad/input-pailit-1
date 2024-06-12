@@ -1,14 +1,12 @@
-import authConfig from "./auth/config"
-import NextAuth from "next-auth"
-import {getToken} from 'next-auth/jwt'
-import { MiddlewareConfig, NextRequest, NextResponse } from "next/server"
+import { auth } from "@/auth"
 import {
     API_AUTH_PREFIX,
     DEFAULT_LOGIN_REDIRECT,
     authRoutes,
     publicRoutes,
 } from "@/auth/routes"
-import { auth } from "@/auth";
+import { getToken } from 'next-auth/jwt'
+import { MiddlewareConfig, NextResponse } from "next/server"
 
 // const { auth } = NextAuth(authConfig)
 const secret = process.env.AUTH_SECRET as string
@@ -16,7 +14,6 @@ const secret = process.env.AUTH_SECRET as string
 export default auth(async (req) => {
     const token = await getToken({ req, secret, salt:'10' });
     const { nextUrl } = req
-    console.log({ REQUESTED_ROUTE: nextUrl.pathname })
     const isLoggedIn = !!token;
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX)

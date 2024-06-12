@@ -5,13 +5,19 @@ import Modal from "@/components/ui/modal"
 import { useState } from "react"
 import SignInForm from "./sign-in-form"
 import ModalWrapper from "@/components/modal-wrapper"
+import { usePathname } from "next/navigation"
 
 type SignInButtonProps = {
     className?:string
 }
 
 function SignInButton({className}:SignInButtonProps) {
+    const pathname = usePathname()
     const [open, setOpen] = useState(false)
+
+    if (pathname.includes('/auth')) {
+        return null
+    }
 
     return (
         <Modal

@@ -4,7 +4,6 @@ import { updateUserNameAndPasswordThenSignIn } from "@/auth/actions"
 import { OnBoardingFormValues, onBoardingSchema } from "@/auth/validation"
 import LoadingButton from "@/components/LoadingButton"
 import FormResponse from "@/components/form-response"
-import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
@@ -13,11 +12,9 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import H1 from "@/components/ui/h1"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 

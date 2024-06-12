@@ -18,7 +18,7 @@ import { login } from "../actions"
 import { LoginFormValues, loginSchema } from "../validation"
 
 type SignInFormProps = {
-    onSuccess: () => void
+    onSuccess?: () => void
 }
 
 function SignInForm({ onSuccess }: SignInFormProps) {
@@ -44,7 +44,9 @@ function SignInForm({ onSuccess }: SignInFormProps) {
                 setFormError(res.error)
                 return
             }
-            onSuccess()
+            if (onSuccess) {
+                onSuccess()
+            }
             setFormSuccess("Success")
             toast({
                 title: "Wellcome!!",
