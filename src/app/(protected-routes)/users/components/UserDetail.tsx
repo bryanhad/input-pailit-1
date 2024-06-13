@@ -4,36 +4,48 @@ import SimplePopover from '@/components/SimplePopover'
 import UserRoleBadge from '@/components/UserRoleBadge'
 import { Button } from '@/components/ui/button'
 import { formatDateToLocale } from '@/lib/utils'
+import { Role } from '@/types'
 import { User } from '@prisma/client'
-import { MailCheck, MailWarning, PencilIcon, X } from 'lucide-react'
+import { MailCheck, MailWarning, PencilIcon } from 'lucide-react'
 import { useState } from 'react'
 import EditUserForm from './form'
-import Modal from '@/components/ui/modal'
-import ModalWrapper from '@/components/modal-wrapper'
 
-type UserDetailAndIsEditableProps = {
+type UserDetailProps = {
     currentUserRole: string
+    currentUserId: string
     userDetail: Pick<
         User,
-        'createdAt' | 'email' | 'emailVerified' | 'image' | 'name' | 'role'
+        | 'createdAt'
+        | 'email'
+        | 'emailVerified'
+        | 'image'
+        | 'name'
+        | 'role'
+        | 'id'
     >
 }
 
-function UserDetailAndIsEditable({ userDetail }: UserDetailAndIsEditableProps) {
+function UserDetail({
+    userDetail,
+    currentUserRole,
+    currentUserId,
+}: UserDetailProps) {
     const [isEditing, setIsEditing] = useState(false)
     return (
         <>
             {/* EDIT BUTTON */}
-            {!isEditing && (
-                <Button
-                    variant={'ghost'}
-                    className="absolute top-0 right-0 rounded-tl-none rounded-br-none"
-                    type="button"
-                    onClick={() => setIsEditing((prev) => !prev)}
-                >
-                    <PencilIcon size={16} className="shrink-0" />
-                </Button>
-            )}
+            {!isEditing &&
+                (currentUserRole === Role.Admin ||
+                    currentUserId === userDetail.id) && (
+                    <Button
+                        variant={'ghost'}
+                        className="absolute top-0 right-0 rounded-tl-none rounded-br-none"
+                        type="button"
+                        onClick={() => setIsEditing((prev) => !prev)}
+                    >
+                        <PencilIcon size={16} className="shrink-0" />
+                    </Button>
+                )}
             {/* FIELDS */}
             {isEditing ? (
                 <EditUserForm
@@ -98,7 +110,7 @@ function UserDetailAndIsEditable({ userDetail }: UserDetailAndIsEditableProps) {
     )
 }
 
-export default UserDetailAndIsEditable
+export default UserDetail
 
 type UserFieldValuePairProps = {
     fieldName: string

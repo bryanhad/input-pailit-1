@@ -22,7 +22,7 @@ import { updateProfile } from '../actions'
 type EditUserFormProps = {
     userDetail: Pick<
         User,
-        'createdAt' | 'email' | 'emailVerified' | 'image' | 'name' | 'role'
+        'createdAt' | 'email' | 'emailVerified' | 'image' | 'name' | 'role' | 'id'
     >
     setIsEditing: (isEditing: boolean) => void
 }
@@ -50,7 +50,7 @@ function EditUserForm({ setIsEditing, userDetail }: EditUserFormProps) {
         setFormError(undefined)
         setFormSuccess(undefined)
         startTransition(async () => {
-            const res = await updateProfile(name, userDetail.email)
+            const res = await updateProfile(name, userDetail.id)
             if (res?.error) {
                 setFormError(res.error.message)
                 toast({

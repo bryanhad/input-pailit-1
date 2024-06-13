@@ -28,7 +28,7 @@ type CreditorDetailPageProps = { params: { slug: string } }
 async function CreditorDetailPage({
     params: { slug },
 }: CreditorDetailPageProps) {
-    const user = await mustLogin()
+    await mustLogin()
 
     const creditor = await db.creditor.findUnique({
         where: { slug },

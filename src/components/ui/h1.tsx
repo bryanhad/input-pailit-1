@@ -6,7 +6,7 @@ function H1({ className, children, ...props }: ComponentProps<"h1">) {
         <h1
             {...props}
             className={cn(
-                "text-3xl font-bold tracking-tight lg:text-4xl",
+                "text-2xl font-bold tracking-tight lg:text-3xl",
                 className,
             )}
         >

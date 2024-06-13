@@ -28,8 +28,10 @@ function MainWrapper({
             {(title || titleIcon) && (
                 <div className="flex items-center gap-3">
                     {titleIcon}
-                    <div className="flex flex-col  gap-3">
-                        {title && <H1>{title}</H1>}
+                    <div className="flex flex-col gap-3 flex-1">
+                        {title && (
+                            <H1 className="max-md:text-center">{title}</H1>
+                        )}
                         {titleDesc && <p>{titleDesc}</p>}
                     </div>
                 </div>

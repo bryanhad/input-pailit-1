@@ -14,7 +14,7 @@ async function MePage() {
                     className="size-32 text-4xl mt-4 ml-4"
                 />
                 <div className="relative w-full flex flex-col gap-4 border rounded-md p-4 flex-1">
-                    <UserDetail currentUserRole={user.role} userDetail={user} />
+                    <UserDetail currentUserRole={user.role} userDetail={user} currentUserId={user.id} />
                 </div>
             </div>
         </MainWrapper>
