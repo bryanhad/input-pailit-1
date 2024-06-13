@@ -11,8 +11,9 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
+    // provider = "postgresql"
     // url      = env("LOCAL_POSTGRES_URL")
+    provider  = "postgresql"
     url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
     directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
@@ -25,7 +26,7 @@ model User {
     emailVerified DateTime?
     image         String?
     sessions      Session[]
-    role          String @default("USER")
+    role          String    @default("USER")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -35,7 +36,7 @@ model User {
 
 model Session {
     sessionToken String   @unique
-    userId       String
+    userId       String   @unique
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 

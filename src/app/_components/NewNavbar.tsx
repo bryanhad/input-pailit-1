@@ -8,8 +8,8 @@ async function NewNavbar() {
     const session = await auth()
 
     return (
-        <header className="h-16 border-b bg-white">
-            <nav className="flex h-full justify-between px-4 sm:px-6 md:px-10">
+        <header className="h-16 shadow-sm border-b bg-white">
+            <nav className="flex w-full max-w-[1400px] mx-auto h-full justify-between px-4 sm:px-6 md:px-10">
                 <Link
                     href={session ? "/dashboard" : "/"}
                     className="flex items-center"
@@ -21,16 +21,14 @@ async function NewNavbar() {
                         </span>
                     </h1>
                 </Link>
-                {/* <p className="self-center">{JSON.stringify(session)}</p> */}
                 <div className="hidden gap-5 lg:flex">
-                    {/* <NotificationPopover /> */}
                     {session ? (
                         <UserPopover user={session.user} />
                     ) : (
                         <SignInButton className="self-center" />
                     )}
                 </div>
-                <MobileMenu />
+                <MobileMenu user={session?.user} />
             </nav>
         </header>
     )
