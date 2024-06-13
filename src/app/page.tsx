@@ -4,7 +4,7 @@ import RootPageTitle from "./_components/RootPageTitle"
 
 export default function Home() {
     return (
-        <div className="flex flex-col items-center gap-6 flex-1 pt-[8vh]">
+        <div className="flex flex-col items-center gap-6 flex-1 pt-[6vh]">
             <div className="flex flex-col items-center ">
                 <Image
                     className="rounded-md"
@@ -15,8 +15,8 @@ export default function Home() {
                 />
                 <RootPageTitle />
             </div>
-            <div className="w-full max-w-[60%] border p-4 ">
-                <BankruptcyVerdict verdictNumber="47/Pdt.Sus/Pailit/2015/PN.NIAGA.JKT.PST" />
+            <div className="w-full max-w-[95%] border p-4 ">
+                <BankruptcyVerdict verdictNumber="47 / Pdt.Sus / Pailit / 2015 / PN.NIAGA.JKT.PST" />
             </div>
         </div>
     )

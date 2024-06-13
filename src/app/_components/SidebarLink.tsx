@@ -24,7 +24,7 @@ function SidebarLink({ children, icon, href, ...props }: SidebarLinkProps) {
                     href={href}
                     {...props}
                     className={cn({
-                        "text-green-500 hover:text-green-500":
+                        "text-black":
                             href === pathname,
                     })}
                 >
@@ -33,7 +33,7 @@ function SidebarLink({ children, icon, href, ...props }: SidebarLinkProps) {
                 </Link>
             </Button>
             {href === pathname && (
-                <div className="absolute left-0 z-10 h-full w-2 translate-x-[-50%] rounded-full bg-emerald-500" />
+                <div className="absolute left-0 z-10 h-full w-2 translate-x-[-50%] rounded-full bg-black" />
             )}
         </div>
     )
