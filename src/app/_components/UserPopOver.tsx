@@ -1,15 +1,16 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { cn, getNameInitial } from "@/lib/utils"
-import { User } from "@prisma/client"
-import { Bolt, CircleUserRound, LogOut, Settings } from "lucide-react"
-import Link from "next/link"
-import NavItemDropdown from "./NavItemDropdown"
-import SignOutButton from "@/auth/components/sign-out-button"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { cn, getNameInitial } from '@/lib/utils'
+import { User } from '@prisma/client'
+import { Bolt, CircleUserRound, LogOut, Settings } from 'lucide-react'
+import Link from 'next/link'
+import NavItemDropdown from './NavItemDropdown'
+import SignOutButton from '@/auth/components/sign-out-button'
+import UserRoleBadge from '@/components/UserRoleBadge'
 
 type UserPopOverProps = {
-    user: Pick<User, "name" | "image" | "role">
+    user: Pick<User, 'name' | 'image' | 'role'>
 }
 
 function UserPopover({ user }: UserPopOverProps) {
@@ -17,7 +18,7 @@ function UserPopover({ user }: UserPopOverProps) {
         <NavItemDropdown
             className="right-0 translate-x-0"
             buttonTrigger={
-                <Button variant={"ghost"}>
+                <Button variant={'ghost'}>
                     <UserInfo user={user} />
                 </Button>
             }
@@ -33,9 +34,9 @@ function UserPopover({ user }: UserPopOverProps) {
                 </Button> */}
                 <Separator />
                 <div className="flex flex-col gap-2">
-                    <Button asChild variant={"ghost"} className="justify-start">
+                    <Button asChild variant={'ghost'} className="justify-start">
                         <Link
-                            href={"/users/me"}
+                            href={'/users/me'}
                             className="flex items-center font-light"
                         >
                             <Settings size={12} className="mr-2 shrink-0" />
@@ -63,24 +64,24 @@ export default UserPopover
 
 export function UserInfo({
     user,
-    mode = "WITHOUT_ROLE",
+    mode = 'WITHOUT_ROLE',
     className,
 }: UserPopOverProps & {
-    mode?: "WITH_ROLE" | "WITHOUT_ROLE" | "ICON"
+    mode?: 'WITH_ROLE' | 'WITHOUT_ROLE' | 'ICON'
     className?: string
 }) {
-    if (mode === "ICON") {
+    if (mode === 'ICON') {
         return (
             <UserImageIcon
                 user={user}
-                className={cn("mr-2 size-8", className)}
+                className={cn('mr-2 size-8', className)}
             />
         )
     }
 
-    if (mode === "WITHOUT_ROLE") {
+    if (mode === 'WITHOUT_ROLE') {
         return (
-            <div className={cn("flex max-w-40 items-center", className)}>
+            <div className={cn('flex max-w-40 items-center', className)}>
                 <UserImageIcon user={user} className="mr-2 size-7" />
                 <p className="max-w-max truncate">{user.name}</p>
             </div>
@@ -90,27 +91,14 @@ export function UserInfo({
     return (
         <div
             className={cn(
-                "flex items-center justify-between gap-4 p-2",
+                'flex items-center justify-between gap-4 p-2',
                 className
             )}
         >
             <div className="max-w-[60%] space-y-2">
                 <p className="max-w-max truncate font-bold">{user.name}</p>
                 <div className="flex items-center">
-                    {user.role === "ADMIN" ? (
-                        <Bolt
-                            size={20}
-                            className="mr-2 shrink-0 text-muted-foreground"
-                        />
-                    ) : (
-                        <CircleUserRound
-                            size={20}
-                            className="mr-2 shrink-0 text-muted-foreground"
-                        />
-                    )}
-                    <p className="max-w-max truncate text-sm tracking-tight">
-                        {user.role}
-                    </p>
+                    <UserRoleBadge role={user.role} noClick/>
                 </div>
             </div>
             <UserImageIcon user={user} />
@@ -124,9 +112,9 @@ export function UserImageIcon({
 }: UserPopOverProps & { className?: string }) {
     return (
         <Avatar className={className}>
-            <AvatarImage src={user.image || ""} />
+            <AvatarImage src={user.image || ''} />
             <AvatarFallback className="capitalize">
-                {getNameInitial(user.name || "no name")}
+                {getNameInitial(user.name || 'no name')}
             </AvatarFallback>
         </Avatar>
     )

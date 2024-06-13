@@ -1,10 +1,10 @@
-import React from "react"
-import SimplePopover from "./SimplePopover"
-import { Building2, UserRound } from "lucide-react"
-import { CreditorType } from "@/types"
-import { capitalizeFirstLetter, cn } from "@/lib/utils"
+import React from 'react'
+import SimplePopover from './SimplePopover'
+import { Building2, UserRound } from 'lucide-react'
+import { CreditorType } from '@/types'
+import { capitalizeFirstLetter, cn } from '@/lib/utils'
 
-type ClaimTypeBadgeProps = {
+type CreditorTypeBadgeProps = {
     jenisKreditor: string
     className?: string
     size?: number
@@ -14,10 +14,10 @@ function CreditorTypeBadge({
     jenisKreditor,
     className,
     size = 16,
-}: ClaimTypeBadgeProps) {
+}: CreditorTypeBadgeProps) {
     return (
         <SimplePopover
-            className={cn("rounded-full p-1", className)}
+            className={cn('rounded-full p-1', className)}
             tip={capitalizeFirstLetter(jenisKreditor)}
         >
             {jenisKreditor === CreditorType.Instansi && (

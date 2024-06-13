@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
     Table,
     TableBody,
@@ -6,21 +6,22 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import db from "@/lib/db"
-import { capitalizeFirstLetter, cn, formatCurrency } from "@/lib/utils"
-import { CreditorType } from "@/types"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import DownloadButton from "../../dashboard/_components/table/DownloadButton"
-import { Pencil } from "lucide-react"
-import H1 from "@/components/ui/h1"
-import H2 from "@/components/ui/h2"
-import MainWrapper from "@/components/ui/main-wrapper"
-import ClaimTypeBadge from "@/components/ClaimTypeBadge"
-import { Checkbox } from "@/components/ui/checkbox"
-import CreditorTypeBadge from "@/components/CreditorTypeBadge"
-import { mustLogin } from "@/auth/actions"
+} from '@/components/ui/table'
+import db from '@/lib/db'
+import { capitalizeFirstLetter, cn, formatCurrency } from '@/lib/utils'
+import { CreditorType } from '@/types'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import DownloadButton from '../../dashboard/_components/table/DownloadButton'
+import { Pencil } from 'lucide-react'
+import H1 from '@/components/ui/h1'
+import H2 from '@/components/ui/h2'
+import MainWrapper from '@/components/ui/main-wrapper'
+import ClaimTypeBadge from '@/components/ClaimTypeBadge'
+import { Checkbox } from '@/components/ui/checkbox'
+import CreditorTypeBadge from '@/components/CreditorTypeBadge'
+import { mustLogin } from '@/auth/actions'
+import FieldValuePair from '@/components/FieldValuePair'
 
 type CreditorDetailPageProps = { params: { slug: string } }
 
@@ -68,11 +69,6 @@ async function CreditorDetailPage({
                     <DownloadButton id={creditor.id} />
                 </div>
             </div>
-            {/* <div className="flex max-md:flex-col-reverse gap-4 justify-between">
-                <H1></H1>
-  
-            </div> */}
-
             <section className="grid lg:grid-cols-2 gap-6 mt-2">
                 <Section title="Detail Kreditor">
                     <div className="flex flex-col gap-2">
@@ -87,8 +83,8 @@ async function CreditorDetailPage({
                         <FieldValuePair
                             fieldName={
                                 creditor.jenis === CreditorType.Instansi
-                                    ? "Nomor Akta Pendirian"
-                                    : "NIK"
+                                    ? 'Nomor Akta Pendirian'
+                                    : 'NIK'
                             }
                             value={creditor.NIKAtauNomorAktaPendirian}
                         />
@@ -112,8 +108,10 @@ async function CreditorDetailPage({
                             fieldName="Total Tagihan"
                             value={formatCurrency(
                                 Number(creditor.totalTagihan),
-                                "IDR"
+                                'IDR'
                             )}
+                            className="bg-black text-white border-2"
+                            valueClassName="font-medium"
                         />
                     </div>
                 </Section>
@@ -195,31 +193,6 @@ async function CreditorDetailPage({
 
 export default CreditorDetailPage
 
-type FieldValuePairProps = {
-    fieldName: string
-    value: string | null
-}
-function FieldValuePair({ fieldName, value }: FieldValuePairProps) {
-    return (
-        <div
-            className={cn(
-                "flex gap-1 flex-col md:flex-row border rounded-md p-2",
-                {
-                    "bg-black text-white border-2":
-                        fieldName === "Total Tagihan",
-                }
-            )}
-        >
-            <p className="min-w-[180px] font-medium">
-                {fieldName}
-                <span className="ml-2 md:hidden">:</span>
-            </p>
-            <span className="hidden md:block">:</span>
-            <p className="flex-1 w-full text-sm pt-[3px]">{value || "-"}</p>
-        </div>
-    )
-}
-
 function Section({
     children,
     title,
@@ -232,7 +205,7 @@ function Section({
     className?: string
 }) {
     return (
-        <div className={cn("flex flex-col gap-4 w-full", className)}>
+        <div className={cn('flex flex-col gap-4 w-full', className)}>
             {useH1 ? <H1>{title}</H1> : <H2>{title}</H2>}
             {children}
         </div>

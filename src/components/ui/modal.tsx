@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
@@ -6,13 +6,12 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
 
 type ModalProps = {
     centerText?: boolean
     children: React.ReactNode
-    // disableDefaultModalClose?: boolean
     title?: string
     desc?: string
     open?: boolean
@@ -24,6 +23,9 @@ type ModalProps = {
     | {
           buttonCustom: React.ReactNode
           buttonText?: never
+      }
+      | {
+        buttonText?: never; buttonCustom?: never; noButtonTrigger:boolean
       }
 )
 
@@ -38,8 +40,7 @@ function Modal({
     desc,
     className,
     disableDefaultCloseButton,
-}: // disableDefaultModalClose = false,
-ModalProps) {
+}: ModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             {buttonCustom && (
@@ -47,23 +48,23 @@ ModalProps) {
             )}
             {buttonText && (
                 <DialogTrigger asChild>
-                    <Button variant={"outline"}>{buttonText}</Button>
+                    <Button variant={'outline'}>{buttonText}</Button>
                 </DialogTrigger>
             )}
             <DialogContent
                 disableDefaultCloseButton={disableDefaultCloseButton}
-                className={cn("sm:max-w-md", className)}
+                className={cn('sm:max-w-md', className)}
             >
                 {(title || desc) && (
                     <DialogHeader>
                         <DialogTitle
-                            className={cn({ "text-center": centerText })}
+                            className={cn({ 'text-center': centerText })}
                         >
                             {title}
                         </DialogTitle>
                         {desc && (
                             <DialogDescription
-                                className={cn({ "text-center": centerText })}
+                                className={cn({ 'text-center': centerText })}
                             >
                                 {desc}
                             </DialogDescription>
