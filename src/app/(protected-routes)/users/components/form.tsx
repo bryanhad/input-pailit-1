@@ -29,8 +29,6 @@ type EditUserFormProps = {
 
 const formSchema = z.object({
     name: z.string().min(2).max(50),
-    // email: z.string().min(2).max(50),
-    // role: z.string().min(2).max(50),
 })
 
 function EditUserForm({ setIsEditing, userDetail }: EditUserFormProps) {
@@ -109,7 +107,7 @@ function EditUserForm({ setIsEditing, userDetail }: EditUserFormProps) {
                                                 />
                                             </FormControl>
                                             <FormResponse
-                                                className='hidden sm:flex'
+                                                className="hidden sm:flex"
                                                 response={formSuccess}
                                                 errorMessage={formError}
                                             />

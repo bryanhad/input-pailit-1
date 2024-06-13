@@ -25,7 +25,7 @@ const kuasaHukumSchema = z.object({
 
 export const AddCreditorSchema = z
     .object({
-        nama: z.string().min(1, 'Nama kreditor harus diisi').max(255),
+        nama: z.string({required_error: 'Nama kreditor harus diisi'}).min(1, 'Nama kreditor harus diisi').max(255),
         jenis: z
             .string()
             .min(1)
