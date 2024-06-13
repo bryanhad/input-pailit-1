@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils"
-import { ClaimType } from "@/types"
-import React from "react"
+import { cn } from '@/lib/utils'
+import { ClaimType } from '@/types'
+import React from 'react'
 
 type ClaimTypeBadgeProps = {
     sifatTagihan: string
@@ -12,18 +12,25 @@ function ClaimTypeBadge({ className, sifatTagihan }: ClaimTypeBadgeProps) {
         <div
             className={cn(
                 {
-                    "bg-separatis/20 border border-separatis text-separatis":
+                    'bg-separatis/5 border border-separatis text-separatis':
                         sifatTagihan === ClaimType.Separatis,
-                    "bg-konkuren/20 border border-konkuren text-konkuren":
+                    'bg-konkuren/5 border border-konkuren text-konkuren':
                         sifatTagihan === ClaimType.Konkuren,
-                    "bg-preferen/20 border border-preferen text-preferen":
+                    'bg-preferen/5 border border-preferen text-preferen':
                         sifatTagihan === ClaimType.Preferen,
                 },
-                "py-[2px] px-3 text-sm font-semibold rounded-full flex items-center",
+                'py-[2px] px-3 text-sm font-semibold rounded-md flex items-center gap-1',
                 className
             )}
         >
-            <p>{sifatTagihan}</p>
+            <div
+                className={cn('size-2 rounded-full self-center mt-[1px]', {
+                    'bg-separatis': sifatTagihan === ClaimType.Separatis,
+                    'bg-konkuren': sifatTagihan === ClaimType.Konkuren,
+                    'bg-preferen': sifatTagihan === ClaimType.Preferen,
+                })}
+            />
+            <p className="font-semibold">{sifatTagihan}</p>
         </div>
     )
 }

@@ -16,11 +16,13 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 type DoughnutChartProps = {
     data: EachClaimTypeTotalClaims
     className?: string
+    title: string
 }
 
 function DoughnutChart({
     data: { claimTypes, totalClaimAmount, totalCreditors },
     className,
+    title
 }: DoughnutChartProps) {
     const data: ChartData<"doughnut"> = {
         labels: ["Preferen", "Konkuren", "Separatis"],
@@ -66,14 +68,14 @@ function DoughnutChart({
                 display: false,
             },
             title: {
-                display: true,
+                display: false,
                 text: "Detail Tagihan PT Pailit (dalam Pailit)",
             },
         },
         // aspectRatio: 1.5,
         layout: {
             padding: {
-                top: 10,
+                top: 5,
                 bottom: 5,
                 right: 35,
                 left: 35,
@@ -168,23 +170,26 @@ function DoughnutChart({
     ]
 
     return (
-        <div className={cn("relative w-[80vw] max-w-[400px]", className)}>
-            {/* <p className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] text-2xl font-bold">
-                {formatCurrency(totalClaimAmount, 'IDR')}
-            </p> */}
-            {totalClaimAmount ? (
-                <Doughnut
-                    className="relative z-10"
-                    options={options}
-                    data={data}
-                    plugins={plugins}
-                />
-            ) : (
-                <div className="flex flex-col justify-center text-muted-foreground/20 items-center">
-                    <PieChart className="shrink-0" size={250} />
-                    <p className="font-semibold text-3xl">No Data To Show</p>
-                </div>
-            )}
+        <div className="relative">   
+            <p className="absolute font-semibold top-5 left-1/2 -translate-x-1/2 w-[80%] text-center text-sm">{title}</p>
+            <div className={cn("relative w-[80vw] max-w-[400px]", className)}>
+                {/* <p className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] text-2xl font-bold">
+                    {formatCurrency(totalClaimAmount, 'IDR')}
+                </p> */}
+                {totalClaimAmount ? (
+                    <Doughnut
+                        className="relative z-10"
+                        options={options}
+                        data={data}
+                        plugins={plugins}
+                    />
+                ) : (
+                    <div className="flex flex-col justify-center text-muted-foreground/20 items-center">
+                        <PieChart className="shrink-0" size={250} />
+                        <p className="font-semibold text-3xl">No Data To Show</p>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

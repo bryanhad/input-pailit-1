@@ -1,6 +1,6 @@
-"use client"
-import { capitalizeFirstLetter } from "@/lib/utils"
-import { CreditorType } from "@/types"
+'use client'
+import { capitalizeFirstLetter } from '@/lib/utils'
+import { CreditorType } from '@/types'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -9,13 +9,13 @@ import {
     Title,
     Tooltip,
     Legend,
-} from "chart.js"
-import { Bar } from "react-chartjs-2"
+} from 'chart.js'
+import { Bar } from 'react-chartjs-2'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export const options = {
-    indexAxis: "y" as const,
+    indexAxis: 'y' as const,
     // layout: {
     //         padding:50
     // },
@@ -28,11 +28,11 @@ export const options = {
     resizeDelay: 200,
     plugins: {
         legend: {
-            position: "bottom" as const,
+            position: 'bottom' as const,
         },
         title: {
-            display: true,
-            text: "Detail Jenis Kreditor PT Pailit (dalam Pailit)",
+            display: false,
+            text: 'Detail Jenis Kreditor PT Pailit (dalam Pailit)',
         },
     },
     layout: {
@@ -44,13 +44,14 @@ export const options = {
     maintainAspectRatio: false,
 }
 
-const labels = [""]
+const labels = ['']
 
 type HorizontalBarChartProps = {
     data: { jenis: CreditorType; count: string }[]
+    title: string
 }
 
-function HorizontalBarChart({ data }: HorizontalBarChartProps) {
+function HorizontalBarChart({ data, title }: HorizontalBarChartProps) {
     const barData = {
         labels,
         datasets: [
@@ -60,7 +61,7 @@ function HorizontalBarChart({ data }: HorizontalBarChartProps) {
                     .filter((el) => el.jenis === CreditorType.Instansi)
                     .map((el) => el.count),
                 // borderColor: "rgb(255, 99, 132)",
-                backgroundColor: "hsl(46 97% 77%)",
+                backgroundColor: 'hsl(46 97% 77%)',
             },
             {
                 label: capitalizeFirstLetter(CreditorType.Pribadi),
@@ -68,12 +69,19 @@ function HorizontalBarChart({ data }: HorizontalBarChartProps) {
                     .filter((el) => el.jenis === CreditorType.Pribadi)
                     .map((el) => el.count),
                 // borderColor: "rgb(53, 162, 235)",
-                backgroundColor: "hsl(269 97% 90%)",
+                backgroundColor: 'hsl(269 97% 90%)',
             },
         ],
     }
 
-    return <Bar options={options} data={barData} className="h" />
+    return (
+        <div className="flex flex-col">
+            <p className="text-center text-sm font-semibold">{title}</p>
+            <div>
+                <Bar options={options} data={barData} className="h" />
+            </div>
+        </div>
+    )
 }
 
 export default HorizontalBarChart

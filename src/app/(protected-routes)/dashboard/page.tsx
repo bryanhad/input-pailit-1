@@ -36,7 +36,7 @@ async function DashboardPage({
     const tableSize = Number(size) || 10
 
     return (
-        <MainWrapper>
+        <MainWrapper noBackgroundAndPadding>
             <div>
                 <Button asChild>
                     <Link href="/admin/add-new-user">
