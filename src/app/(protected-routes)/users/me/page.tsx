@@ -4,7 +4,9 @@ import React from 'react'
 async function MePage() {
     const user = await mustLogin()
   return (
-    <div></div>
+    <div>
+        {JSON.stringify(user)}
+    </div>
   )
 }
 

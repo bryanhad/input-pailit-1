@@ -1,14 +1,47 @@
-import { Creditor, PrismaClient } from "@prisma/client"
+import { Creditor, PrismaClient, User } from "@prisma/client"
 import {
     placeholderAttachments,
     placeholderCreditors,
+    placeholderUsers,
 } from "./placeholder-data"
+import { hash } from "bcryptjs"
 
 const prisma = new PrismaClient()
 
 async function main() {
     const toBeInsertedCreditors = placeholderCreditors as Creditor[]
+    const toBeInsertedUsers = placeholderUsers as User[]
 
+    await Promise.all(
+        toBeInsertedUsers.map(async (user) => {
+            await prisma.session.upsert({
+                where: {userId: user.id},
+                update: {
+                    expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
+                    userId: user.id,
+                    sessionToken: crypto.randomUUID(),
+                },
+                create: {
+                    expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
+                    userId: user.id,
+                    sessionToken: crypto.randomUUID(),
+                }
+            })
+        })
+    )
+
+    await Promise.all(
+        toBeInsertedUsers.map(async (user) => {
+            const hashedPassword = await hash(user.password as string, 10)
+            await prisma.user.upsert({
+                where: {
+                    id: user.id,
+                },
+                update: {...user, password: hashedPassword},
+                create: {...user, password: hashedPassword},
+            })
+        })
+    )
     await Promise.all(
         toBeInsertedCreditors.map(async (creditor) => {
             await prisma.creditor.upsert({

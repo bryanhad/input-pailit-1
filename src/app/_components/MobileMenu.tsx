@@ -1,41 +1,41 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import SignInButton from "@/auth/components/sign-in-button"
+import SignOutButton from "@/auth/components/sign-out-button"
 import { Separator } from "@/components/ui/separator"
-import { LogOut, Settings } from "lucide-react"
-// import { SaleNotifications } from "./NotificationPopover"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { User } from "@prisma/client"
+import { Settings } from "lucide-react"
+import { SidebarLinks } from "./Sidebar"
 import SidebarLink from "./SidebarLink"
-import { SidebarLinks, SidebarSellerInfo } from "./Sidebar"
+import { UserInfo } from "./UserPopOver"
 
-function MobileMenu() {
+type MobileMenuProps = {
+    user?: Pick<User, "name" | "image" | "role">
+}
+
+function MobileMenu({ user }: MobileMenuProps) {
+    if (!user) {
+        return <SignInButton className="self-center bg-green-300 lg:hidden" />
+    }
+
     return (
         <Sheet>
             <SheetTrigger className="px-3 lg:hidden">
-                <Avatar className="size-8">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                <UserInfo user={user} mode="ICON" />
             </SheetTrigger>
-            <SheetContent  className="flex flex-col gap-4 p-0">
-                <SidebarSellerInfo className="max-w-[85%] gap-3 p-6" />
+            <SheetContent className="flex flex-col gap-4 p-0">
+                <UserInfo
+                    user={user}
+                    className="ml-4 mt-6 flex-row-reverse justify-end"
+                    mode="WITH_ROLE"
+                />
                 <Separator className="w-[80%] self-center" />
                 <SidebarLinks />
                 <Separator className="w-[80%] self-center" />
-                {/* <SaleNotifications />
-                <Separator className="w-[80%] self-center" /> */}
                 <SidebarLink href={"/seller/settings"} icon={<Settings />}>
                     User Settings
                 </SidebarLink>
-                <Button
-                    asChild
-                    variant={"ghost"}
-                    className="flex items-center justify-start"
-                >
-                    <p>
-                        <LogOut className="mr-2 shrink-0" />
-                        Logout
-                    </p>
-                </Button>
+                <Separator className="w-[80%] self-center" />
+                <SignOutButton className="justify-start self-start ml-4" />
             </SheetContent>
         </Sheet>
     )
