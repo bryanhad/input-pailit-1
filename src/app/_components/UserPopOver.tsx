@@ -66,15 +66,17 @@ export function UserInfo({
     user,
     mode = 'WITHOUT_ROLE',
     className,
+    userImageClassName,
 }: UserPopOverProps & {
     mode?: 'WITH_ROLE' | 'WITHOUT_ROLE' | 'ICON'
     className?: string
+    userImageClassName?: string
 }) {
     if (mode === 'ICON') {
         return (
             <UserImageIcon
                 user={user}
-                className={cn('mr-2 size-8', className)}
+                className={cn('mr-2 size-8', className, userImageClassName)}
             />
         )
     }
@@ -82,7 +84,10 @@ export function UserInfo({
     if (mode === 'WITHOUT_ROLE') {
         return (
             <div className={cn('flex max-w-40 items-center', className)}>
-                <UserImageIcon user={user} className="mr-2 size-7" />
+                <UserImageIcon
+                    user={user}
+                    className={cn('mr-2 size-7', userImageClassName)}
+                />
                 <p className="max-w-max truncate">{user.name}</p>
             </div>
         )
@@ -98,10 +103,10 @@ export function UserInfo({
             <div className="max-w-[60%] space-y-2">
                 <p className="max-w-max truncate font-bold">{user.name}</p>
                 <div className="flex items-center">
-                    <UserRoleBadge role={user.role} noClick/>
+                    <UserRoleBadge role={user.role} noClick />
                 </div>
             </div>
-            <UserImageIcon user={user} />
+            <UserImageIcon user={user} className={userImageClassName} />
         </div>
     )
 }
@@ -113,7 +118,7 @@ export function UserImageIcon({
     return (
         <Avatar className={className}>
             <AvatarImage src={user.image || ''} />
-            <AvatarFallback className="capitalize">
+            <AvatarFallback className="capitalize bg-slate-300/80 text-white">
                 {getNameInitial(user.name || 'no name')}
             </AvatarFallback>
         </Avatar>

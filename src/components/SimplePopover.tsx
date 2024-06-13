@@ -7,7 +7,7 @@ function SimplePopover({
     className,
 }: {
     children: React.ReactNode
-    tip: string
+    tip: React.ReactNode
     className?: string
 }) {
     return (

@@ -1,7 +1,8 @@
-import ClaimTypeBadge from "@/components/ClaimTypeBadge"
-import CreditorTypeBadge from "@/components/CreditorTypeBadge"
-import SimplePopover from "@/components/SimplePopover"
-import { Button } from "@/components/ui/button"
+import { UserInfo } from '@/app/_components/UserPopOver'
+import ClaimTypeBadge from '@/components/ClaimTypeBadge'
+import CreditorTypeBadge from '@/components/CreditorTypeBadge'
+import SimplePopover from '@/components/SimplePopover'
+import { Button } from '@/components/ui/button'
 import {
     Table,
     TableBody,
@@ -10,23 +11,16 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import db from "@/lib/db"
-import {
-    formatCurrency,
-    formatNumber
-} from "@/lib/utils"
-import { Creditor, Prisma } from "@prisma/client"
-import {
-    BookText,
-    CircleCheck,
-    CircleX
-} from "lucide-react"
-import Link from "next/link"
-import DeleteButton from "./DeleteButton"
-import DownloadButton from "./DownloadButton"
-import Pagination from "./Pagination"
-import { CreditorFilterValues } from "./validations"
+} from '@/components/ui/table'
+import db from '@/lib/db'
+import { formatCurrency, formatDateToLocale, formatNumber } from '@/lib/utils'
+import { Creditor, Prisma } from '@prisma/client'
+import { BookText, CalendarDays, CircleCheck, CircleX } from 'lucide-react'
+import Link from 'next/link'
+import DeleteButton from './DeleteButton'
+import DownloadButton from './DownloadButton'
+import Pagination from './Pagination'
+import { CreditorFilterValues } from './validations'
 
 type DashboardTableProps = {
     filterValues: CreditorFilterValues
@@ -40,9 +34,9 @@ async function DashboardTable({
     tableSize,
 }: DashboardTableProps) {
     const searchString = q
-        ?.split(" ")
+        ?.split(' ')
         .filter((word) => word.length > 0)
-        .join(" & ")
+        .join(' & ')
 
     const searchFilter: Prisma.CreditorWhereInput = searchString
         ? {
@@ -71,8 +65,10 @@ async function DashboardTable({
         take: tableSize,
         include: {
             _count: { select: { attachments: true } },
+            user: { select: { name: true, image: true, role: true } },
+            lastUpdatedBy: { select: { name: true, image: true, role: true } },
         },
-        orderBy: { number: "desc" },
+        orderBy: { number: 'desc' },
         where: whereFilter,
     })
 
@@ -101,11 +97,9 @@ async function DashboardTable({
                         <TableHead className="text-white">
                             Sifat Tagihan
                         </TableHead>
-                        <TableHead className="text-right text-white">
-                            Input by
-                        </TableHead>
-                        <TableHead className="text-right text-white">
-                            Last Updated
+                        <TableHead className="text-white">Input by</TableHead>
+                        <TableHead className="text-white">
+                            Last Updated By
                         </TableHead>
                         <TableHead className="text-right text-white">
                             Action
@@ -130,7 +124,7 @@ async function DashboardTable({
                             <TableCell className="font-semibold">
                                 {formatCurrency(
                                     Number(creditor.totalTagihan),
-                                    "IDR"
+                                    'IDR'
                                 )}
                             </TableCell>
                             <TableCell>
@@ -140,11 +134,34 @@ async function DashboardTable({
                                     />
                                 </div>
                             </TableCell>
-                            <TableCell className="text-right">
-                                Bang Jarwo
+                            <TableCell>
+                                <InputorInfo
+                                    inputorId={creditor.userId}
+                                    inputorName={creditor.user.name}
+                                    inputorRole={creditor.user.role}
+                                    date={creditor.createdAt}
+                                    tip="Created At"
+                                />
                             </TableCell>
-                            <TableCell className="text-right">
-                                {JSON.stringify(creditor.createdAt, null, 2)}
+                            <TableCell>
+                                {creditor.lastUpdatedBy &&
+                                creditor.lastUpdatedByUserId ? (
+                                    <InputorInfo
+                                        inputorId={creditor.lastUpdatedByUserId}
+                                        inputorName={
+                                            creditor.lastUpdatedBy.name
+                                        }
+                                        inputorRole={
+                                            creditor.lastUpdatedBy.role
+                                        }
+                                        date={creditor.createdAt}
+                                        tip="Last Updated At"
+                                    />
+                                ) : (
+                                    <p className="text-muted-foreground/80">
+                                        No Updates
+                                    </p>
+                                )}
                             </TableCell>
                             <TableCell>
                                 <div className="flex gap-2 justify-end">
@@ -215,6 +232,49 @@ function KreditorInfo({
                         </div>
                     </SimplePopover>
                 </div>
+            </div>
+        </div>
+    )
+}
+
+type InputorInfoProps = {
+    inputorId: string
+    inputorName: string | null
+    inputorRole: string
+    date: Date
+    tip: string
+}
+
+function InputorInfo({
+    date,
+    inputorId,
+    inputorName,
+    inputorRole,
+    tip,
+}: InputorInfoProps) {
+    return (
+        <div className="space-y-1">
+            <Link href={`/users/${inputorId}`}>
+                <UserInfo
+                    user={{
+                        name: inputorName,
+                        role: inputorRole,
+                        image: null,
+                    }}
+                    className="text-sm"
+                    userImageClassName="size-6 text-xs"
+                />
+            </Link>
+            <div className="flex gap-1 items-center">
+                <SimplePopover tip={tip} className="p-1 rounded-full">
+                    <CalendarDays
+                        className="shrink-0 text-muted-foreground"
+                        size={14}
+                    />
+                </SimplePopover>
+                <p className="text-muted-foreground">
+                    {formatDateToLocale(date, 'id-ID', true)}
+                </p>
             </div>
         </div>
     )

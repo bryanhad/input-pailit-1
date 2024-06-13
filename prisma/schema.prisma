@@ -11,11 +11,11 @@ generator client {
 }
 
 datasource db {
-    // provider = "postgresql"
-    // url      = env("LOCAL_POSTGRES_URL")
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+    provider = "postgresql"
+    url      = env("LOCAL_POSTGRES_URL")
+    // provider  = "postgresql"
+    // url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+    // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
@@ -27,6 +27,9 @@ model User {
     image         String?
     sessions      Session[]
     role          String    @default("USER")
+
+    creditors            Creditor[] @relation("UserCreditor")
+    lastUpdatedCreditors Creditor[] @relation("LastUpdatedByUser")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -77,6 +80,11 @@ model Creditor {
     updatedAt DateTime @updatedAt
 
     attachments Attachment[]
+    user        User         @relation("UserCreditor", fields: [userId], references: [id])
+    userId      String
+
+    lastUpdatedBy       User?   @relation("LastUpdatedByUser", fields: [lastUpdatedByUserId], references: [id])
+    lastUpdatedByUserId String?
 
     @@map("creditors")
 }

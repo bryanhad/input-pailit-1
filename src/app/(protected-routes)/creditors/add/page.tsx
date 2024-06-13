@@ -3,11 +3,11 @@ import AddCreditorForm from "../_components/AddCreditorForm"
 import { mustLogin } from "@/auth/actions"
 
 async function AddCreditorPage() {
-    await mustLogin()
+    const user = await mustLogin()
 
     return (
         <MainWrapper title="Add Creditor">
-            <AddCreditorForm />
+            <AddCreditorForm userId={user.id}/>
         </MainWrapper>
     )
 }

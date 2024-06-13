@@ -27,6 +27,7 @@ import FormResponse from '@/components/form-response'
 type CreditorFormProps = {
     form: UseFormReturn<CreditorFormValues>
     action: (
+        userId:string,
         values: CreditorFormValues,
         ...params: any[]
     ) => Promise<
@@ -46,9 +47,10 @@ type CreditorFormProps = {
           }
     >
     creditorId?: string
+    userId:string
 }
 
-function CreditorForm({ form, action, creditorId }: CreditorFormProps) {
+function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
     const { toast } = useToast()
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
@@ -60,6 +62,7 @@ function CreditorForm({ form, action, creditorId }: CreditorFormProps) {
         setFormSuccess(undefined)
         startTransition(async () => {
             const res = await action(
+                userId,
                 values,
                 form.formState.dirtyFields,
                 creditorId

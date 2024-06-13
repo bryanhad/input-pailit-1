@@ -8,7 +8,7 @@ import { revalidatePath } from 'next/cache'
 import { Attachment } from '@prisma/client'
 import { ZodError } from 'zod'
 
-export async function addCreditor(values: CreditorFormValues) {
+export async function addCreditor(userId: string, values: CreditorFormValues) {
     try {
         const {
             attachments,
@@ -28,18 +28,13 @@ export async function addCreditor(values: CreditorFormValues) {
         } = AddCreditorSchema.parse(values)
 
         const slug = `${toSlug(nama)}-${nanoid(10)}`
-        // const attachmentsToBeUploaded = attachments.map((attachment) => {
-        //     return {
-        //         creditorId: "1",
-        //         ...attachment,
-        //     }
-        // })
-        // TODO: USE A GOD DAMN TRANSACTION BRO!!
+
         await db.$transaction(async (tx) => {
-            const createdCreditor = await db.creditor.create({
+            const createdCreditor = await tx.creditor.create({
                 data: {
                     slug,
                     nama,
+                    userId,
                     totalTagihan: String(totalTagihan),
                     jenis: jenis.trim(),
                     sifatTagihan: sifatTagihan.trim(),
@@ -91,6 +86,7 @@ export async function addCreditor(values: CreditorFormValues) {
 }
 
 export async function editCreditor(
+    userId: string,
     values: CreditorFormValues,
     dirtyFields: {
         nama: boolean
@@ -100,9 +96,11 @@ export async function editCreditor(
 ) {
     try {
         const submitedFormValues = AddCreditorSchema.parse(values)
-    
-        const toBeUpdatedFields: Partial<CreditorFormValues & { slug: string }> = {}
-    
+
+        const toBeUpdatedFields: Partial<
+            CreditorFormValues & { slug: string }
+        > = {}
+
         // Loop through dirtyfields, if the field is dirty, store the key value pair into toBeUpdatedFields
         for (const [key, value] of Object.entries(dirtyFields)) {
             if (value === true) {
@@ -128,7 +126,7 @@ export async function editCreditor(
                 }
             }
         }
-    
+
         // DELETE RELATED ATTACHMENTS BY creditorID
         const deleteCreditorAttachments = db.attachment.deleteMany({
             where: { creditorId },
@@ -152,15 +150,16 @@ export async function editCreditor(
                 alamatKuasaHukum: submitedFormValues.alamatKuasaHukum || null,
                 nomorTeleponKuasaHukum:
                     submitedFormValues.nomorTeleponKuasaHukum || null,
+                lastUpdatedByUserId: userId,
             } as any,
         })
-    
+
         await db.$transaction([
             deleteCreditorAttachments,
             addNewAttachments,
             updateCreditor,
         ])
-    
+
         revalidatePath('/dashboard')
         return {
             success: {

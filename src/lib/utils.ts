@@ -24,12 +24,16 @@ export function formatNumber(amount: number) {
     return NUMBER_FORMATTER.format(amount)
 }
 
-export function formatDateToLocale(date: Date, locales: Intl.LocalesArgument = 'id-ID') {
+export function formatDateToLocale(
+    date: Date,
+    locales: Intl.LocalesArgument = 'id-ID',
+    short?: boolean
+) {
     return new Date(date).toLocaleDateString(locales, {
         year: 'numeric',
-        month: 'long',
-        weekday: 'long',
+        month: short ? '2-digit' : 'long',
         day: 'numeric',
+        weekday: short ? undefined : 'long',
     })
 }
 
@@ -69,7 +73,7 @@ export function getNameInitial(name: string) {
 export class ActionError extends Error {
     title?: string
     constructor(message: string, title?: string) {
-        super() 
+        super()
         this.title = title
         this.message = message
     }
