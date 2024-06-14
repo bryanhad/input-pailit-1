@@ -1,7 +1,6 @@
+import { cn } from '@/lib/utils'
 import React from 'react'
 import H1 from './h1'
-import H2 from './h2'
-import { cn } from '@/lib/utils'
 
 type MainWrapperProps = {
     children: React.ReactNode
@@ -9,6 +8,7 @@ type MainWrapperProps = {
     title?: React.ReactNode
     titleIcon?: React.ReactNode
     noBackgroundAndPadding?: boolean
+    titleClassName?: string
 }
 
 function MainWrapper({
@@ -17,6 +17,7 @@ function MainWrapper({
     titleIcon,
     titleDesc,
     noBackgroundAndPadding = false,
+    titleClassName,
 }: MainWrapperProps) {
     return (
         <div
@@ -30,7 +31,14 @@ function MainWrapper({
                     {titleIcon}
                     <div className="flex flex-col gap-3 flex-1">
                         {title && (
-                            <H1 className="max-md:text-center">{title}</H1>
+                            <H1
+                                className={cn(
+                                    'max-md:text-center',
+                                    titleClassName
+                                )}
+                            >
+                                {title}
+                            </H1>
                         )}
                         {titleDesc && <p>{titleDesc}</p>}
                     </div>

@@ -12,7 +12,7 @@ import { capitalizeFirstLetter, cn, formatCurrency } from '@/lib/utils'
 import { CreditorType } from '@/types'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import DownloadButton from '../../dashboard/_components/table/DownloadButton'
+import DownloadButton from '../../dashboard/_components/creditors-table/DownloadButton'
 import { Pencil } from 'lucide-react'
 import H1 from '@/components/ui/h1'
 import H2 from '@/components/ui/h2'
@@ -47,6 +47,7 @@ async function CreditorDetailPage({
                 />
             }
             title={creditor.nama}
+            titleClassName="max-md:text-start"
         >
             {/* <p className="font-light">ID: {creditor.id}</p> */}
             <div className="flex flex-col gap-4 items-start md:flex-row md:justify-between md:gap-6">
