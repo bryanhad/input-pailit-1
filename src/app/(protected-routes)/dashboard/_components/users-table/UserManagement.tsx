@@ -17,17 +17,21 @@ import Link from 'next/link'
 import Pagination from './Pagination'
 import { UserFilterValues } from './validations'
 import TotalCount from '../summary/TotalCount'
+import UserStatusSwitch from './UserRoleToggle'
+import UserStatusToggle from './UserStatusToggle'
 
 type UserManagementProps = {
     filterValues: UserFilterValues
     currentPage: number
     tableSize: number
+    currentLoggedInUserRole: string
 }
 
 async function UserManagement({
     filterValues: { uq, urole },
     currentPage,
     tableSize,
+    currentLoggedInUserRole,
 }: UserManagementProps) {
     const searchString = uq
         ?.split(' ')
@@ -57,7 +61,7 @@ async function UserManagement({
         include: {
             _count: { select: { creditors: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { id: 'desc' },
         where: whereFilter,
     })
 
@@ -96,10 +100,10 @@ async function UserManagement({
                             <TableHead className="text-white">
                                 Joined At
                             </TableHead>
-                            <TableHead className="text-white">
+                            <TableHead className="text-white text-center">
                                 Creditors Input
                             </TableHead>
-                            <TableHead className="text-right text-white">
+                            <TableHead className="text-white text-center">
                                 Action
                             </TableHead>
                         </TableRow>
@@ -111,8 +115,7 @@ async function UserManagement({
                                     {idx + 1}
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {user.name ? user.name :  '-'
-                                    }
+                                    {user.name ? user.name : '-'}
                                 </TableCell>
                                 <TableCell className="font-semibold">
                                     <div className="flex items-center gap-1">
@@ -123,7 +126,12 @@ async function UserManagement({
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    {user.name ? 'ACTIVE' : 'ON-BOARDING'}
+                                    <UserStatusToggle
+                                        user={user}
+                                        currentLoggedInUserRole={
+                                            currentLoggedInUserRole
+                                        }
+                                    />
                                 </TableCell>
                                 <TableCell>
                                     <UserRoleBadge role={user.role} />
@@ -131,18 +139,15 @@ async function UserManagement({
                                 <TableCell>
                                     {formatDateToLocale(user.createdAt)}
                                 </TableCell>
-                                <TableCell>
-                                    {formatNumber(user._count.creditors)}
+                                <TableCell className="text-center">
+                                    <p>{formatNumber(user._count.creditors)}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <div className="flex gap-2 justify-end">
+                                    <div className="flex justify-center">
                                         <Button asChild>
                                             <Link href={`/users/${user.id}`}>
                                                 View
                                             </Link>
-                                        </Button>
-                                        <Button variant={'destructive-soft'}>
-                                            Disable
                                         </Button>
                                     </div>
                                 </TableCell>

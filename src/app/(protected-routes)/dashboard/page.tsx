@@ -7,7 +7,7 @@ import Summaries from './_components/summary/Summaries'
 import CreditorsTable from './_components/creditors-table/CreditorsTable'
 import FilterOptionsModal from './_components/creditors-table/FilterOptionsModal'
 import { CreditorFilterValues } from './_components/creditors-table/validations'
-import UsersTable from './_components/users-table/UserManagement'
+import UserManagement from './_components/users-table/UserManagement'
 import { UserFilterValues } from './_components/users-table/validations'
 
 export const metadata: Metadata = {
@@ -41,7 +41,7 @@ async function DashboardPage({
         usize,
     },
 }: DashboardPageProps) {
-    await mustLogin()
+    const user = await mustLogin()
 
     const filterValues: CreditorFilterValues = {
         q,
@@ -62,10 +62,11 @@ async function DashboardPage({
         <MainWrapper noBackgroundAndPadding>
          
             <Summaries />
-            <UsersTable
+            <UserManagement
                 filterValues={usersTableFilterValues}
                 currentPage={currentUsersTablePage}
                 tableSize={usersTableSize}
+                currentLoggedInUserRole={user.role}
             />
             <div className="flex justify-between">
                 <FilterOptionsModal defaultFilterValues={filterValues} />

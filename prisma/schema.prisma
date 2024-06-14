@@ -27,6 +27,7 @@ model User {
     image         String?
     sessions      Session[]
     role          String    @default("USER")
+    isActive      Boolean   @default(true)
 
     creditors            Creditor[] @relation("UserCreditor")
     lastUpdatedCreditors Creditor[] @relation("LastUpdatedByUser")

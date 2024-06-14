@@ -54,7 +54,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             token.emailVerified = existingUser.emailVerified
             token.createdAt = existingUser.createdAt
             token.id = existingUser.id
-            // token.profilePic = existingUser.profilePic
 
             return token
         },
@@ -72,7 +71,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (token.id) {
                 session.user.id = token.id as string
             }
-            // const bruh = session.user.
             // `session.user.address` is now a valid property, and will be type-checked
             // in places like `useSession().data.user` or `auth().user`
             return session
@@ -80,6 +78,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     providers: [
         credentials({
+            // TODO: if user's isActive is false, don't let them in!
             async authorize(credentials) {
                 const parsedFields = loginSchema.safeParse(credentials)
 
