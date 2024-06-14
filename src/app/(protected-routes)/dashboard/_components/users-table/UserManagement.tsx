@@ -111,7 +111,8 @@ async function UserManagement({
                                     {idx + 1}
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {user.name}
+                                    {user.name ? user.name :  '-'
+                                    }
                                 </TableCell>
                                 <TableCell className="font-semibold">
                                     <div className="flex items-center gap-1">
@@ -121,7 +122,9 @@ async function UserManagement({
                                         />
                                     </div>
                                 </TableCell>
-                                <TableCell>ACTIVE</TableCell>
+                                <TableCell>
+                                    {user.name ? 'ACTIVE' : 'ON-BOARDING'}
+                                </TableCell>
                                 <TableCell>
                                     <UserRoleBadge role={user.role} />
                                 </TableCell>
