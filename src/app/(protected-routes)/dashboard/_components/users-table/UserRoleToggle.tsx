@@ -40,10 +40,7 @@ function UserRoleToggle({
         setFormError(undefined)
         setFormSuccess(undefined)
         startTransition(async () => {
-            const res = await toggleUserRole(
-                toBeUpdatedUserInfo.email,
-                toBeRole
-            )
+            const res = await toggleUserRole(toBeUpdatedUserInfo.email)
             if (res?.error) {
                 setFormError(res.error.message)
                 return
