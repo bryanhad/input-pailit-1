@@ -17,6 +17,7 @@ import { redirect } from 'next/navigation'
 import { sendEmailThroughNodeMailerTransport, storeToken } from './lib'
 import { LoginFormValues, loginSchema } from './validation'
 import { UserStatus } from '@/types'
+import { revalidatePath } from 'next/cache'
 
 /**
  * Checks whether the user has signed in or not.
@@ -57,6 +58,7 @@ export async function sendVerificationEmail(email: string) {
 
 export async function sendVerificationEmailToNewUser(email: string) {
     try {
+        // TODO: delete comment
         // const existingUser = await db.user.findUnique({
         //     where: { email },
         // })
@@ -67,6 +69,11 @@ export async function sendVerificationEmailToNewUser(email: string) {
         //     )
         // }
         await sendVerificationEmail(email)
+        // TODO: should you revlidate the dashboard after sending the email to new user?
+        // cuz if you do so, the page refreshes!! and that's kinda wonkyyyy
+        // too lazy to look it up now.. so hopefully future Bryan can work around this issue..
+        // or... not doing anything ahhahahahaha
+        // revalidatePath('/dashboard')
 
         return { success: 'Verification email successfully sent.' }
     } catch (err) {

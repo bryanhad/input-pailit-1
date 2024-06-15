@@ -83,7 +83,7 @@ function UserStatusToggle({
     if (toBeUpdatedUserInfo.status === UserStatus.onBoarding) {
         return (
             <SimplePopover
-                className=" h-6 w-11 shrink-0 bg-amber-300 rounded-full"
+                className=" h-6 w-11 shrink-0 bg-amber-300 rounded-full p-0"
                 tip={
                     <p className="text-center">
                         User has not finished

@@ -56,7 +56,7 @@ async function DashboardPage({
         urole,
     }
     const currentUsersTablePage = Number(upage) || 1
-    const usersTableSize = Number(usize) || 10
+    const usersTableSize = Number(usize) || 3
 
     return (
         <MainWrapper noBackgroundAndPadding>

@@ -1,15 +1,15 @@
-"use client"
+'use client'
 
-import LoadingButton from "@/components/LoadingButton"
-import UserRoleBadge from "@/components/UserRoleBadge"
-import FormResponse from "@/components/form-response"
-import { Button } from "@/components/ui/button"
-import Modal from "@/components/ui/modal"
-import { useToast } from "@/components/ui/use-toast"
-import { Role } from "@/types"
-import { useEffect, useState, useTransition } from "react"
-import { CurrentLoggedInUserInfo, ToBeUpdatedUserInfo } from "./UserManagement"
-import { toggleUserRole } from "./actions"
+import LoadingButton from '@/components/LoadingButton'
+import UserRoleBadge from '@/components/UserRoleBadge'
+import FormResponse from '@/components/form-response'
+import { Button } from '@/components/ui/button'
+import Modal from '@/components/ui/modal'
+import { useToast } from '@/components/ui/use-toast'
+import { Role, UserStatus } from '@/types'
+import { useEffect, useState, useTransition } from 'react'
+import { CurrentLoggedInUserInfo, ToBeUpdatedUserInfo } from './UserManagement'
+import { toggleUserRole } from './actions'
 
 type UserRoleToggleProps = {
     toBeUpdatedUserInfo: ToBeUpdatedUserInfo
@@ -60,9 +60,12 @@ function UserRoleToggle({
     if (
         // if current logged in user has USER role
         // OR if the user is the same as the one who is logged in:
+        // OR if the target user's status is still NOT-VERIFIED OR ON-BOARDING
         currentLoggedInUserInfo.role === Role.User ||
         currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id ||
-        !toBeUpdatedUserInfo.name
+        ([UserStatus.notVerified, UserStatus.onBoarding] as string[]).includes(
+            toBeUpdatedUserInfo.status
+        )
     ) {
         return <UserRoleBadge role={userRole} className="cursor-not-allowed" />
     }
@@ -92,7 +95,7 @@ function UserRoleToggle({
                     <Button
                         type="button"
                         className="flex-1"
-                        variant={"outline"}
+                        variant={'outline'}
                         onClick={() => setOpen(false)}
                     >
                         Cancel

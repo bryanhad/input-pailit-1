@@ -90,6 +90,7 @@ async function UserManagement({
     ])
     const totalPages = Math.ceil(Number(totalDataCountByFilter) / tableSize)
 
+    // TODO: REMOVE COMMENT
     // const users: typeof verifiedUsers = [
     //     // DONT JUDGE ME :D
     //     ...notVerifiedUsers.map((el) => {
@@ -159,7 +160,7 @@ async function UserManagement({
                                     <div className="max-w-[160px]">
                                         {user.name ? (
                                             <p className="max-w-max truncate">
-                                                {user.name}aefjabniuf
+                                                {user.name}
                                             </p>
                                         ) : (
                                             <p className="font-light">
