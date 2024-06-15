@@ -8,6 +8,7 @@ export type ErrorTypeExtended =
     | "SendEmail"
     | 'InvalidToken'
     | 'IncompleteAccountSetup'
+    | 'SessionNotFound'
     | AuthError["type"]
 
 export class LoginError extends AuthError {
@@ -41,4 +42,8 @@ export class InvalidTokenError extends LoginError {
 }
 export class IncompleteAccountSetupError extends LoginError {
     static type = "IncompleteAccountSetup"
+}
+
+export class SessionNotFoundError extends LoginError {
+    static type = "SessionNotFound"
 }

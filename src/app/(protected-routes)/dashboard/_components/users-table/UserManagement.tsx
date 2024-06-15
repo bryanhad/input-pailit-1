@@ -1,5 +1,5 @@
-import EmailStatusBadge from "@/components/EmailStatusBadge"
-import { Button } from "@/components/ui/button"
+import EmailStatusBadge from '@/components/EmailStatusBadge'
+import { Button } from '@/components/ui/button'
 import {
     Table,
     TableBody,
@@ -7,21 +7,22 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import db from "@/lib/db"
-import { formatDateToLocale, formatNumber } from "@/lib/utils"
-import { Prisma, User } from "@prisma/client"
-import Link from "next/link"
-import TotalCount from "../summary/TotalCount"
-import Pagination from "./Pagination"
-import UserRoleToggle from "./UserRoleToggle"
-import UserStatusToggle from "./UserStatusToggle"
-import { UserFilterValues } from "./validations"
+} from '@/components/ui/table'
+import db from '@/lib/db'
+import { formatDateToLocale, formatNumber } from '@/lib/utils'
+import { Prisma, User } from '@prisma/client'
+import Link from 'next/link'
+import TotalCount from '../summary/TotalCount'
+import Pagination from './Pagination'
+import UserRoleToggle from './UserRoleToggle'
+import UserStatusToggle from './UserStatusToggle'
+import { UserFilterValues } from './validations'
+import { UserStatus } from '@/types'
 
-export type CurrentLoggedInUserInfo = Pick<User, "id" | "role">
+export type CurrentLoggedInUserInfo = Pick<User, 'id' | 'role'>
 export type ToBeUpdatedUserInfo = Pick<
     User,
-    "name" | "email" | "isActive" | "id" | "role" | "emailVerified"
+    'name' | 'email' | 'status' | 'id' | 'role' | 'emailVerified'
 >
 
 type UserManagementProps = {
@@ -38,9 +39,9 @@ async function UserManagement({
     currentLoggedInUserInfo,
 }: UserManagementProps) {
     const searchString = uq
-        ?.split(" ")
+        ?.split(' ')
         .filter((word) => word.length > 0)
-        .join(" & ")
+        .join(' & ')
 
     const searchFilter: Prisma.UserWhereInput = searchString
         ? {
@@ -59,54 +60,56 @@ async function UserManagement({
 
     const offset = (currentPage - 1) * tableSize
 
-    const getVerifiedUsers = db.user.findMany({
+    const getUsers = db.user.findMany({
         skip: offset,
         take: tableSize,
         include: {
             _count: { select: { creditors: true } },
         },
-        orderBy: { id: "desc" },
+        orderBy: { id: 'desc' },
         where: whereFilter,
     })
-    const getNotVerifiedUsers = db.verificationToken.findMany()
+    // const getNotVerifiedUsers = db.verificationToken.findMany()
     const getTotalDataCountByFilter = db.user.count({
         where: whereFilter,
     })
-    const getTotalVerifiedUsersCount = db.user.count()
+    const getVerifiedUsersCount = db.user.count({
+        where: { status: { in: [UserStatus.active, UserStatus.inactive] } },
+    })
 
     const [
-        verifiedUsers,
-        notVerifiedUsers,
+        users,
+        // notVerifiedUsers,
         totalDataCountByFilter,
         totalVerifiedUsersCount,
     ] = await Promise.all([
-        getVerifiedUsers,
-        getNotVerifiedUsers,
+        getUsers,
+        // getNotVerifiedUsers,
         getTotalDataCountByFilter,
-        getTotalVerifiedUsersCount,
+        getVerifiedUsersCount,
     ])
     const totalPages = Math.ceil(Number(totalDataCountByFilter) / tableSize)
 
-    const users: typeof verifiedUsers = [
-        // DONT JUDGE ME :D
-        ...notVerifiedUsers.map((el) => {
-            const returnValue: (typeof verifiedUsers)[0] = {
-                email: el.email,
-                _count: { creditors: 0 },
-                createdAt: el.createdAt,
-                emailVerified: null,
-                id: "null",
-                image: null,
-                isActive: false,
-                name: null,
-                password: null,
-                role: "USER",
-                updatedAt: el.createdAt,
-            }
-            return returnValue
-        }),
-        ...verifiedUsers,
-    ]
+    // const users: typeof verifiedUsers = [
+    //     // DONT JUDGE ME :D
+    //     ...notVerifiedUsers.map((el) => {
+    //         const returnValue: (typeof verifiedUsers)[0] = {
+    //             email: el.email,
+    //             _count: { creditors: 0 },
+    //             createdAt: el.createdAt,
+    //             emailVerified: null,
+    //             id: 'null',
+    //             image: null,
+    //             isActive: false,
+    //             name: null,
+    //             password: null,
+    //             role: 'USER',
+    //             updatedAt: el.createdAt,
+    //         }
+    //         return returnValue
+    //     }),
+    //     ...verifiedUsers,
+    // ]
 
     return (
         <div className="flex gap-4">
@@ -160,7 +163,7 @@ async function UserManagement({
                                             </p>
                                         ) : (
                                             <p className="font-light">
-                                               Not filled yet
+                                                Not filled yet
                                             </p>
                                         )}
                                     </div>

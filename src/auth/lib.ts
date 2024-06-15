@@ -1,8 +1,8 @@
-import { createTransport } from "nodemailer"
-import db from "@/lib/db"
-import { formatDistanceToNow } from "date-fns"
-import { generateToken } from "@/lib/utils"
-import { MagicLinkStillAliveError } from "./errors"
+import { createTransport } from 'nodemailer'
+import db from '@/lib/db'
+import { formatDistanceToNow } from 'date-fns'
+import { generateToken } from '@/lib/utils'
+import { MagicLinkStillAliveError } from './errors'
 
 export async function storeToken(email: string) {
     // query verification token by users email
@@ -17,7 +17,7 @@ export async function storeToken(email: string) {
             })
             throw new MagicLinkStillAliveError(
                 `You can send it again ${timeLeft}.`,
-                "Previous magic link is still valid.",
+                'Previous magic link is still valid.'
             )
         } else {
             //if the token has EXPIRED
@@ -39,17 +39,28 @@ export async function storeToken(email: string) {
     const token = generateToken()
     const expires = new Date(Date.now() + 24 * 3600 * 1000) // Token expires in 1 day (24 hours)
 
-    await db.verificationToken.create({
-        data: {
-            email,
-            token,
-            expires,
-        },
+    await db.$transaction(async (tx) => {
+        await tx.verificationToken.create({
+            data: {
+                email,
+                token,
+                expires,
+            },
+        })
+        await tx.user.create({
+            data: {
+                email,
+            },
+        })
     })
+
     return token
 }
 
-export async function sendEmailThroughNodeMailerTransport(email:string, token:string) {
+export async function sendEmailThroughNodeMailerTransport(
+    email: string,
+    token: string
+) {
     const transporter = createTransport({
         host: process.env.SMTP_SERVER,
         port: Number(process.env.SMTP_PORT),
@@ -75,16 +86,16 @@ export async function sendEmailThroughNodeMailerTransport(email:string, token:st
 }
 
 export function createEmailHTML({ url, host }: { url: string; host: string }) {
-    const escapedHost = host.replace(/\./g, "&#8203;.")
+    const escapedHost = host.replace(/\./g, '&#8203;.')
 
     // const brandColor = theme.brandColor || "#346df1"
     const color = {
-        background: "#f9f9f9",
-        text: "#444",
-        mainBackground: "#fff",
-        buttonBackground: "#346df1",
-        buttonBorder: "#346df1",
-        buttonText: "#fff",
+        background: '#f9f9f9',
+        text: '#444',
+        mainBackground: '#fff',
+        buttonBackground: '#346df1',
+        buttonBorder: '#346df1',
+        buttonText: '#fff',
     }
 
     return `

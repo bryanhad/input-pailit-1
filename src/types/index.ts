@@ -11,5 +11,12 @@ export enum ClaimType {
 
 export enum Role {
     Admin = 'ADMIN',
-    User = 'USER'
+    User = 'USER',
+}
+
+export enum UserStatus {
+    notVerified = 'NOT-VERIFIED',
+    onBoarding = 'ON-BOARDING',
+    active = 'ACTIVE',
+    inactive = 'INACTIVE',
 }

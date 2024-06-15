@@ -4,7 +4,11 @@ import bcrypt from 'bcryptjs'
 import NextAuth from 'next-auth'
 import credentials from 'next-auth/providers/credentials'
 import { sendVerificationEmail } from './actions'
-import { InvalidCredentialsError, SessionExpiredError } from './errors'
+import {
+    InvalidCredentialsError,
+    SessionExpiredError,
+    SessionNotFoundError,
+} from './errors'
 import { loginSchema } from './validation'
 import { DefaultSession } from 'next-auth'
 
@@ -21,7 +25,7 @@ declare module 'next-auth' {
             emailVerified: Date | null
             createdAt: Date
             email: string
-            id:string
+            id: string
             /**
              * By default, TypeScript merges new interface properties and overwrites existing ones.
              * In this case, the default session user properties will be overwritten,
@@ -87,14 +91,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                     const user = await db.user.findUnique({
                         where: { email },
-                        include: { sessions: { select: { expires: true } } },
+                        include: { session: { select: { expires: true } } },
                     })
                     if (!user || !user.password) {
                         throw new InvalidCredentialsError(
                             'Invalid email or password.'
                         )
                     }
-                    if (new Date() > user.sessions[0].expires) {
+                    if (!user.session) {
+                        throw new SessionNotFoundError(
+                            'Session Not Found',
+                            'A user must have a session to log in.'
+                        )
+                    }
+                    if (new Date() > user.session.expires) {
                         // if user's session already expired..
                         await sendVerificationEmail(user.email)
                         throw new SessionExpiredError(

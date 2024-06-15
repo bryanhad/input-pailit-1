@@ -1,9 +1,9 @@
-"use server"
+'use server'
 
-import { auth } from "@/auth"
-import db from "@/lib/db"
-import { ActionError } from "@/lib/utils"
-import { Role } from "@/types"
+import { auth } from '@/auth'
+import db from '@/lib/db'
+import { ActionError } from '@/lib/utils'
+import { Role, UserStatus } from '@/types'
 
 // TODO: DEDUPLICATE NEXT-AUTH REQUEST!
 // you can use cache function from react, and just wrap your auth function with it and use it anywhere in your code.
@@ -13,14 +13,14 @@ async function checkIfAdmin() {
     const session = await auth()
     if (!session) {
         throw new ActionError(
-            "You must log in to do this action",
-            "Unauthorized"
+            'You must log in to do this action',
+            'Unauthorized'
         )
     }
     if (session.user.role !== Role.Admin) {
         throw new ActionError(
-            "Only user with admin role can do this action",
-            "Forbidden"
+            'Only user with admin role can do this action',
+            'Forbidden'
         )
     }
     return session.user
@@ -33,30 +33,35 @@ export async function toggleUserActiveStatus(email: string) {
         if (!toBeUpdatedUser) {
             throw new ActionError(
                 `Cannot find user with email ${email}`,
-                "Not Found"
+                'Not Found'
             )
         }
         if (currentUser.id === toBeUpdatedUser.id) {
             throw new ActionError(
                 `Cannot update your own user's role`,
-                "Forbidden"
+                'Forbidden'
             )
         }
         if (!toBeUpdatedUser.name || !toBeUpdatedUser.password) {
             throw new ActionError(
                 `Cannot update user that has not completed their account set up`,
-                "Forbidden"
+                'Forbidden'
             )
         }
         await db.user.update({
             where: { email },
-            data: { isActive: !toBeUpdatedUser.isActive },
+            data: {
+                status:
+                    toBeUpdatedUser.status === UserStatus.active
+                        ? UserStatus.inactive
+                        : UserStatus.active,
+            },
         })
         return {
             success: {
-                title: "Successfully Updated User Status",
+                title: 'Successfully Updated User Status',
                 message: `User '${toBeUpdatedUser.name}' is now ${
-                    toBeUpdatedUser.isActive ? "inactive" : "active"
+                    toBeUpdatedUser.status === UserStatus.active ? 'inactive' : 'active'
                 }.`,
             },
         }
@@ -71,8 +76,8 @@ export async function toggleUserActiveStatus(email: string) {
         }
         return {
             error: {
-                title: "Oh Noose!",
-                message: "Something went wrong",
+                title: 'Oh Noose!',
+                message: 'Something went wrong',
             },
         }
     }
@@ -86,19 +91,19 @@ export async function toggleUserRole(email: string) {
         if (!toBeUpdatedUser) {
             throw new ActionError(
                 `Cannot find user with email ${email}`,
-                "Not Found"
+                'Not Found'
             )
         }
         if (currentUser.id === toBeUpdatedUser.id) {
             throw new ActionError(
                 `Cannot update your own user's role`,
-                "Forbidden"
+                'Forbidden'
             )
         }
         if (!toBeUpdatedUser.name || !toBeUpdatedUser.password) {
             throw new ActionError(
                 `Cannot update user that has not completed their account set up`,
-                "Forbidden"
+                'Forbidden'
             )
         }
 
@@ -111,7 +116,7 @@ export async function toggleUserRole(email: string) {
         })
         return {
             success: {
-                title: "Successfully Updated Role",
+                title: 'Successfully Updated Role',
                 message: `${toBeUpdatedUser.name}'s role has been updated to ${toBeRole}`,
             },
         }
@@ -126,8 +131,8 @@ export async function toggleUserRole(email: string) {
         }
         return {
             error: {
-                title: "Oh Noose!",
-                message: "Something went wrong",
+                title: 'Oh Noose!',
+                message: 'Something went wrong',
             },
         }
     }

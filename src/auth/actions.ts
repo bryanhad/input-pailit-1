@@ -1,6 +1,6 @@
-"use server"
+'use server'
 
-import { auth, signIn, signOut } from "@/auth"
+import { auth, signIn, signOut } from '@/auth'
 import {
     EmailAlreadyInUseError,
     ErrorTypeExtended,
@@ -8,16 +8,15 @@ import {
     InvalidTokenError,
     LoginError,
     SendEmailError,
-} from "@/auth/errors"
-import { DEFAULT_LOGIN_REDIRECT } from "@/auth/routes"
-import db from "@/lib/db"
-import bcrypt from "bcryptjs"
-import { formatDistanceToNow } from "date-fns"
-import { redirect } from "next/navigation"
-import { sendEmailThroughNodeMailerTransport, storeToken } from "./lib"
-import { LoginFormValues, loginSchema } from "./validation"
-
-
+} from '@/auth/errors'
+import { DEFAULT_LOGIN_REDIRECT } from '@/auth/routes'
+import db from '@/lib/db'
+import bcrypt from 'bcryptjs'
+import { formatDistanceToNow } from 'date-fns'
+import { redirect } from 'next/navigation'
+import { sendEmailThroughNodeMailerTransport, storeToken } from './lib'
+import { LoginFormValues, loginSchema } from './validation'
+import { UserStatus } from '@/types'
 
 /**
  * Checks whether the user has signed in or not.
@@ -27,7 +26,7 @@ export async function mustLogin() {
     const session = await auth()
     // if user is not logged in
     if (!session) {
-        redirect("/auth/sign-in")
+        redirect('/auth/sign-in')
     }
 
     return session.user
@@ -50,62 +49,62 @@ export async function sendVerificationEmail(email: string) {
     const res = await sendEmailThroughNodeMailerTransport(email, token)
     if (res.length) {
         throw new SendEmailError(
-            `Email(s) (${res.join(", ")}) could not be sent`,
-            "Failed to send email"
+            `Email(s) (${res.join(', ')}) could not be sent`,
+            'Failed to send email'
         )
     }
 }
 
 export async function sendVerificationEmailToNewUser(email: string) {
     try {
-        const existingUser = await db.user.findUnique({
-            where: { email },
-        })
-        if (existingUser) {
-            throw new EmailAlreadyInUseError(
-                "User with this email already exists.",
-                "Cannot use this email"
-            )
-        }
+        // const existingUser = await db.user.findUnique({
+        //     where: { email },
+        // })
+        // if (existingUser) {
+        //     throw new EmailAlreadyInUseError(
+        //         'User with this email already exists.',
+        //         'Cannot use this email'
+        //     )
+        // }
         await sendVerificationEmail(email)
 
-        return { success: "Verification email successfully sent." }
+        return { success: 'Verification email successfully sent.' }
     } catch (err) {
         if (err instanceof LoginError) {
             return { error: err.message, title: err.title }
         }
-        return { error: "Something went wrong!" }
+        return { error: 'Something went wrong!' }
     }
 }
 
 export async function login(values: LoginFormValues) {
     const parsedValues = loginSchema.safeParse(values)
     if (parsedValues.error) {
-        return { error: "Invalid fields!" }
+        return { error: 'Invalid fields!' }
     }
 
     const { email, password } = parsedValues.data
 
     try {
         const [user] = await Promise.all([
-            db.user.findUnique({where: {email}, select:{name:true}}),
-            signIn("credentials", {
+            db.user.findUnique({ where: { email }, select: { name: true } }),
+            signIn('credentials', {
                 email,
                 password,
                 redirectTo: DEFAULT_LOGIN_REDIRECT,
-            })
+            }),
         ])
         if (!user) {
             throw new LoginError('Cannot find user')
         }
-        return {success: `Wellcome back ${user?.name}`}
+        return { success: `Wellcome back ${user?.name}` }
     } catch (err) {
         if (err instanceof LoginError) {
             switch (err.type as ErrorTypeExtended) {
-                case "InvalidCredentials":
+                case 'InvalidCredentials':
                     return { error: err.message }
                 default:
-                    return { error: err.message || "Something went wrong!" }
+                    return { error: err.message || 'Something went wrong!' }
             }
         }
         // IMPORTANT: if you are using signIn inside a server action, inside the catch clause, below the if clause, you also need to throw the err. if not, after a successful login, it will not redirect the user.
@@ -115,10 +114,10 @@ export async function login(values: LoginFormValues) {
 
 export async function logout() {
     try {
-        await signOut({ redirectTo: "/" })
+        await signOut({ redirectTo: '/' })
     } catch (err) {
         if (err instanceof LoginError) {
-            return { error: err.message || "Something went wrong!" }
+            return { error: err.message || 'Something went wrong!' }
         }
         // IMPORTANT: if you are using signIn inside a server action, inside the catch clause, below the if clause, you also need to throw the err. if not, after a successful login, it will not redirect the user.
         throw err
@@ -145,22 +144,30 @@ export async function consumeToken(token: string) {
             throw new IncompleteAccountSetupError(sessionWithUser.userId)
         }
         throw new InvalidTokenError(
-            "The token has either been used, expired, or is invalid.",
-            "Invalid Token"
+            'The token has either been used, expired, or is invalid.',
+            'Invalid Token'
         )
     }
 
     // AT THIS POINT, USER
     return await db.$transaction(async (tx) => {
-        // FIND OR CREATE USER
-        const user = await tx.user.upsert({
+        // UPDATE USER
+        const user = await tx.user.update({
             where: { email: verificationToken.email },
-            update: {},
-            create: {
-                email: verificationToken.email,
+            data: {
+                status: UserStatus.onBoarding,
                 emailVerified: new Date(),
             },
         })
+        // TODO: remove comment
+        // const user = await tx.user.upsert({
+        //     where: { email: verificationToken.email },
+        //     update: {},
+        //     create: {
+        //         email: verificationToken.email,
+        //         emailVerified: new Date(),
+        //     },
+        // })
 
         const session1 = await tx.session.upsert({
             where: { sessionToken: token },
@@ -199,15 +206,15 @@ export async function updateUserNameAndPasswordThenSignIn(
         if (!user) {
             throw new LoginError(
                 `user with id '${userId}' is not found`,
-                "User Not Found"
+                'User Not Found'
             )
         }
         const hashedPassword = await bcrypt.hash(password, 10)
         await db.user.update({
             where: { id: userId },
-            data: { password: hashedPassword, name },
+            data: { password: hashedPassword, name, status: UserStatus.active },
         })
-        await signIn("credentials", {
+        await signIn('credentials', {
             email: user.email,
             password,
             redirectTo: DEFAULT_LOGIN_REDIRECT,
@@ -216,7 +223,7 @@ export async function updateUserNameAndPasswordThenSignIn(
         if (err instanceof LoginError) {
             return {
                 title: err.title,
-                error: err.message || "Something went wrong!",
+                error: err.message || 'Something went wrong!',
             }
         }
         // IMPORTANT: if you are using signIn inside a server action, inside the catch clause, below the if clause, you also need to throw the err. if not, after a successful login, it will not redirect the user.

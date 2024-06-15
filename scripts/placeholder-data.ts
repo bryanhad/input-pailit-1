@@ -1,4 +1,4 @@
-import { ClaimType, CreditorType, Role } from "../src/types"
+import { ClaimType, CreditorType, Role, UserStatus } from "../src/types"
 import { Attachment, Creditor, User } from "@prisma/client"
 
 // export const placeholderSession: Partial<Omit<User, "createdAt" | "updatedAt">>[] = [
@@ -15,6 +15,7 @@ export const placeholderUsers: Partial<
         password: "sipalingadmin1",
         emailVerified: new Date(),
         email: "bryanhadinata76@gmail.com",
+        status: UserStatus.active,
     },
     {
         id: "92hgionfui3b9wgi083o24",
@@ -23,6 +24,7 @@ export const placeholderUsers: Partial<
         password: "sipalinguser1",
         emailVerified: new Date(),
         email: "idsilverpro@gmail.com",
+        status: UserStatus.active,
     },
 ]
 

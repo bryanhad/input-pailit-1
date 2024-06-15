@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import LoadingButton from "@/components/LoadingButton"
-import FormResponse from "@/components/form-response"
-import { Button } from "@/components/ui/button"
-import Modal from "@/components/ui/modal"
-import { Switch } from "@/components/ui/switch"
-import { useToast } from "@/components/ui/use-toast"
-import { capitalizeFirstLetter } from "@/lib/utils"
-import { Role } from "@/types"
-import { useEffect, useState, useTransition } from "react"
-import { CurrentLoggedInUserInfo, ToBeUpdatedUserInfo } from "./UserManagement"
-import { toggleUserActiveStatus } from "./actions"
-import SimplePopover from "@/components/SimplePopover"
+import LoadingButton from '@/components/LoadingButton'
+import FormResponse from '@/components/form-response'
+import { Button } from '@/components/ui/button'
+import Modal from '@/components/ui/modal'
+import { Switch } from '@/components/ui/switch'
+import { useToast } from '@/components/ui/use-toast'
+import { capitalizeFirstLetter, cn } from '@/lib/utils'
+import { Role, UserStatus } from '@/types'
+import { useEffect, useState, useTransition } from 'react'
+import { CurrentLoggedInUserInfo, ToBeUpdatedUserInfo } from './UserManagement'
+import { toggleUserActiveStatus } from './actions'
+import SimplePopover from '@/components/SimplePopover'
 
 type UserStatusToggleProps = {
     toBeUpdatedUserInfo: ToBeUpdatedUserInfo
@@ -33,11 +33,9 @@ function UserStatusToggle({
         setFormSuccess(undefined)
     }, [open])
 
-    const [userActiveStatus, setUserActiveStatus] = useState(
-        toBeUpdatedUserInfo.isActive
-    )
+    const [userStatus, setUserStatus] = useState(toBeUpdatedUserInfo.status)
 
-    const action = userActiveStatus ? "deactivate" : "activate"
+    const action = userStatus === UserStatus.active ? 'deactivate' : 'activate'
 
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
@@ -49,19 +47,23 @@ function UserStatusToggle({
                 setFormError(res.error.message)
                 return
             }
-            setFormSuccess("Successfully updated user status")
+            setFormSuccess('Successfully updated user status')
             toast({
                 title: res.success.title,
                 description: res.success.message,
             })
-            setUserActiveStatus((prev) => !prev)
+            setUserStatus((prev) => {
+                return prev === UserStatus.active
+                    ? UserStatus.inactive
+                    : UserStatus.active
+            })
             setOpen(false)
             setFormError(undefined)
             setFormSuccess(undefined)
         })
     }
 
-    if (!toBeUpdatedUserInfo.emailVerified) {
+    if (toBeUpdatedUserInfo.status === UserStatus.notVerified) {
         return (
             <SimplePopover
                 className=" h-6 w-11 shrink-0 bg-red-500 rounded-full p-0"
@@ -78,7 +80,7 @@ function UserStatusToggle({
         )
     }
 
-    if (!toBeUpdatedUserInfo.name) {
+    if (toBeUpdatedUserInfo.status === UserStatus.onBoarding) {
         return (
             <SimplePopover
                 className=" h-6 w-11 shrink-0 bg-amber-300 rounded-full"
@@ -102,12 +104,28 @@ function UserStatusToggle({
         currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id
     ) {
         return (
-            <Switch
-                checked={userActiveStatus}
-                className={`data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200 cursor-not-allowed ${
-                    userActiveStatus ? "bg-blue-500" : "bg-slate-200"
-                }`}
-            />
+            <SimplePopover
+                className={cn(
+                    'inline-flex h-6 w-11 shrink-0 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background relative',
+                    {
+                        'bg-blue-500': userStatus === UserStatus.active,
+                        'bg-slate-200': userStatus === UserStatus.inactive,
+                        'cursor-not-allowed' : currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id && currentLoggedInUserInfo.role === Role.Admin
+                    }
+                )}
+                tip={userStatus}
+            >
+                <div
+                    className={cn(
+                        'pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform absolute left-0',
+                        {
+                            'translate-x-5': userStatus === UserStatus.active,
+                            'translate-x-0': userStatus === UserStatus.inactive,
+                  
+                        }
+                    )}
+                />
+            </SimplePopover>
         )
     }
 
@@ -117,9 +135,11 @@ function UserStatusToggle({
             onOpenChange={setOpen}
             buttonCustom={
                 <Switch
-                    checked={userActiveStatus}
+                    checked={userStatus === UserStatus.active}
                     className={`data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200 ${
-                        userActiveStatus ? "bg-blue-500" : "bg-slate-200"
+                        userStatus === UserStatus.active
+                            ? 'bg-blue-500'
+                            : 'bg-slate-200'
                     }`}
                 />
             }
@@ -127,7 +147,7 @@ function UserStatusToggle({
                 toBeUpdatedUserInfo.name
             }'?`}
             desc={`By ${action.slice(0, -1)}ing this user, this user ${
-                userActiveStatus
+                userStatus === UserStatus.active
                     ? `won't be able to sign in.`
                     : `will be able to sign in again.`
             }`}
@@ -139,14 +159,18 @@ function UserStatusToggle({
                     <LoadingButton
                         type="submit"
                         loading={isPending}
-                        variant={userActiveStatus ? "destructive" : "default"}
+                        variant={
+                            userStatus === UserStatus.active
+                                ? 'destructive'
+                                : 'default'
+                        }
                     >
                         Yes, {action} this user
                     </LoadingButton>
                     <Button
                         type="button"
                         className="flex-1"
-                        variant={"outline"}
+                        variant={'outline'}
                         onClick={() => setOpen(false)}
                     >
                         Cancel
