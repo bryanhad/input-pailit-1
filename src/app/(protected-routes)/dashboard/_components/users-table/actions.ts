@@ -23,17 +23,23 @@ async function checkIfAdmin() {
             'Forbidden'
         )
     }
-    return session.user.role === Role.Admin
+    return session.user
 }
 
 export async function toggleUserActiveStatus(email: string) {
     try {
-        await checkIfAdmin()
+        const currentUser = await checkIfAdmin()
         const toBeUpdatedUser = await db.user.findUnique({ where: { email } })
         if (!toBeUpdatedUser) {
             throw new ActionError(
                 `Cannot find user with email ${email}`,
                 'Not Found'
+            )
+        }
+        if (currentUser.id === toBeUpdatedUser.id) {
+            throw new ActionError(
+                `Cannot update your own user's role`,
+                'Forbidden'
             )
         }
         await db.user.update({
@@ -66,9 +72,9 @@ export async function toggleUserActiveStatus(email: string) {
     }
 }
 
-export async function toggleUserRole(email: string) {
+export async function toggleUserRole(email: string, toBeRole: string) {
     try {
-        await checkIfAdmin()
+        const currentUser = await checkIfAdmin()
 
         const toBeUpdatedUser = await db.user.findUnique({ where: { email } })
         if (!toBeUpdatedUser) {
@@ -77,16 +83,22 @@ export async function toggleUserRole(email: string) {
                 'Not Found'
             )
         }
-        const newRole =
-            toBeUpdatedUser.role === Role.User ? Role.Admin : Role.User
+
+        if (currentUser.id === toBeUpdatedUser.id) {
+            throw new ActionError(
+                `Cannot update your own user's role`,
+                'Forbidden'
+            )
+        }
+       
         await db.user.update({
             where: { email },
-            data: { role: newRole },
+            data: { role: toBeRole },
         })
         return {
             success: {
                 title: 'Successfully Updated Role',
-                message: `${toBeUpdatedUser.name}'s role has been updated to ${newRole}`,
+                message: `${toBeUpdatedUser.name}'s role has been updated to ${toBeRole}`,
             },
         }
     } catch (err) {

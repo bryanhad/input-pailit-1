@@ -1,6 +1,6 @@
-import EmailStatusBadge from '@/components/EmailStatusBadge'
-import UserRoleBadge from '@/components/UserRoleBadge'
-import { Button } from '@/components/ui/button'
+import EmailStatusBadge from "@/components/EmailStatusBadge"
+import UserRoleBadge from "@/components/UserRoleBadge"
+import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
@@ -9,34 +9,41 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table'
-import db from '@/lib/db'
-import { formatDateToLocale, formatNumber } from '@/lib/utils'
-import { Prisma } from '@prisma/client'
-import Link from 'next/link'
-import Pagination from './Pagination'
-import { UserFilterValues } from './validations'
-import TotalCount from '../summary/TotalCount'
-import UserStatusSwitch from './UserRoleToggle'
-import UserStatusToggle from './UserStatusToggle'
+} from "@/components/ui/table"
+import db from "@/lib/db"
+import { formatDateToLocale, formatNumber } from "@/lib/utils"
+import { Prisma, User } from "@prisma/client"
+import Link from "next/link"
+import Pagination from "./Pagination"
+import { UserFilterValues } from "./validations"
+import TotalCount from "../summary/TotalCount"
+import UserStatusSwitch from "./UserRoleToggle"
+import UserStatusToggle from "./UserStatusToggle"
+import UserRoleToggle from "./UserRoleToggle"
+
+export type CurrentLoggedInUserInfo = Pick<User, "id" | "role">
+export type ToBeUpdatedUserInfo = Pick<
+    User,
+    "name" | "email" | "isActive" | "id" | "role"
+>
 
 type UserManagementProps = {
     filterValues: UserFilterValues
     currentPage: number
     tableSize: number
-    currentLoggedInUserRole: string
+    currentLoggedInUserInfo: CurrentLoggedInUserInfo
 }
 
 async function UserManagement({
     filterValues: { uq, urole },
     currentPage,
     tableSize,
-    currentLoggedInUserRole,
+    currentLoggedInUserInfo,
 }: UserManagementProps) {
     const searchString = uq
-        ?.split(' ')
+        ?.split(" ")
         .filter((word) => word.length > 0)
-        .join(' & ')
+        .join(" & ")
 
     const searchFilter: Prisma.UserWhereInput = searchString
         ? {
@@ -61,7 +68,7 @@ async function UserManagement({
         include: {
             _count: { select: { creditors: true } },
         },
-        orderBy: { id: 'desc' },
+        orderBy: { id: "desc" },
         where: whereFilter,
     })
 
@@ -115,7 +122,7 @@ async function UserManagement({
                                     {idx + 1}
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {user.name ? user.name : '-'}
+                                    {user.name ? user.name : "-"}
                                 </TableCell>
                                 <TableCell className="font-semibold">
                                     <div className="flex items-center gap-1">
@@ -127,14 +134,19 @@ async function UserManagement({
                                 </TableCell>
                                 <TableCell>
                                     <UserStatusToggle
-                                        user={user}
-                                        currentLoggedInUserRole={
-                                            currentLoggedInUserRole
+                                        toBeUpdatedUserInfo={user}
+                                        currentLoggedInUserInfo={
+                                            currentLoggedInUserInfo
                                         }
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    <UserRoleBadge role={user.role} />
+                                    <UserRoleToggle
+                                        currentLoggedInUserInfo={
+                                            currentLoggedInUserInfo
+                                        }
+                                        toBeUpdatedUserInfo={user}
+                                    />
                                 </TableCell>
                                 <TableCell>
                                     {formatDateToLocale(user.createdAt)}

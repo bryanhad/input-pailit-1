@@ -1,17 +1,17 @@
-import { mustLogin } from '@/auth/actions'
-import { Button } from '@/components/ui/button'
-import MainWrapper from '@/components/ui/main-wrapper'
-import { Metadata } from 'next'
-import Link from 'next/link'
-import Summaries from './_components/summary/Summaries'
-import CreditorsTable from './_components/creditors-table/CreditorsTable'
-import FilterOptionsModal from './_components/creditors-table/FilterOptionsModal'
-import { CreditorFilterValues } from './_components/creditors-table/validations'
-import UserManagement from './_components/users-table/UserManagement'
-import { UserFilterValues } from './_components/users-table/validations'
+import { mustLogin } from "@/auth/actions"
+import { Button } from "@/components/ui/button"
+import MainWrapper from "@/components/ui/main-wrapper"
+import { Metadata } from "next"
+import Link from "next/link"
+import Summaries from "./_components/summary/Summaries"
+import CreditorsTable from "./_components/creditors-table/CreditorsTable"
+import FilterOptionsModal from "./_components/creditors-table/FilterOptionsModal"
+import { CreditorFilterValues } from "./_components/creditors-table/validations"
+import UserManagement from "./_components/users-table/UserManagement"
+import { UserFilterValues } from "./_components/users-table/validations"
 
 export const metadata: Metadata = {
-    title: 'Dashboard',
+    title: "Dashboard",
 }
 
 type DashboardPageProps = {
@@ -60,18 +60,17 @@ async function DashboardPage({
 
     return (
         <MainWrapper noBackgroundAndPadding>
-         
             <Summaries />
             <UserManagement
                 filterValues={usersTableFilterValues}
                 currentPage={currentUsersTablePage}
                 tableSize={usersTableSize}
-                currentLoggedInUserRole={user.role}
+                currentLoggedInUserInfo={user}
             />
             <div className="flex justify-between">
                 <FilterOptionsModal defaultFilterValues={filterValues} />
-                <Button asChild variant={'success'}>
-                    <Link href={'/creditors/add'}>+ Kreditor</Link>
+                <Button asChild variant={"success"}>
+                    <Link href={"/creditors/add"}>+ Kreditor</Link>
                 </Button>
             </div>
             <CreditorsTable

@@ -1,26 +1,26 @@
-'use client'
+"use client"
 
-import LoadingButton from '@/components/LoadingButton'
-import ModalWrapper from '@/components/modal-wrapper'
-import { Button } from '@/components/ui/button'
-import Modal from '@/components/ui/modal'
-import { Switch } from '@/components/ui/switch'
-import { useToast } from '@/components/ui/use-toast'
-import { capitalizeFirstLetter, cn } from '@/lib/utils'
-import { useEffect, useState, useTransition } from 'react'
-import { toggleUserActiveStatus } from './actions'
-import { Role } from '@/types'
-import FormResponse from '@/components/form-response'
-import { User } from '@prisma/client'
+import LoadingButton from "@/components/LoadingButton"
+import FormResponse from "@/components/form-response"
+import { Button } from "@/components/ui/button"
+import Modal from "@/components/ui/modal"
+import { Switch } from "@/components/ui/switch"
+import { useToast } from "@/components/ui/use-toast"
+import { capitalizeFirstLetter } from "@/lib/utils"
+import { Role } from "@/types"
+import { User } from "@prisma/client"
+import { useEffect, useState, useTransition } from "react"
+import { toggleUserActiveStatus } from "./actions"
+import { CurrentLoggedInUserInfo, ToBeUpdatedUserInfo } from "./UserManagement"
 
 type UserStatusToggleProps = {
-    user: Pick<User, 'name' | 'email' | 'isActive'>
-    currentLoggedInUserRole: string
+    toBeUpdatedUserInfo: ToBeUpdatedUserInfo
+    currentLoggedInUserInfo: CurrentLoggedInUserInfo
 }
 
 function UserStatusToggle({
-    user,
-    currentLoggedInUserRole,
+    toBeUpdatedUserInfo,
+    currentLoggedInUserInfo,
 }: UserStatusToggleProps) {
     const { toast } = useToast()
     const [isPending, startTransition] = useTransition()
@@ -33,21 +33,23 @@ function UserStatusToggle({
         setFormSuccess(undefined)
     }, [open])
 
-    const [userActiveStatus, setUserActiveStatus] = useState(user.isActive)
+    const [userActiveStatus, setUserActiveStatus] = useState(
+        toBeUpdatedUserInfo.isActive
+    )
 
-    const action = userActiveStatus ? 'deactivate' : 'activate'
+    const action = userActiveStatus ? "deactivate" : "activate"
 
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         setFormError(undefined)
         setFormSuccess(undefined)
         startTransition(async () => {
-            const res = await toggleUserActiveStatus(user.email)
+            const res = await toggleUserActiveStatus(toBeUpdatedUserInfo.email)
             if (res?.error) {
                 setFormError(res.error.message)
                 return
             }
-            setFormSuccess('Successfully updated user status')
+            setFormSuccess("Successfully updated user status")
             toast({
                 title: res.success.title,
                 description: res.success.message,
@@ -59,13 +61,18 @@ function UserStatusToggle({
         })
     }
 
-    if (currentLoggedInUserRole === Role.User) {
+    if (
+        // if current logged in user has USER role 
+        // OR if the user is the same as the one who is logged in:
+        currentLoggedInUserInfo.role === Role.User ||
+        currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id
+    ) {
         return (
             <Switch
                 checked={userActiveStatus}
-                className={
-                    'data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200 cursor-not-allowed'
-                }
+                className={`data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200 cursor-not-allowed ${
+                    userActiveStatus ? "bg-blue-500" : "bg-slate-200"
+                }`}
             />
         )
     }
@@ -77,12 +84,14 @@ function UserStatusToggle({
             buttonCustom={
                 <Switch
                     checked={userActiveStatus}
-                    className={
-                        'data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200'
-                    }
+                    className={`data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200 ${
+                        userActiveStatus ? "bg-blue-500" : "bg-slate-200"
+                    }`}
                 />
             }
-            title={`${capitalizeFirstLetter(action)} user '${user.name}'?`}
+            title={`${capitalizeFirstLetter(action)} user '${
+                toBeUpdatedUserInfo.name
+            }'?`}
             desc={`By ${action.slice(0, -1)}ing this user, this user ${
                 userActiveStatus
                     ? `won't be able to sign in.`
@@ -96,14 +105,14 @@ function UserStatusToggle({
                     <LoadingButton
                         type="submit"
                         loading={isPending}
-                        variant={userActiveStatus ? 'destructive' : 'default'}
+                        variant={userActiveStatus ? "destructive" : "default"}
                     >
                         Yes, {action} this user
                     </LoadingButton>
                     <Button
                         type="button"
                         className="flex-1"
-                        variant={'outline'}
+                        variant={"outline"}
                         onClick={() => setOpen(false)}
                     >
                         Cancel

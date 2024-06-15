@@ -58,7 +58,7 @@ function Modal({
                 {(title || desc) && (
                     <DialogHeader className='space-y-3'>
                         <DialogTitle
-                            className={cn({ 'text-center': centerText })}
+                            className={cn({ 'text-center leading-snug': centerText })}
                         >
                             {title}
                         </DialogTitle>
