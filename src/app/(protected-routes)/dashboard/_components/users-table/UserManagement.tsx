@@ -6,7 +6,7 @@ import {
     TableCell,
     TableHead,
     TableHeader,
-    TableRow
+    TableRow,
 } from "@/components/ui/table"
 import db from "@/lib/db"
 import { formatDateToLocale, formatNumber } from "@/lib/utils"
@@ -21,7 +21,7 @@ import { UserFilterValues } from "./validations"
 export type CurrentLoggedInUserInfo = Pick<User, "id" | "role">
 export type ToBeUpdatedUserInfo = Pick<
     User,
-    "name" | "email" | "isActive" | "id" | "role"
+    "name" | "email" | "isActive" | "id" | "role" | "emailVerified"
 >
 
 type UserManagementProps = {
@@ -59,7 +59,7 @@ async function UserManagement({
 
     const offset = (currentPage - 1) * tableSize
 
-    const users = await db.user.findMany({
+    const getVerifiedUsers = db.user.findMany({
         skip: offset,
         take: tableSize,
         include: {
@@ -68,20 +68,52 @@ async function UserManagement({
         orderBy: { id: "desc" },
         where: whereFilter,
     })
-
-    const totalUsersCount = await db.user.count()
-
-    const totalDataCountByFilter = await db.user.count({
+    const getNotVerifiedUsers = db.verificationToken.findMany()
+    const getTotalDataCountByFilter = db.user.count({
         where: whereFilter,
     })
+    const getTotalVerifiedUsersCount = db.user.count()
+
+    const [
+        verifiedUsers,
+        notVerifiedUsers,
+        totalDataCountByFilter,
+        totalVerifiedUsersCount,
+    ] = await Promise.all([
+        getVerifiedUsers,
+        getNotVerifiedUsers,
+        getTotalDataCountByFilter,
+        getTotalVerifiedUsersCount,
+    ])
     const totalPages = Math.ceil(Number(totalDataCountByFilter) / tableSize)
+
+    const users: typeof verifiedUsers = [
+        // DONT JUDGE ME :D
+        ...notVerifiedUsers.map((el) => {
+            const returnValue: (typeof verifiedUsers)[0] = {
+                email: el.email,
+                _count: { creditors: 0 },
+                createdAt: el.createdAt,
+                emailVerified: null,
+                id: "null",
+                image: null,
+                isActive: false,
+                name: null,
+                password: null,
+                role: "USER",
+                updatedAt: el.createdAt,
+            }
+            return returnValue
+        }),
+        ...verifiedUsers,
+    ]
 
     return (
         <div className="flex gap-4">
             <div className="flex flex-col gap-4">
                 <TotalCount
-                    title="Total Users Count"
-                    totalCreditorsCount={totalUsersCount}
+                    title="Verified Users Count"
+                    totalCreditorsCount={totalVerifiedUsersCount}
                     className="flex-1"
                 />
                 <Button asChild>
@@ -98,7 +130,9 @@ async function UserManagement({
                             <TableHead className="text-white w-[160px]">
                                 Name
                             </TableHead>
-                            <TableHead className="text-white">Email</TableHead>
+                            <TableHead className="text-white w-[200px]">
+                                Email
+                            </TableHead>
                             <TableHead className="text-white">Status</TableHead>
                             <TableHead className="text-white">Role</TableHead>
                             <TableHead className="text-white">
@@ -119,14 +153,28 @@ async function UserManagement({
                                     {idx + 1}
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {user.name ? user.name : "-"}
+                                    <div className="max-w-[160px]">
+                                        {user.name ? (
+                                            <p className="max-w-max truncate">
+                                                {user.name}aefjabniuf
+                                            </p>
+                                        ) : (
+                                            <p className="font-light">
+                                               Not filled yet
+                                            </p>
+                                        )}
+                                    </div>
                                 </TableCell>
                                 <TableCell className="font-semibold">
                                     <div className="flex items-center gap-1">
-                                        {user.email}
                                         <EmailStatusBadge
                                             verifiedDate={user.emailVerified}
                                         />
+                                        <div className="max-w-[200px]">
+                                            <p className="max-w-max truncate">
+                                                {user.email}
+                                            </p>
+                                        </div>
                                     </div>
                                 </TableCell>
                                 <TableCell>

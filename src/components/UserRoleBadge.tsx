@@ -23,7 +23,7 @@ function UserRoleBadge({
                 { 'pointer-events-none': noClick },
                 className
             )}
-            tip={`User is an ${role.toLowerCase()}`}
+            tip={`User has ${role} privilidges`}
         >
             {role === Role.Admin ? (
                 <Bolt size={size} className="shrink-0" />

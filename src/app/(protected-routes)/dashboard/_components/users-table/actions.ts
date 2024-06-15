@@ -42,7 +42,7 @@ export async function toggleUserActiveStatus(email: string) {
                 "Forbidden"
             )
         }
-        if (!toBeUpdatedUser.name || toBeUpdatedUser.password) {
+        if (!toBeUpdatedUser.name || !toBeUpdatedUser.password) {
             throw new ActionError(
                 `Cannot update user that has not completed their account set up`,
                 "Forbidden"

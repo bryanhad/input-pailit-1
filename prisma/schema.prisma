@@ -55,6 +55,8 @@ model VerificationToken {
     token   String
     expires DateTime
 
+    createdAt DateTime @default(now())
+
     @@map("verification_tokens")
 }
 

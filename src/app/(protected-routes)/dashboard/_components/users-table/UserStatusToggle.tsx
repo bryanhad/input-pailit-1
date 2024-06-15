@@ -61,6 +61,23 @@ function UserStatusToggle({
         })
     }
 
+    if (!toBeUpdatedUserInfo.emailVerified) {
+        return (
+            <SimplePopover
+                className=" h-6 w-11 shrink-0 bg-red-500 rounded-full p-0"
+                tip={
+                    <p className="text-center">
+                        User has not clicked
+                        <br />
+                        the invitation email
+                    </p>
+                }
+            >
+                <div className="size-5 rounded-full bg-white mx-auto" />
+            </SimplePopover>
+        )
+    }
+
     if (!toBeUpdatedUserInfo.name) {
         return (
             <SimplePopover
