@@ -69,14 +69,16 @@ function Pagination({
                     <p className="text-sm font-medium">Rows per page</p>
                     <Select
                         onValueChange={(value) => {
-                            router.push(generatePageUrl(1, value))
+                            router.push(generatePageUrl(1, value), {
+                                scroll: false,
+                            })
                         }}
                     >
                         <SelectTrigger className="h-8 w-[70px]">
                             <SelectValue placeholder={itemsPerPage} />
                         </SelectTrigger>
                         <SelectContent side="top">
-                            {[5, 10, 15].map((pageSize) => (
+                            {[3, 5, 10].map((pageSize) => (
                                 <SelectItem
                                     key={pageSize}
                                     value={`${pageSize}`}

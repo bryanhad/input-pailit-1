@@ -69,7 +69,9 @@ function Pagination({
                     <p className="text-sm font-medium">Rows per page</p>
                     <Select
                         onValueChange={(value) => {
-                            router.push(generatePageUrl(1, value))
+                            router.push(generatePageUrl(1, value), {
+                                scroll: false,
+                            })
                         }}
                     >
                         <SelectTrigger className="h-8 w-[70px]">
