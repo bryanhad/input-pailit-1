@@ -9,6 +9,7 @@ import { User } from '@prisma/client'
 import { MailCheck, MailWarning, PencilIcon } from 'lucide-react'
 import { useState } from 'react'
 import EditUserForm from './form'
+import EmailStatusBadge from '@/components/EmailStatusBadge'
 
 type UserDetailProps = {
     currentUserRole: string
@@ -67,28 +68,9 @@ function UserDetail({
                             <p className="text-sm pt-[4px]">
                                 {userDetail.email}
                             </p>
-                            <SimplePopover
-                                tip={
-                                    userDetail.emailVerified
-                                        ? `Terverivikasi pada ${formatDateToLocale(
-                                              userDetail.emailVerified
-                                          )}`
-                                        : 'User'
-                                }
-                                className="border-none"
-                            >
-                                {userDetail.emailVerified ? (
-                                    <MailCheck
-                                        className="shrink-0 text-green-400"
-                                        size={22}
-                                    />
-                                ) : (
-                                    <MailWarning
-                                        className="shrink-0 text-red-400"
-                                        size={22}
-                                    />
-                                )}
-                            </SimplePopover>
+                            <EmailStatusBadge
+                                verifiedDate={userDetail.emailVerified}
+                            />
                         </div>
                     }
                 />

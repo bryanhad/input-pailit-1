@@ -22,17 +22,17 @@ import DownloadButton from './DownloadButton'
 import Pagination from './Pagination'
 import { CreditorFilterValues } from './validations'
 
-type DashboardTableProps = {
+type CreditorsTableProps = {
     filterValues: CreditorFilterValues
     currentPage: number
     tableSize: number
 }
 
-async function DashboardTable({
+async function CreditorsTable({
     filterValues: { q, claimType, creditorType },
     currentPage,
     tableSize,
-}: DashboardTableProps) {
+}: CreditorsTableProps) {
     const searchString = q
         ?.split(' ')
         .filter((word) => word.length > 0)
@@ -193,7 +193,7 @@ async function DashboardTable({
     )
 }
 
-export default DashboardTable
+export default CreditorsTable
 
 function KreditorInfo({
     creditor,

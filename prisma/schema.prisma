@@ -11,11 +11,11 @@ generator client {
 }
 
 datasource db {
-    // provider = "postgresql"
-    // url      = env("LOCAL_POSTGRES_URL")
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+    provider = "postgresql"
+    url      = env("LOCAL_POSTGRES_URL")
+    // provider  = "postgresql"
+    // url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+    // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
@@ -27,6 +27,7 @@ model User {
     image         String?
     sessions      Session[]
     role          String    @default("USER")
+    isActive      Boolean   @default(true)
 
     creditors            Creditor[] @relation("UserCreditor")
     lastUpdatedCreditors Creditor[] @relation("LastUpdatedByUser")
@@ -53,6 +54,8 @@ model VerificationToken {
     email   String   @id
     token   String
     expires DateTime
+
+    createdAt DateTime @default(now())
 
     @@map("verification_tokens")
 }

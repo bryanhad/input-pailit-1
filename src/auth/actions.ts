@@ -87,11 +87,18 @@ export async function login(values: LoginFormValues) {
     const { email, password } = parsedValues.data
 
     try {
-        await signIn("credentials", {
-            email,
-            password,
-            redirectTo: DEFAULT_LOGIN_REDIRECT,
-        })
+        const [user] = await Promise.all([
+            db.user.findUnique({where: {email}, select:{name:true}}),
+            signIn("credentials", {
+                email,
+                password,
+                redirectTo: DEFAULT_LOGIN_REDIRECT,
+            })
+        ])
+        if (!user) {
+            throw new LoginError('Cannot find user')
+        }
+        return {success: `Wellcome back ${user?.name}`}
     } catch (err) {
         if (err instanceof LoginError) {
             switch (err.type as ErrorTypeExtended) {

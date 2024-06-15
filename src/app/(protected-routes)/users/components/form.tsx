@@ -12,12 +12,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { User } from '@prisma/client'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import CancelEditUserButton from './cancel-edit-user-button'
-import { User } from '@prisma/client'
 import { updateProfile } from '../actions'
+import { UpdateUserProfileValues, updateUserProfileSchema } from '../validation'
+import CancelEditUserButton from './cancel-edit-user-button'
 
 type EditUserFormProps = {
     userDetail: Pick<
@@ -27,10 +27,6 @@ type EditUserFormProps = {
     setIsEditing: (isEditing: boolean) => void
 }
 
-const formSchema = z.object({
-    name: z.string().min(2).max(50),
-})
-
 function EditUserForm({ setIsEditing, userDetail }: EditUserFormProps) {
     const { toast } = useToast()
     const [isPending, startTransition] = useTransition()
@@ -39,14 +35,14 @@ function EditUserForm({ setIsEditing, userDetail }: EditUserFormProps) {
 
     const [openCancelConfirmation, setOpenCancelConfirmation] = useState(false)
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<UpdateUserProfileValues>({
+        resolver: zodResolver(updateUserProfileSchema),
         defaultValues: {
             name: userDetail.name || undefined,
         },
     })
 
-    async function onSubmit({ name }: z.infer<typeof formSchema>) {
+    async function onSubmit({ name }: UpdateUserProfileValues) {
         setFormError(undefined)
         setFormSuccess(undefined)
         startTransition(async () => {

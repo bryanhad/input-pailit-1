@@ -47,9 +47,9 @@ function SignInForm({ onSuccess }: SignInFormProps) {
             if (onSuccess) {
                 onSuccess()
             }
-            setFormSuccess("Success")
+            setFormSuccess("Successfully signed in")
             toast({
-                title: "Wellcome!!",
+                title: res.success,
             })
         })
     }
