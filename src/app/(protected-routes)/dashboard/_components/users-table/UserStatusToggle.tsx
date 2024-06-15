@@ -28,12 +28,20 @@ function UserStatusToggle({
     const [formSuccess, setFormSuccess] = useState<string>()
     const [open, setOpen] = useState(false)
 
+    const [userStatus, setUserStatus] = useState(toBeUpdatedUserInfo.status)
+
+    // if I didn't do this, When I tried to paginate through the table, the state of the userStatus is not updating!
+    // so this does the trick I guess..
+    // when the user paginate, it fetches a new set of toBeUpdatedUserInfo, and then this useEffect would fire and update the userStatus state!
+    // I think it is something to do with the behaviour of router.push() that I use to paginate, not updating the state of my components.. which can be a good thing or a bad thing.. the bad thing is that I have to do this workaround ahahahah(?)
+    useEffect(() => {
+        setUserStatus(toBeUpdatedUserInfo.status)
+    }, [toBeUpdatedUserInfo.status])
+
     useEffect(() => {
         setFormError(undefined)
         setFormSuccess(undefined)
     }, [open])
-
-    const [userStatus, setUserStatus] = useState(toBeUpdatedUserInfo.status)
 
     const action = userStatus === UserStatus.active ? 'deactivate' : 'activate'
 
@@ -110,7 +118,10 @@ function UserStatusToggle({
                     {
                         'bg-blue-500': userStatus === UserStatus.active,
                         'bg-slate-200': userStatus === UserStatus.inactive,
-                        'cursor-not-allowed' : currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id && currentLoggedInUserInfo.role === Role.Admin
+                        'cursor-not-allowed':
+                            currentLoggedInUserInfo.id ===
+                                toBeUpdatedUserInfo.id &&
+                            currentLoggedInUserInfo.role === Role.Admin,
                     }
                 )}
                 tip={userStatus}
@@ -121,7 +132,6 @@ function UserStatusToggle({
                         {
                             'translate-x-5': userStatus === UserStatus.active,
                             'translate-x-0': userStatus === UserStatus.inactive,
-                  
                         }
                     )}
                 />
