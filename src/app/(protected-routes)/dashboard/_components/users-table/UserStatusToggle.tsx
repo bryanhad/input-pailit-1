@@ -8,10 +8,10 @@ import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/use-toast"
 import { capitalizeFirstLetter } from "@/lib/utils"
 import { Role } from "@/types"
-import { User } from "@prisma/client"
 import { useEffect, useState, useTransition } from "react"
-import { toggleUserActiveStatus } from "./actions"
 import { CurrentLoggedInUserInfo, ToBeUpdatedUserInfo } from "./UserManagement"
+import { toggleUserActiveStatus } from "./actions"
+import SimplePopover from "@/components/SimplePopover"
 
 type UserStatusToggleProps = {
     toBeUpdatedUserInfo: ToBeUpdatedUserInfo
@@ -61,8 +61,25 @@ function UserStatusToggle({
         })
     }
 
+    if (!toBeUpdatedUserInfo.name) {
+        return (
+            <SimplePopover
+                className=" h-6 w-11 shrink-0 bg-amber-300 rounded-full"
+                tip={
+                    <p className="text-center">
+                        User has not finished
+                        <br />
+                        setting up their account
+                    </p>
+                }
+            >
+                <div className="size-5 rounded-full bg-white mx-auto" />
+            </SimplePopover>
+        )
+    }
+
     if (
-        // if current logged in user has USER role 
+        // if current logged in user has USER role
         // OR if the user is the same as the one who is logged in:
         currentLoggedInUserInfo.role === Role.User ||
         currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id

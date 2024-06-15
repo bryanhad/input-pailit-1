@@ -1,25 +1,22 @@
 import EmailStatusBadge from "@/components/EmailStatusBadge"
-import UserRoleBadge from "@/components/UserRoleBadge"
 import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
-    TableRow,
+    TableRow
 } from "@/components/ui/table"
 import db from "@/lib/db"
 import { formatDateToLocale, formatNumber } from "@/lib/utils"
 import { Prisma, User } from "@prisma/client"
 import Link from "next/link"
-import Pagination from "./Pagination"
-import { UserFilterValues } from "./validations"
 import TotalCount from "../summary/TotalCount"
-import UserStatusSwitch from "./UserRoleToggle"
-import UserStatusToggle from "./UserStatusToggle"
+import Pagination from "./Pagination"
 import UserRoleToggle from "./UserRoleToggle"
+import UserStatusToggle from "./UserStatusToggle"
+import { UserFilterValues } from "./validations"
 
 export type CurrentLoggedInUserInfo = Pick<User, "id" | "role">
 export type ToBeUpdatedUserInfo = Pick<

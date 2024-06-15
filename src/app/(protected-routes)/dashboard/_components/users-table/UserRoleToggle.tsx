@@ -64,7 +64,8 @@ function UserRoleToggle({
         // if current logged in user has USER role
         // OR if the user is the same as the one who is logged in:
         currentLoggedInUserInfo.role === Role.User ||
-        currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id
+        currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id ||
+        !toBeUpdatedUserInfo.name
     ) {
         return <UserRoleBadge role={userRole} className="cursor-not-allowed" />
     }
