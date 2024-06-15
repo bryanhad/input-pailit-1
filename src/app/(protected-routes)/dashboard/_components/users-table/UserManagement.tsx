@@ -18,6 +18,7 @@ import UserRoleToggle from './UserRoleToggle'
 import UserStatusToggle from './UserStatusToggle'
 import { UserFilterValues } from './validations'
 import { UserStatus } from '@/types'
+import UserFilterOptions from './FilterOptions'
 
 export type CurrentLoggedInUserInfo = Pick<User, 'id' | 'role'>
 export type ToBeUpdatedUserInfo = Pick<
@@ -33,29 +34,29 @@ type UserManagementProps = {
 }
 
 async function UserManagement({
-    filterValues: { uq, urole },
+    filterValues,
     currentPage,
     tableSize,
     currentLoggedInUserInfo,
 }: UserManagementProps) {
-    const searchString = uq
+    const searchString = filterValues.uq
         ?.split(' ')
         .filter((word) => word.length > 0)
-        .join(' & ')
+        .join(' ')
 
     const searchFilter: Prisma.UserWhereInput = searchString
         ? {
               // we use "OR" filter, so that the searh filter will work on any columns that we specify
               OR: [
-                  { name: { search: searchString } },
-                  { email: { search: searchString } },
+                  { name: { contains: searchString, mode: 'insensitive' } },
+                  { email: { contains: searchString, mode: 'insensitive' } },
               ],
           }
         : {}
 
     const whereFilter: Prisma.UserWhereInput = {
         // Search with matching search filter and also urole
-        AND: [searchFilter, urole ? { role: urole } : {}],
+        AND: [searchFilter, filterValues.urole ? { role: filterValues.urole } : {}],
     }
 
     const offset = (currentPage - 1) * tableSize
@@ -119,6 +120,9 @@ async function UserManagement({
                     title="Verified Users Count"
                     totalCreditorsCount={totalVerifiedUsersCount}
                     className="flex-1"
+                />
+                <UserFilterOptions
+                    defaultFilterValues={filterValues}
                 />
                 <Button asChild>
                     <Link href="/admin/add-new-user">Add New User</Link>

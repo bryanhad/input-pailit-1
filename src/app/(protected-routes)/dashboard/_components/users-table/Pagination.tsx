@@ -1,7 +1,6 @@
 'use client'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ReadonlyURLSearchParams } from 'next/navigation'
 import {
@@ -19,7 +18,7 @@ type PaginationProps = {
     totalRowShown: number
 }
 
-function createPageURL(
+export function createUserPageURL(
     pathname: string,
     searchParams: ReadonlyURLSearchParams,
     pageNumber: number | string,
@@ -54,7 +53,7 @@ function Pagination({
         pageNumber: number | string,
         size?: number | string
     ) {
-        return createPageURL(pathname, searchParams, pageNumber, size)
+        return createUserPageURL(pathname, searchParams, pageNumber, size)
     }
 
     return (

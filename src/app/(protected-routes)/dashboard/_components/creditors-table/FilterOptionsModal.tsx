@@ -43,20 +43,6 @@ function FilterOptionsModal({ defaultFilterValues }: Props) {
                     defaultFilterValues={defaultFilterValues}
                     onSubmitClicked={() => setIsModalOpen(false)}
                 />
-                {/* <Button
-                    onClick={() => handleApproveDelete()}
-                    className="flex-1"
-                    variant={"destructive"}
-                >
-                    Yes, delete permanently
-                </Button>
-                <Button
-                    className="flex-1"
-                    variant={"outline"}
-                    onClick={() => setIsModalOpen(false)}
-                >
-                    Cancel
-                </Button> */}
             </div>
         </Modal>
     )

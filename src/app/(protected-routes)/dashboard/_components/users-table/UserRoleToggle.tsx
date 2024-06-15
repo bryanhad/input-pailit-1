@@ -26,12 +26,17 @@ function UserRoleToggle({
     const [formSuccess, setFormSuccess] = useState<string>()
     const [open, setOpen] = useState(false)
 
+    const [userRole, setUserRole] = useState(toBeUpdatedUserInfo.role)
+
+    useEffect(() => {
+        setUserRole(toBeUpdatedUserInfo.role)
+    }, [toBeUpdatedUserInfo.role])
+
     useEffect(() => {
         setFormError(undefined)
         setFormSuccess(undefined)
     }, [open])
 
-    const [userRole, setUserRole] = useState(toBeUpdatedUserInfo.role)
 
     const toBeRole = userRole === Role.Admin ? Role.User : Role.Admin
 
