@@ -80,9 +80,9 @@ async function CreditorsTable({
     return (
         <>
             <Table className="bg-white">
-                <TableCaption>
+                {/* <TableCaption>
                     Data Kreditor PT Pailit (dalam Pailit)
-                </TableCaption>
+                </TableCaption> */}
                 <TableHeader>
                     <TableRow className="bg-primary hover:bg-primary/90">
                         <TableHead className="text-white w-[60px]">

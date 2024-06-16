@@ -63,6 +63,9 @@ function FilterOptions({
         } else {
             currentPageParams.delete("creditorType")
         }
+        if (searchParams.get('page')) {
+            currentPageParams.delete('page')
+        }
 
         router.push(`/dashboard?${currentPageParams.toString()}`, {
             scroll: false,

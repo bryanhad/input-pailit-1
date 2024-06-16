@@ -108,6 +108,9 @@ function UserFilterOptions({ defaultFilterValues }: UserFilterOptionsProps) {
         } else {
             currentPageParams.delete("urole")
         }
+        if (searchParams.get('upage')) {
+            currentPageParams.delete('upage')
+        }
 
         router.push(`/dashboard?${currentPageParams.toString()}`, {
             scroll: false,

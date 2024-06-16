@@ -128,13 +128,23 @@ async function UserManagement({
                         className="flex-[1]"
                         countClassName="sm:text-3xl"
                     />
+                    <Button
+                        asChild
+                        variant={"success"}
+                        className="hidden xl:flex"
+                    >
+                        <Link href="/admin/add-new-user">+ User</Link>
+                    </Button>
                     <div className="grid grid-cols-2 sm:grid-cols-3 xl:flex xl:flex-col flex-[2] gap-4 xl:gap-3 xl:justify-start place-content-between ">
                         <UserFilterOptions defaultFilterValues={filterValues} />
-                        <ClearUserFilterButton filterValues={filterValues} className="max-sm:order-2"/>
+                        <ClearUserFilterButton
+                            filterValues={filterValues}
+                            className="max-sm:order-2"
+                        />
                         <Button
                             asChild
                             variant={"success"}
-                            className="col-span-1 sm:col-span-3 xl:col-span-1 max-sm:order-4"
+                            className="col-span-1 sm:col-span-3 xl:hidden max-sm:order-4"
                         >
                             <Link href="/admin/add-new-user">+ User</Link>
                         </Button>

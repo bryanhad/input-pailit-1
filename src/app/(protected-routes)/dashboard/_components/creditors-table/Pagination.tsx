@@ -58,7 +58,7 @@ function Pagination({
     }
 
     return (
-        <div className="flex items-center justify-between px-2 my-4">
+        <div className="flex items-center justify-between px-2 mb-4">
             {totalRowShown && (
                 <div className="flex-[1] text-sm text-muted-foreground md:block hidden">
                     {totalRowShown} of {totalRowCount} row(s) shown.
