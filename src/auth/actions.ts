@@ -152,7 +152,7 @@ export async function consumeToken(token: string) {
         }
         throw new InvalidTokenError(
             'The token has either been used, expired, or is invalid.',
-            'Invalid Token'
+            'An Invalid Token'
         )
     }
 

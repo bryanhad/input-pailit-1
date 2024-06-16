@@ -8,10 +8,10 @@ export default async function NotFound() {
 
     return (
         <div className="flex justify-center mt-[7vh]">
-            <div className="flex lg:flex-row flex-col gap-8  items-center">
+            <div className="flex lg:flex-row flex-col gap-6 lg:gap-10 items-center">
                 <Ghost size={200} className="shrink-0" />
-                <div className="flex flex-col gap-6 justify-center text-center">
-                    <h1 className="text-4xl font-semibold">Uh-Oh, Page Not Found</h1>
+                <div className="flex flex-col gap-6 justify-center text-center lg:text-start">
+                    <h1 className="text-4xl font-bold">Uh-Oh,<br />Page Not Found</h1>
                     <p>
                         We looked everywhere for this page.
                         <br />
