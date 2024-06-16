@@ -105,3 +105,8 @@
         }
     }
 }
+
+
+.black-white-diagonal {
+    background: linear-gradient(45deg, #000 0, #000 50%, #fff 50%);
+}

@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { updateUserNameAndPasswordThenSignIn } from "@/auth/actions"
-import { OnBoardingFormValues, onBoardingSchema } from "@/auth/validation"
-import LoadingButton from "@/components/LoadingButton"
-import FormResponse from "@/components/form-response"
+import { updateUserNameAndPasswordThenSignIn } from '@/auth/actions'
+import { OnBoardingFormValues, onBoardingSchema } from '@/auth/validation'
+import LoadingButton from '@/components/LoadingButton'
+import FormResponse from '@/components/form-response'
 import {
     Form,
     FormControl,
@@ -11,12 +11,12 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/components/ui/use-toast"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useState, useTransition } from "react"
-import { useForm } from "react-hook-form"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 
 type OnBoardingFormProps = {
     userId: string
@@ -31,9 +31,9 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
     const form = useForm<OnBoardingFormValues>({
         resolver: zodResolver(onBoardingSchema),
         defaultValues: {
-            name: "",
-            password: "",
-            confirmPassword: "",
+            name: '',
+            password: '',
+            confirmPassword: '',
         },
     })
 
@@ -49,7 +49,7 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
             if (res?.error) {
                 setFormError(res.error)
                 toast({
-                    variant: "destructive",
+                    variant: 'destructive',
                     title: res.title,
                     description: res.error,
                 })
@@ -59,13 +59,6 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
                 title: `Wellcome on board ${name}!`,
             })
         })
-        // I DON'T KNOW HOW TO REDIRECT THE USER AFTER SUCCESSFUL LOGIN VIA THE signIn FUNCTION FROM AUTHJS V5!! D:<
-        // THE DOCS DOESN'T FOCKING WORKKK??!!!! this is my reference for the doc: https://authjs.dev/getting-started/session-management/login
-        // SO IN DESPERATION I USE THE ABOMINATION BELOW! AND SURPRISINGLY IT WORKS AHAHAHAHA
-        // IT IS WHAT IT IS COUNTER: 1 :D
-        // setTimeout(() => {
-        //     router.push("/dashboard")
-        // }, 100)
     }
 
     return (
@@ -80,10 +73,15 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
                         name="name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Name</FormLabel>
+                                <div className="flex gap-2 max-lg:justify-center">
+                                    <FormLabel className="pt-1">Name</FormLabel>
+                                    <span className="text-sm font-light">
+                                        (Can be changed later)
+                                    </span>
+                                </div>
                                 <FormControl>
                                     <Input
-                                        placeholder="shadcn@gmail.com"
+                                        placeholder="Bambang si Kreditor Ganteng"
                                         {...field}
                                     />
                                 </FormControl>
@@ -96,7 +94,10 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Password</FormLabel>
+                                    <FormLabel>
+                                        Password
+                                    </FormLabel>
+                                
                                 <FormControl>
                                     <Input
                                         placeholder="Your super secret password"
@@ -125,15 +126,18 @@ function OnBoardingForm({ userId }: OnBoardingFormProps) {
                             </FormItem>
                         )}
                     />
-                    <FormResponse response={formSuccess} errorMessage={formError} />
+                    <FormResponse
+                        response={formSuccess}
+                        errorMessage={formError}
+                    />
 
                     <LoadingButton
-                    type="submit"
-                    loading={isPending}
-                    className="w-full"
-                >
-                    Sign In
-                </LoadingButton>
+                        type="submit"
+                        loading={isPending}
+                        className="w-full"
+                    >
+                        Sign In
+                    </LoadingButton>
                 </form>
             </Form>
         </div>

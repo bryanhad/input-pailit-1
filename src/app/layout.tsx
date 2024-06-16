@@ -26,7 +26,7 @@ export default function RootLayout({
                 <div className="min-h-screen min-w-[280px] bg-background font-sans antialiased flex flex-col bg-slate-100">
                     <NewNavbar/>
                     {/* <Navbar /> */}
-                    <main className="mt-6 flex-1 w-full max-w-[1400px] mx-auto px-4 pb-2 flex flex-col">
+                    <main className="mt-6 flex-1 w-full max-w-[1400px] mx-auto px-4 pb-2 flex flex-col overflow-hidden">
                         <BreadCrumbsLink />
                         {children}
                     </main>
