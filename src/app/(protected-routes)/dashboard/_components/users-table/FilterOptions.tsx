@@ -38,7 +38,6 @@ export type UserFilterOptionsProps = {
 
 function UserFilterOptions({ defaultFilterValues }: UserFilterOptionsProps) {
     const searchParams = useSearchParams()
-    console.log(defaultFilterValues, { searchparams: searchParams.toString() })
     const router = useRouter()
     const searchBoxRef = useRef<HTMLInputElement>(null)
     const isFirstLoadRef = useRef(true)
@@ -118,6 +117,7 @@ function UserFilterOptions({ defaultFilterValues }: UserFilterOptionsProps) {
     return (
         <>
             <Input
+                className="max-sm:order-1"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 onKeyDown={(e) => {
@@ -140,7 +140,7 @@ function UserFilterOptions({ defaultFilterValues }: UserFilterOptionsProps) {
                 }}
                 value={defaultFilterValues.urole || "Any Role"}
             >
-                <SelectTrigger>
+                <SelectTrigger className="max-sm:order-3">
                     <SelectValue placeholder="Select any role" />
                 </SelectTrigger>
                 <SelectContent>

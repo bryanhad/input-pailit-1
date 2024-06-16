@@ -62,8 +62,11 @@ async function DashboardPage({
 
     return (
         <MainWrapper noBackgroundAndPadding>
+            <DashboardSectionTitle>
+                PT. Bakso Jaya Mantab Overview
+            </DashboardSectionTitle>
             <Summaries />
-            <DashboardSectionTitle>User Management</DashboardSectionTitle>
+            <DashboardSectionTitle>User Dashboard</DashboardSectionTitle>
             <UserManagement
                 filterValues={usersTableFilterValues}
                 currentPage={currentUsersTablePage}
@@ -72,14 +75,16 @@ async function DashboardPage({
             />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <DashboardSectionTitle className="">
-                    Creditor Management
+                    Creditor Dashboard
                 </DashboardSectionTitle>
                 <div className="flex gap-4 justify-between">
                     <div className="flex gap-2 sm:gap-4">
                         <CreditorFilterOptionsModal
                             defaultFilterValues={creditorsTableFilterValues}
                         />
-                        <ClearCreditorFiltersButton filterValues={creditorsTableFilterValues}/>
+                        <ClearCreditorFiltersButton
+                            filterValues={creditorsTableFilterValues}
+                        />
                     </div>
                     <Button asChild variant={"success"}>
                         <Link href={"/creditors/add"}>+ Kreditor</Link>

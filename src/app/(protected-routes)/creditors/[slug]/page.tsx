@@ -50,19 +50,19 @@ async function CreditorDetailPage({
             titleClassName="max-md:text-start"
         >
             {/* <p className="font-light">ID: {creditor.id}</p> */}
-            <div className="flex flex-col gap-4 items-start md:flex-row md:justify-between md:gap-6">
+            <div className="flex flex-col gap-4 items-start sm:flex-row sm:justify-between sm:gap-6">
                 <div className="flex flex-col gap-4 items-start">
                     <div className="flex gap-2">
                         <p>Sifat Tagihan:</p>
                         <ClaimTypeBadge sifatTagihan={creditor.sifatTagihan} />
                     </div>
                 </div>
-                <div className="flex gap-2">
-                    <Button asChild>
+                <div className="flex gap-2 flex-wrap">
+                    <Button asChild className='flex gap-2'>
                         <Link href={`/creditors/${slug}/edit`}>
-                            <p className="hidden md:block">Edit Creditor</p>
+                            <p >Edit Creditor</p>
                             <Pencil
-                                className="shrink-0 md:pb-[1px] md:ml-2"
+                                className="shrink-0 md:pb-[1px]"
                                 size={15}
                             />
                         </Link>

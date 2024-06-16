@@ -130,11 +130,11 @@ async function UserManagement({
                     />
                     <div className="grid grid-cols-2 sm:grid-cols-3 xl:flex xl:flex-col flex-[2] gap-4 xl:gap-3 xl:justify-start place-content-between ">
                         <UserFilterOptions defaultFilterValues={filterValues} />
-                        <ClearUserFilterButton filterValues={filterValues} />
+                        <ClearUserFilterButton filterValues={filterValues} className="max-sm:order-2"/>
                         <Button
                             asChild
                             variant={"success"}
-                            className="col-span-1 sm:col-span-3 xl:col-span-1"
+                            className="col-span-1 sm:col-span-3 xl:col-span-1 max-sm:order-4"
                         >
                             <Link href="/admin/add-new-user">+ User</Link>
                         </Button>
@@ -142,16 +142,16 @@ async function UserManagement({
                 </div>
 
                 {/* TABLE STUFFS */}
-                <div className="flex flex-col gap-4 xl:flex-[1]">
-                    {/* <div className="flex gap-4 justify-between items-center">
+                {/* <div className="flex gap-4 justify-between items-center">
                         <TableTitle>Users Table</TableTitle>
                         <Button asChild variant={"success"}>
                             <Link href="/admin/add-new-user">+ User</Link>
                         </Button>
                     </div> */}
-                    <div className="flex-1 gap-2 flex flex-col">
-                        {/* <div className="bg-black p-4 h-40"></div> */}
-                        <Table className="bg-white">
+                <div className="flex-1 gap-2 flex flex-col xl:flex-[1]">
+                    {/* <div className="bg-black p-4 h-40"></div> */}
+                    <div className="flex-[1] bg-white">
+                        <Table className="bg-white border-b">
                             <TableHeader>
                                 <TableRow className="bg-primary hover:bg-primary/90">
                                     <TableHead className="text-white text-center w-[60px]">
@@ -254,13 +254,13 @@ async function UserManagement({
                                 ))}
                             </TableBody>
                         </Table>
-                        <Pagination
-                            itemsPerPage={tableSize}
-                            totalRowCount={totalDataCountByFilter}
-                            totalRowShown={users.length}
-                            totalAvailablePages={totalPages}
-                        />
                     </div>
+                    <Pagination
+                        itemsPerPage={tableSize}
+                        totalRowCount={totalDataCountByFilter}
+                        totalRowShown={users.length}
+                        totalAvailablePages={totalPages}
+                    />
                 </div>
             </div>
         </>
