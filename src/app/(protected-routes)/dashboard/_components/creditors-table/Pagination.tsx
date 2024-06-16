@@ -64,9 +64,10 @@ function Pagination({
                     {totalRowShown} of {totalRowCount} row(s) shown.
                 </div>
             )}
-            <div className="flex flex-col-reverse gap-3 md:flex-row items-center justify-between flex-[1]">
-                <div className="flex items-center space-x-2 flex-col md:flex-row gap-3">
-                    <p className="text-sm font-medium">Rows per page</p>
+       <div className="flex gap-3 md:flex-row items-center justify-between flex-[1]">
+                <div className="flex items-center md:flex-row gap-2">
+                    <p className='sm:hidden'>Rows</p>
+                    <p className="hidden sm:block text-sm font-medium">Rows per page</p>
                     <Select
                         onValueChange={(value) => {
                             router.push(generatePageUrl(1, value), {
@@ -89,7 +90,7 @@ function Pagination({
                         </SelectContent>
                     </Select>
                 </div>
-                <div className="md:flex hidden w-[100px] items-center justify-center text-sm font-medium">
+                <div className="md:ml-auto md:flex hidden w-[100px] items-center justify-center text-sm font-medium">
                     Page {currentPage} of {totalAvailablePages}
                 </div>
                 <div className="flex items-center gap-2">

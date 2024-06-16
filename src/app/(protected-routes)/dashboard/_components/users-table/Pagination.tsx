@@ -89,7 +89,7 @@ function Pagination({
                         </SelectContent>
                     </Select>
                 </div>
-                <div className="md:flex hidden w-[100px] items-center justify-center text-sm font-medium">
+                <div className="md:ml-auto md:flex hidden w-[100px] items-center justify-center text-sm font-medium">
                     Page {currentPage} of {totalAvailablePages}
                 </div>
                 <div className="flex items-center gap-2">
