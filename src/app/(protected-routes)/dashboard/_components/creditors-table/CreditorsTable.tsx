@@ -21,6 +21,7 @@ import DeleteButton from './DeleteButton'
 import DownloadButton from './DownloadButton'
 import Pagination from './Pagination'
 import { CreditorFilterValues } from './validations'
+import TableDataNotFound from '@/components/TableDataNotFound'
 
 type CreditorsTableProps = {
     filterValues: CreditorFilterValues
@@ -107,80 +108,90 @@ async function CreditorsTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {creditors.map((creditor) => (
-                        <TableRow key={creditor.id}>
-                            <TableCell className="text-right">
-                                {creditor.number}
-                            </TableCell>
-                            <TableCell className="font-medium">
-                                <KreditorInfo
-                                    creditor={{
-                                        ...creditor,
-                                        attachment_count:
-                                            creditor._count.attachments,
-                                    }}
-                                />
-                            </TableCell>
-                            <TableCell className="font-semibold">
-                                {formatCurrency(
-                                    Number(creditor.totalTagihan),
-                                    'IDR'
-                                )}
-                            </TableCell>
-                            <TableCell>
-                                <div className="flex justify-start">
-                                    <ClaimTypeBadge
-                                        sifatTagihan={creditor.sifatTagihan}
+                    {creditors.length < 1 ? (
+                        <TableDataNotFound
+                            colSpan={7}
+                            hasFilters={!!q || !!claimType || !!creditorType}
+                            tableName="creditor"
+                        />
+                    ) : (
+                        creditors.map((creditor) => (
+                            <TableRow key={creditor.id}>
+                                <TableCell className="text-right">
+                                    {creditor.number}
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    <KreditorInfo
+                                        creditor={{
+                                            ...creditor,
+                                            attachment_count:
+                                                creditor._count.attachments,
+                                        }}
                                     />
-                                </div>
-                            </TableCell>
-                            <TableCell>
-                                <InputorInfo
-                                    inputorId={creditor.userId}
-                                    inputorName={creditor.user.name}
-                                    inputorRole={creditor.user.role}
-                                    date={creditor.createdAt}
-                                    tip="Created At"
-                                />
-                            </TableCell>
-                            <TableCell>
-                                {creditor.lastUpdatedBy &&
-                                creditor.lastUpdatedByUserId ? (
+                                </TableCell>
+                                <TableCell className="font-semibold">
+                                    {formatCurrency(
+                                        Number(creditor.totalTagihan),
+                                        'IDR'
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex justify-start">
+                                        <ClaimTypeBadge
+                                            sifatTagihan={creditor.sifatTagihan}
+                                        />
+                                    </div>
+                                </TableCell>
+                                <TableCell>
                                     <InputorInfo
-                                        inputorId={creditor.lastUpdatedByUserId}
-                                        inputorName={
-                                            creditor.lastUpdatedBy.name
-                                        }
-                                        inputorRole={
-                                            creditor.lastUpdatedBy.role
-                                        }
+                                        inputorId={creditor.userId}
+                                        inputorName={creditor.user.name}
+                                        inputorRole={creditor.user.role}
                                         date={creditor.createdAt}
-                                        tip="Last Updated At"
+                                        tip="Created At"
                                     />
-                                ) : (
-                                    <p className="text-muted-foreground/80">
-                                        No Updates
-                                    </p>
-                                )}
-                            </TableCell>
-                            <TableCell>
-                                <div className="flex gap-2 justify-end">
-                                    <Button asChild>
-                                        <Link
-                                            href={`/creditors/${creditor.slug}`}
-                                        >
-                                            View
-                                        </Link>
-                                    </Button>
-                                    <DeleteButton
-                                        creditorId={creditor.id}
-                                        creditorName={creditor.nama}
-                                    />
-                                    <DownloadButton id={creditor.id} />
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                                </TableCell>
+                                <TableCell>
+                                    {creditor.lastUpdatedBy &&
+                                    creditor.lastUpdatedByUserId ? (
+                                        <InputorInfo
+                                            inputorId={
+                                                creditor.lastUpdatedByUserId
+                                            }
+                                            inputorName={
+                                                creditor.lastUpdatedBy.name
+                                            }
+                                            inputorRole={
+                                                creditor.lastUpdatedBy.role
+                                            }
+                                            date={creditor.createdAt}
+                                            tip="Last Updated At"
+                                        />
+                                    ) : (
+                                        <p className="text-muted-foreground/80">
+                                            No Updates
+                                        </p>
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex gap-2 justify-end">
+                                        <Button asChild>
+                                            <Link
+                                                href={`/creditors/${creditor.slug}`}
+                                            >
+                                                View
+                                            </Link>
+                                        </Button>
+                                        <DeleteButton
+                                            creditorId={creditor.id}
+                                            creditorName={creditor.nama}
+                                        />
+                                        <DownloadButton id={creditor.id} />
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
             </Table>
             <Pagination

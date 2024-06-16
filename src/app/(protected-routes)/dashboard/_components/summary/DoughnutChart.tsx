@@ -190,9 +190,9 @@ function DoughnutChart({
                         plugins={plugins}
                     />
                 ) : (
-                    <div className="flex flex-col justify-center text-muted-foreground/20 items-center">
-                        <PieChart className="shrink-0" size={250} />
-                        <p className="font-semibold text-3xl">
+                    <div className="flex flex-col justify-center text-muted-foreground/20 items-center pt-10">
+                        <PieChart className="shrink-0" size={230} />
+                        <p className="font-semibold text-3xl mt-2">
                             No Data To Show
                         </p>
                     </div>
