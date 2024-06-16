@@ -50,7 +50,7 @@ async function Cards({
                 )}
             />
             <SummaryCard
-                className={`shadow-sm bg-white md:max-xl:col-span-2`}
+                className={`shadow-sm bg-white sm:col-span-2 md:col-span-1`}
                 claimType={`${capitalizeFirstLetter(ClaimType.Separatis)}`}
                 totalClaimOfAType={separatisDetail?.totalClaim || 0}
                 totalClaimOfAllCreditors={totalClaimAmount}

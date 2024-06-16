@@ -17,12 +17,14 @@ type DoughnutChartProps = {
     data: EachClaimTypeTotalClaims
     className?: string
     title: string
+    doughnutChartClassName?:string
 }
 
 function DoughnutChart({
     data: { claimTypes, totalClaimAmount, totalCreditors },
     className,
-    title
+    title,
+    doughnutChartClassName
 }: DoughnutChartProps) {
     const data: ChartData<"doughnut"> = {
         labels: ["Preferen", "Konkuren", "Separatis"],
@@ -49,9 +51,9 @@ function DoughnutChart({
     }
 
     const options = {
-        cutout: "85%",
+        cutout: "88%",
         resizeDelay: 200,
-        radius: "80%",
+        radius: "85%",
         responsive: true,
         plugins: {
             tooltip: {
@@ -75,7 +77,7 @@ function DoughnutChart({
         // aspectRatio: 1.5,
         layout: {
             padding: {
-                top: 5,
+                top: 35,
                 bottom: 5,
                 right: 35,
                 left: 35,
@@ -170,9 +172,13 @@ function DoughnutChart({
     ]
 
     return (
-        <div className="relative">   
-            <p className="absolute font-semibold top-5 left-1/2 -translate-x-1/2 w-[80%] text-center text-sm">{title}</p>
-            <div className={cn("relative w-[80vw] max-w-[400px]", className)}>
+        <div
+            className={cn("relative bg-white rounded-md shadow-sm", className)}
+        >
+            <p className="absolute font-semibold top-5 left-1/2 -translate-x-1/2 w-[80%] text-center text-sm">
+                {title}
+            </p>
+            <div className={cn("relative w-[80vw] max-w-[400px] mx-auto p-2", doughnutChartClassName)}>
                 {/* <p className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] text-2xl font-bold">
                     {formatCurrency(totalClaimAmount, 'IDR')}
                 </p> */}
@@ -186,7 +192,9 @@ function DoughnutChart({
                 ) : (
                     <div className="flex flex-col justify-center text-muted-foreground/20 items-center">
                         <PieChart className="shrink-0" size={250} />
-                        <p className="font-semibold text-3xl">No Data To Show</p>
+                        <p className="font-semibold text-3xl">
+                            No Data To Show
+                        </p>
                     </div>
                 )}
             </div>

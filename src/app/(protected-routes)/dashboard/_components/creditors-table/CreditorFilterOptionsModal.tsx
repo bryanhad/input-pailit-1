@@ -5,10 +5,11 @@ import Modal from "@/components/ui/modal"
 import { useState } from "react"
 import FilterOptions from "./FilterOptions"
 import { CreditorFilterValues } from "./validations"
+import {SlidersHorizontal} from 'lucide-react'
 
 type Props = {defaultFilterValues: CreditorFilterValues}
 
-function FilterOptionsModal({ defaultFilterValues }: Props) {
+function CreditorFilterOptionsmodal({ defaultFilterValues }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     async function handleApproveDelete() {
@@ -28,12 +29,13 @@ function FilterOptionsModal({ defaultFilterValues }: Props) {
             }}
             buttonCustom={
                 <Button
+                className="flex gap-2 items-center"
                     variant={"outline"}
                     onClick={() => {
                         setIsModalOpen((prev) => !prev)
                     }}
                 >
-                    Filter
+                    <SlidersHorizontal className="shrink-0" size={16}/>
                 </Button>
             }
             title={`Filter Table`}
@@ -48,4 +50,4 @@ function FilterOptionsModal({ defaultFilterValues }: Props) {
     )
 }
 
-export default FilterOptionsModal
+export default CreditorFilterOptionsmodal

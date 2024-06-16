@@ -1,31 +1,22 @@
-'use client'
+"use client"
 
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { capitalizeFirstLetter } from '@/lib/utils'
-import { Role } from '@/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import {
-    ReadonlyURLSearchParams,
-    usePathname,
-    useRouter,
-    useSearchParams,
-} from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { UserFilterValues, userFilterSchema } from './validations'
+import { Input } from "@/components/ui/input"
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select"
+import { capitalizeFirstLetter, sanitizeInput } from "@/lib/utils"
+import { Role } from "@/types"
+import {
+    ReadonlyURLSearchParams,
+    useRouter,
+    useSearchParams,
+} from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { UserFilterValues } from "./validations"
 
 export function createUserPageURL(
     pathname: string,
@@ -33,10 +24,10 @@ export function createUserPageURL(
     role?: string
 ) {
     const params = new URLSearchParams(searchParams)
-    if (role === 'All Roles') {
-        params.delete('urole')
+    if (role === "Any Roles") {
+        params.delete("urole")
     } else {
-        params.set('urole', role || '')
+        params.set("urole", role || "")
     }
     return `${pathname}?${params.toString()}`
 }
@@ -46,39 +37,129 @@ export type UserFilterOptionsProps = {
 }
 
 function UserFilterOptions({ defaultFilterValues }: UserFilterOptionsProps) {
-    const pageSearchParams = useSearchParams()
+    const searchParams = useSearchParams()
+    console.log(defaultFilterValues, { searchparams: searchParams.toString() })
     const router = useRouter()
-    const pathname = usePathname()
+    const searchBoxRef = useRef<HTMLInputElement>(null)
+    const isFirstLoadRef = useRef(true)
+    // Don't ask on why I did the below.. It just clicks to me to use this work around with a boolean flag to make sure to only focus on the searhcBox if the change of the URL is caused by the searchBox and not any other component!
+    const isSearchBoxEnteredFlag = useRef(false)
+    const [searchValue, setSearchValue] = useState(defaultFilterValues.uq || "")
 
-    const form = useForm<UserFilterValues>({
-        resolver: zodResolver(userFilterSchema),
-        defaultValues: {
-            uq: pageSearchParams.get('uq') || '',
-            urole: pageSearchParams.get('urole') || '',
-        },
-    })
+    // const [userTableQuery, setUserTableQuery] = useState(defaultFilterValues.uq)
+    // const [userTableRole, setUserTableRole] = useState(
+    //     defaultFilterValues.urole || 'Any Role'
+    // )
+
+    // console.log({ userTableQuery, userTableRole })
+
+    // const form = useForm<UserFilterValues>({
+    //     resolver: zodResolver(userFilterSchema),
+    //     defaultValues: {
+    //         uq: searchParams.get("uq") || "",
+    //         urole: searchParams.get("urole") || "Any Role",
+    //     },
+    // })
+
+    useEffect(() => {
+        if (isFirstLoadRef.current) {
+            isFirstLoadRef.current = false
+        } else if (searchBoxRef.current && isSearchBoxEnteredFlag.current) {
+            searchBoxRef.current.focus()
+            isSearchBoxEnteredFlag.current = false
+        } else {
+            if (!defaultFilterValues.uq && searchBoxRef.current) {
+                setSearchValue('')
+            }
+        }
+    }, [isSearchBoxEnteredFlag, defaultFilterValues])
 
     function onSubmit({ uq, urole }: UserFilterValues) {
-        const searchParams = new URLSearchParams({
-            // the code below is to ensure to pass the object conditionally..
-            ...(uq && { uq: uq.trim() }),
-            ...(urole && { urole }),
-        })
+        const currentPageParams = new URLSearchParams(searchParams.toString())
+        if (uq) {
+            currentPageParams.set("uq", uq.trim())
+        } else {
+            currentPageParams.delete("uq")
+        }
+        if (urole && urole !== "Any Role") {
+            currentPageParams.set("urole", urole)
+        } else {
+            currentPageParams.delete("urole")
+        }
 
-        router.push(`/dashboard?${searchParams.toString()}`)
+        router.push(`/dashboard?${currentPageParams.toString()}`, {
+            scroll: false,
+        })
+        isSearchBoxEnteredFlag.current = false
     }
 
-    function generateUsersPageUrl(selectedRole: string) {
-        return createUserPageURL(pathname, pageSearchParams, selectedRole)
+    // function generateUsersPageUrl(selectedRole: string) {
+    //     return createUserPageURL(pathname, searchParams, selectedRole)
+    // }
+
+    function myOnSubmit({ uq, urole }: UserFilterValues) {
+        const currentPageParams = new URLSearchParams(searchParams.toString())
+        if (uq) {
+            currentPageParams.set("uq", uq.trim())
+        } else {
+            currentPageParams.delete("uq")
+        }
+        if (urole && urole !== "Any Role") {
+            currentPageParams.set("urole", urole)
+        } else {
+            currentPageParams.delete("urole")
+        }
+
+        router.push(`/dashboard?${currentPageParams.toString()}`, {
+            scroll: false,
+        })
     }
 
     return (
-        <div>
-            <Form {...form}>
+        <>
+            <Input
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        if (searchBoxRef.current) {
+                            const sanitizedInput = sanitizeInput(
+                                searchBoxRef.current.value
+                            )
+                            myOnSubmit({ uq: sanitizedInput, urole: defaultFilterValues.urole})
+                            isSearchBoxEnteredFlag.current = true
+                        }
+                    }
+                }}
+                placeholder="Name or Email.."
+                ref={searchBoxRef}
+            />
+            <Select
+                onValueChange={(selectedRole) => {
+                    myOnSubmit({ urole: selectedRole, uq: defaultFilterValues.uq })
+                }}
+                value={defaultFilterValues.urole || "Any Role"}
+            >
+                <SelectTrigger>
+                    <SelectValue placeholder="Select any role" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Any Role">Any Role</SelectItem>
+                    {(Object.values(Role) as string[]).map((userRoleQuery) => (
+                        <SelectItem
+                            key={userRoleQuery}
+                            value={`${userRoleQuery}`}
+                        >
+                            {capitalizeFirstLetter(userRoleQuery)}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        
+            {/* <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    onSubmit={myOnSubmit}
                     key={JSON.stringify(defaultFilterValues)}
-                    className="w-full"
                 >
                     <div className="flex flex-col gap-4 select-none">
                         <FormField
@@ -90,50 +171,87 @@ function UserFilterOptions({ defaultFilterValues }: UserFilterOptionsProps) {
                                         <Input
                                             placeholder="Name or Email.."
                                             {...field}
+                                            ref={searchBoxRef}
                                         />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="urole"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <Select
+                                        onValueChange={(selectedRole) => {
+                                            field.onChange(selectedRole)
+                                            onSubmit({urole: selectedRole})
+                                        }}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select any role" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="Any Role">
+                                                Any Role
+                                            </SelectItem>
+                                            {(
+                                                Object.values(Role) as string[]
+                                            ).map((userRoleQuery) => (
+                                                <SelectItem
+                                                    key={userRoleQuery}
+                                                    value={`${userRoleQuery}`}
+                                                >
+                                                    {capitalizeFirstLetter(
+                                                        userRoleQuery
+                                                    )}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
                     </div>
                 </form>
-            </Form>
-            <div className="mt-2">
-                <Select
-                    onValueChange={(value) => {
-                        router.push(generateUsersPageUrl(value), {
-                            scroll: false,
-                        })
-                    }}
-                >
-                    <SelectTrigger className="h-8">
-                        <SelectValue
-                            placeholder={
-                                defaultFilterValues.urole
-                                    ? capitalizeFirstLetter(
-                                          defaultFilterValues.urole
-                                      )
-                                    : 'All Roles'
-                            }
-                        />
-                    </SelectTrigger>
-                    <SelectContent side="top">
-                        {[
-                            ...(Object.values(Role) as string[]),
-                            'All Roles',
-                        ].map((userRoleQuery) => (
-                            <SelectItem
-                                key={userRoleQuery}
-                                value={`${userRoleQuery}`}
-                            >
-                                {capitalizeFirstLetter(userRoleQuery)}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-        </div>
+            </Form> */}
+
+            {/* <Select
+                defaultValue={defaultFilterValues.urole}
+                onValueChange={(value) => {
+                    router.push(generateUsersPageUrl(value), {
+                        scroll: false,
+                    })
+                }}
+            >
+                <SelectTrigger>
+                    <SelectValue
+                        placeholder={
+                            defaultFilterValues.urole
+                                ? capitalizeFirstLetter(
+                                      defaultFilterValues.urole
+                                  )
+                                : "Any Roles"
+                        }
+                    />
+                </SelectTrigger>
+                <SelectContent side="top">
+                    <SelectItem value="Any Roles">Any Creditor Type</SelectItem>
+                    {(Object.values(Role) as string[]).map((userRoleQuery) => (
+                        <SelectItem
+                            key={userRoleQuery}
+                            value={`${userRoleQuery}`}
+                        >
+                            {capitalizeFirstLetter(userRoleQuery)}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select> */}
+        </>
     )
 }
 

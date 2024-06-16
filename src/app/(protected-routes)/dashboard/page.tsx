@@ -5,10 +5,12 @@ import { Metadata } from "next"
 import Link from "next/link"
 import Summaries from "./_components/summary/Summaries"
 import CreditorsTable from "./_components/creditors-table/CreditorsTable"
-import FilterOptionsModal from "./_components/creditors-table/FilterOptionsModal"
+import CreditorFilterOptionsModal from "./_components/creditors-table/CreditorFilterOptionsModal"
 import { CreditorFilterValues } from "./_components/creditors-table/validations"
 import UserManagement from "./_components/users-table/UserManagement"
 import { UserFilterValues } from "./_components/users-table/validations"
+import { cn } from "@/lib/utils"
+import ClearCreditorFiltersButton from "./_components/creditors-table/ClearCreditorFiltersButton"
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -43,7 +45,7 @@ async function DashboardPage({
 }: DashboardPageProps) {
     const user = await mustLogin()
 
-    const filterValues: CreditorFilterValues = {
+    const creditorsTableFilterValues: CreditorFilterValues = {
         q,
         creditorType,
         claimType,
@@ -61,20 +63,31 @@ async function DashboardPage({
     return (
         <MainWrapper noBackgroundAndPadding>
             <Summaries />
+            <DashboardSectionTitle>User Management</DashboardSectionTitle>
             <UserManagement
                 filterValues={usersTableFilterValues}
                 currentPage={currentUsersTablePage}
                 tableSize={usersTableSize}
                 currentLoggedInUserInfo={user}
             />
-            <div className="flex justify-between">
-                <FilterOptionsModal defaultFilterValues={filterValues} />
-                <Button asChild variant={"success"}>
-                    <Link href={"/creditors/add"}>+ Kreditor</Link>
-                </Button>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <DashboardSectionTitle className="">
+                    Creditor Management
+                </DashboardSectionTitle>
+                <div className="flex gap-4 justify-between">
+                    <div className="flex gap-2 sm:gap-4">
+                        <CreditorFilterOptionsModal
+                            defaultFilterValues={creditorsTableFilterValues}
+                        />
+                        <ClearCreditorFiltersButton filterValues={creditorsTableFilterValues}/>
+                    </div>
+                    <Button asChild variant={"success"}>
+                        <Link href={"/creditors/add"}>+ Kreditor</Link>
+                    </Button>
+                </div>
             </div>
             <CreditorsTable
-                filterValues={filterValues}
+                filterValues={creditorsTableFilterValues}
                 currentPage={currentPage}
                 tableSize={tableSize}
             />
@@ -83,3 +96,17 @@ async function DashboardPage({
 }
 
 export default DashboardPage
+
+function DashboardSectionTitle({
+    children,
+    className,
+}: {
+    children: string
+    className?: string
+}) {
+    return (
+        <h2 className={cn("text-3xl font-light py-2 text-center", className)}>
+            {children}
+        </h2>
+    )
+}

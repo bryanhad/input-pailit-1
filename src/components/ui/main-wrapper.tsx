@@ -9,6 +9,7 @@ type MainWrapperProps = {
     titleIcon?: React.ReactNode
     noBackgroundAndPadding?: boolean
     titleClassName?: string
+    className?: string
 }
 
 function MainWrapper({
@@ -18,13 +19,14 @@ function MainWrapper({
     titleDesc,
     noBackgroundAndPadding = false,
     titleClassName,
+    className
 }: MainWrapperProps) {
     return (
         <div
             className={cn('flex flex-col gap-4 ', {
                 'bg-white p-4 lg:p-6 shadow-md rounded-md':
                     noBackgroundAndPadding === false,
-            })}
+            }, className)}
         >
             {(title || titleIcon) && (
                 <div className="flex items-center gap-3">

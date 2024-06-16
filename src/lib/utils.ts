@@ -1,24 +1,24 @@
-import { type ClassValue, clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-import { customAlphabet } from 'nanoid'
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+import { customAlphabet } from "nanoid"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(amount: number, currency: 'IDR' | 'USD') {
+export function formatCurrency(amount: number, currency: "IDR" | "USD") {
     const CURRENCY_FORMATTER = new Intl.NumberFormat(
-        currency === 'IDR' ? 'id-ID' : 'en-US',
+        currency === "IDR" ? "id-ID" : "en-US",
         {
             currency,
-            style: 'currency',
+            style: "currency",
             minimumFractionDigits: 0,
         }
     )
     return CURRENCY_FORMATTER.format(amount)
 }
 
-const NUMBER_FORMATTER = new Intl.NumberFormat('id-ID')
+const NUMBER_FORMATTER = new Intl.NumberFormat("id-ID")
 
 export function formatNumber(amount: number) {
     return NUMBER_FORMATTER.format(amount)
@@ -26,22 +26,22 @@ export function formatNumber(amount: number) {
 
 export function formatDateToLocale(
     date: Date,
-    locales: Intl.LocalesArgument = 'id-ID',
+    locales: Intl.LocalesArgument = "id-ID",
     short?: boolean
 ) {
     return new Date(date).toLocaleDateString(locales, {
-        year: 'numeric',
-        month: short ? '2-digit' : 'long',
-        day: 'numeric',
-        weekday: short ? undefined : 'long',
+        year: "numeric",
+        month: short ? "2-digit" : "long",
+        day: "numeric",
+        weekday: short ? undefined : "long",
     })
 }
 
 export function toSlug(str: string) {
     return str
         .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[^\w-]+/g, '')
+        .replace(/ /g, "-")
+        .replace(/[^\w-]+/g, "")
     // the first regex replace all spaces into -
     // the second regex replaces all - that is more than 1 to be an empty string
 }
@@ -51,7 +51,7 @@ export function capitalizeFirstLetter(str: string): string {
 }
 
 // Define a custom alphabet for hexadecimal characters
-const hexAlphabet = '0123456789abcdef'
+const hexAlphabet = "0123456789abcdef"
 // Create a nanoid generator function for a 64-character token (32 bytes in hex)
 const nanoid = customAlphabet(hexAlphabet, 64)
 
@@ -60,9 +60,9 @@ export function generateToken() {
 }
 
 export function getNameInitial(name: string) {
-    const formattedName = name.replace(/\s+/g, ' ').trim()
+    const formattedName = name.replace(/\s+/g, " ").trim()
 
-    const words = formattedName.split(' ')
+    const words = formattedName.split(" ")
 
     if (words.length === 1) {
         return name[0]
@@ -77,4 +77,9 @@ export class ActionError extends Error {
         this.title = title
         this.message = message
     }
+}
+
+export function sanitizeInput(input: string): string {
+    // Encode URI components to handle special characters
+    return encodeURIComponent(input.trim())
 }

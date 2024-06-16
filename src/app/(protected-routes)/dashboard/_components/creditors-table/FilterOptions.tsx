@@ -26,26 +26,51 @@ function FilterOptions({
     defaultFilterValues,
     onSubmitClicked,
 }: FilterOptionsProps) {
-    const pageSearchParams = useSearchParams()
+    const searchParams = useSearchParams()
     const router = useRouter()
     const form = useForm<CreditorFilterValues>({
         resolver: zodResolver(creditorFilterSchema),
         defaultValues: {
-            q: pageSearchParams.get("q") || "",
-            claimType: pageSearchParams.get("claimType") || "",
-            creditorType: pageSearchParams.get("creditorType") || "",
+            q: searchParams.get("q") || "",
+            claimType: searchParams.get("claimType") || "",
+            creditorType: searchParams.get("creditorType") || "",
         },
     })
 
     function onSubmit({ claimType, creditorType, q }: CreditorFilterValues) {
-        const searchParams = new URLSearchParams({
-            // the code below is to ensure to pass the object conditionally..
-            ...(q && { q: q.trim() }),
-            ...(claimType && { claimType }),
-            ...(creditorType && { creditorType }),
+        // const searchParams = new URLSearchParams({
+        //     // the code below is to ensure to pass the object conditionally..
+        //     ...(q && { q: q.trim() }),
+        //     ...(claimType && { claimType }),
+        //     ...(creditorType && { creditorType }),
+        // })
+        // THIS WAY THE ROUTER.PUSH ALSO INCLUDES THE PREVIOUS SEARCH QUERIES THAT ARE PRESENT ALREADY.
+        // BEFORE, IT WAS DELETED.
+        // for instance if there were already queries for the users table, it is replaced by the searchParams that is made above. no bueno indeed.
+        const currentPageParams = new URLSearchParams(searchParams.toString())
+        if (q) {
+            currentPageParams.set("q", q)
+        } else {
+            currentPageParams.delete("q")
+        }
+        if (claimType) {
+            currentPageParams.set("claimType", claimType)
+        } else {
+            currentPageParams.delete("claimType")
+        }
+        if (creditorType) {
+            currentPageParams.set("creditorType", creditorType)
+        } else {
+            currentPageParams.delete("creditorType")
+        }
+
+        router.push(`/dashboard?${currentPageParams.toString()}`, {
+            scroll: false,
         })
 
-        router.push(`/dashboard?${searchParams.toString()}`)
+        // router.push(`/dashboard?${searchParams.toString()}`, {
+        //     scroll:false
+        // })
         onSubmitClicked()
     }
 
@@ -64,7 +89,10 @@ function FilterOptions({
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder="Nama, NIK, Nomor Telepon.." {...field} />
+                                    <Input
+                                        placeholder="Nama, NIK, Nomor Telepon.."
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -77,19 +105,6 @@ function FilterOptions({
                             <FormItem>
                                 <FormControl>
                                     <div className="w-full">
-                                        {/* <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select> */}
-
                                         <Select {...field}>
                                             <option value="">
                                                 Any Creditor Type
@@ -141,15 +156,6 @@ function FilterOptions({
                             </FormItem>
                         )}
                     />
-                    {/* <Input
-                     id="q"
-                     name="q"
-                     defaultValue={defaultFilterValues.q}
-                     placeholder="Nama, NIK, Akta Pendirian.."
-                     className="w-full"
-                 />
-                 
-                */}
                     <FormSubmitButton className="w-full">
                         Filter Creditors
                     </FormSubmitButton>

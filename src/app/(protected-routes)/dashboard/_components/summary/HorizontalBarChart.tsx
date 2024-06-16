@@ -1,5 +1,5 @@
 'use client'
-import { capitalizeFirstLetter } from '@/lib/utils'
+import { capitalizeFirstLetter, cn } from '@/lib/utils'
 import { CreditorType } from '@/types'
 import {
     Chart as ChartJS,
@@ -49,9 +49,10 @@ const labels = ['']
 type HorizontalBarChartProps = {
     data: { jenis: CreditorType; count: string }[]
     title: string
+    className?:string
 }
 
-function HorizontalBarChart({ data, title }: HorizontalBarChartProps) {
+function HorizontalBarChart({ data, title, className }: HorizontalBarChartProps) {
     const barData = {
         labels,
         datasets: [
@@ -75,7 +76,7 @@ function HorizontalBarChart({ data, title }: HorizontalBarChartProps) {
     }
 
     return (
-        <div className="flex flex-col">
+        <div className={cn("flex flex-col p-4 bg-white rounded-md shadow-sm", className)}>
             <p className="text-center text-sm font-semibold">{title}</p>
             <div>
                 <Bar options={options} data={barData} className="h" />
