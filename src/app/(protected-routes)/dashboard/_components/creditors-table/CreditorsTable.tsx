@@ -1,6 +1,5 @@
 import ClaimTypeBadge from "@/components/ClaimTypeBadge"
 import TableDataNotFound from "@/components/TableDataNotFound"
-import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
@@ -9,101 +8,34 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import db from "@/lib/db"
 import { cn, formatCurrency } from "@/lib/utils"
-import { Prisma } from "@prisma/client"
-import Link from "next/link"
 import CreditorInfo from "./CreditorInfo"
 import DeleteButton from "./DeleteCreditorButton"
 import DownloadCreditorPDFButton from "./DownloadCreditorPDFButton"
+import EditCreditorButton from "./EditCreditorButton"
 import InputorInfo from "./InputorInfo"
 import Pagination from "./Pagination"
-import { CreditorFilterValues } from "./validations"
 import ViewCreditorButton from "./ViewCreditorButton"
-import EditCreditorButton from "./EditCreditorButton"
+import { fetchCreditors } from "./actions"
+import { FetchCreditorsSearchParams } from "./validations"
 
 type CreditorsTableProps = {
-    filterValues: CreditorFilterValues
-    currentPage: number
-    tableSize: number
+    fetchCreditorSearchParams: FetchCreditorsSearchParams
 }
 
 async function CreditorsTable({
-    filterValues: { q, claimType, creditorType, createdBy },
-    currentPage,
-    tableSize,
+    fetchCreditorSearchParams,
 }: CreditorsTableProps) {
-    const searchString = q
-        ?.split(" ")
-        .filter((word) => word.length > 0)
-        .join(" & ")
-
-    const createdBySearchString = createdBy
-        ?.split(" ")
-        .filter((word) => word.length > 0)
-        .join(" & ")
-
-    const searchFilter: Prisma.CreditorWhereInput = searchString
-        ? {
-              // we use "OR" filter, so that the searh filter will work on any columns that we specify
-              OR: [
-                  { nama: { search: searchString } },
-                  { nomorTelepon: { search: searchString } },
-                  { alamatKuasaHukum: { search: searchString } },
-                  { NIKAtauNomorAktaPendirian: { search: searchString } },
-              ],
-          }
-        : {}
-
-    const createdBySearchFilter: Prisma.CreditorWhereInput =
-        createdBySearchString
-            ? {
-                  user: {
-                      OR: [
-                          {
-                              name: {
-                                  contains: createdBySearchString,
-                                  mode: "insensitive",
-                              },
-                          },
-                          {
-                              email: {
-                                  contains: createdBySearchString,
-                                  mode: "insensitive",
-                              },
-                          },
-                      ],
-                  },
-              }
-            : {}
-
-    const whereFilter: Prisma.CreditorWhereInput = {
-        AND: [
-            searchFilter,
-            createdBySearchFilter,
-            creditorType ? { jenis: creditorType } : {},
-            claimType ? { sifatTagihan: claimType } : {},
-        ],
-    }
-
-    const offset = (currentPage - 1) * tableSize
-
-    const creditors = await db.creditor.findMany({
-        skip: offset,
-        take: tableSize,
-        include: {
-            _count: { select: { attachments: true } },
-            user: { select: { name: true, image: true, role: true } },
-            lastUpdatedBy: { select: { name: true, image: true, role: true } },
-        },
-        orderBy: { number: "desc" },
-        where: whereFilter,
+    const {
+        totalDataCount,
+        creditors,
+        totalAvailablePages,
+        isUsingFilter,
+        fetchSize,
+    } = await fetchCreditors({
+        filterValues: fetchCreditorSearchParams,
+        defaultFetchSize: 10,
     })
-
-    const totalDataCount = await db.creditor.count({
-        where: whereFilter,
-    })
-    const totalPages = Math.ceil(Number(totalDataCount) / tableSize)
 
     return (
         <div className="min-h-[360px] flex flex-col gap-2 rounded-md overflow-hidden">
@@ -145,9 +77,7 @@ async function CreditorsTable({
                         {creditors.length < 1 ? (
                             <TableDataNotFound
                                 colSpan={7}
-                                hasFilters={
-                                    !!q || !!claimType || !!creditorType
-                                }
+                                hasFilters={isUsingFilter}
                                 tableName="creditor"
                             />
                         ) : (
@@ -239,10 +169,10 @@ async function CreditorsTable({
                 </Table>
             </div>
             <Pagination
-                itemsPerPage={tableSize}
+                itemsPerPage={fetchSize}
                 totalRowCount={totalDataCount}
                 totalRowShown={creditors.length}
-                totalAvailablePages={totalPages}
+                totalAvailablePages={totalAvailablePages}
             />
         </div>
     )

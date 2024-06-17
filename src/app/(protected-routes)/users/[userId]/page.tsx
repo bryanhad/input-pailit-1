@@ -1,19 +1,26 @@
-import { UserImageIcon } from '@/app/_components/UserPopOver'
-import { mustLogin } from '@/auth/actions'
-import MainWrapper from '@/components/ui/main-wrapper'
-import React from 'react'
-import UserDetail from '../components/UserDetail'
-import db from '@/lib/db'
-import { notFound, redirect } from 'next/navigation'
-import UserDetailWithCreditorsInputed from '../components/UserDetailWithCreditorsInputed'
+import { UserImageIcon } from "@/app/_components/UserPopOver"
+import { mustLogin } from "@/auth/actions"
+import MainWrapper from "@/components/ui/main-wrapper"
+import React from "react"
+import UserDetail from "../components/UserDetail"
+import db from "@/lib/db"
+import { notFound, redirect } from "next/navigation"
+import UserDetailWithCreditorsInputed from "../components/UserDetailWithCreditorsInputed"
+import { FetchCreditorsSearchParams } from "../../dashboard/_components/creditors-table/validations"
 
-type UserDetailPageProps = { params: { userId: string } }
+type UserDetailPageProps = {
+    params: { userId: string }
+    searchParams: FetchCreditorsSearchParams
+}
 
-async function UserDetailPage({ params: { userId } }: UserDetailPageProps) {
+async function UserDetailPage({
+    params: { userId },
+    searchParams,
+}: UserDetailPageProps) {
     const loggedInUser = await mustLogin()
 
     if (userId === loggedInUser.id) {
-        redirect('/users/me')
+        redirect("/users/me")
     }
 
     const queriedUser = await db.user.findUnique({ where: { id: userId } })
@@ -22,18 +29,9 @@ async function UserDetailPage({ params: { userId } }: UserDetailPageProps) {
         notFound()
     }
 
-
-    const inputedCreditors = await db.creditor.findMany({
-        where: { userId: queriedUser.id },
-        include: {
-            _count: { select: { attachments: true }},
-            lastUpdatedBy: { select: { name: true, image: true, role: true } },
-        },
-    })
-
     return (
         <UserDetailWithCreditorsInputed
-            inputedCreditors={inputedCreditors}
+            fetchCreditorSearchParams={searchParams}
             userInfo={queriedUser}
             title={`${queriedUser.name}'s Profile`}
             currentLoggedInUserInfo={loggedInUser}

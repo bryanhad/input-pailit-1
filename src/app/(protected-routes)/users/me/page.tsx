@@ -1,24 +1,20 @@
-import { mustLogin } from '@/auth/actions'
-import db from '@/lib/db'
-import UserDetailWithCreditorsInputed from '../components/UserDetailWithCreditorsInputed'
+import { mustLogin } from "@/auth/actions"
+import { FetchCreditorsSearchParams } from "../../dashboard/_components/creditors-table/validations"
+import UserDetailWithCreditorsInputed from "../components/UserDetailWithCreditorsInputed"
 
-async function MePage() {
+type MePageProps = {
+    searchParams: FetchCreditorsSearchParams
+}
+
+async function MePage({ searchParams }: MePageProps) {
     const loggedInUser = await mustLogin()
-
-    const inputedCreditors = await db.creditor.findMany({
-        where: { userId: loggedInUser.id },
-        include: {
-            _count: { select: { attachments: true }},
-            lastUpdatedBy: { select: { name: true, image: true, role: true } },
-        },
-    })
 
     return (
         <UserDetailWithCreditorsInputed
-            inputedCreditors={inputedCreditors}
+            fetchCreditorSearchParams={searchParams}
             currentLoggedInUserInfo={loggedInUser}
             userInfo={loggedInUser}
-            title='User Settings'
+            title="User Settings"
         />
     )
 }

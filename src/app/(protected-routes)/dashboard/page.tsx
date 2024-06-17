@@ -6,7 +6,10 @@ import Link from "next/link"
 import Summaries from "./_components/summary/Summaries"
 import CreditorsTable from "./_components/creditors-table/CreditorsTable"
 import CreditorFilterOptionsModal from "./_components/creditors-table/CreditorFilterOptionsModal"
-import { CreditorFilterValues } from "./_components/creditors-table/validations"
+import {
+    CreditorFilterValues,
+    FetchCreditorsSearchParams,
+} from "./_components/creditors-table/validations"
 import UserManagement from "./_components/users-table/UserManagement"
 import { UserFilterValues } from "./_components/users-table/validations"
 import { cn } from "@/lib/utils"
@@ -47,14 +50,14 @@ async function DashboardPage({
 }: DashboardPageProps) {
     const user = await mustLogin()
 
-    const creditorsTableFilterValues: CreditorFilterValues = {
+    const creditorsTableFilterValues: FetchCreditorsSearchParams = {
         q,
         creditorType,
         claimType,
         createdBy,
+        page,
+        size,
     }
-    const currentPage = Number(page) || 1
-    const tableSize = Number(size) || 10
 
     const usersTableFilterValues: UserFilterValues = {
         uq,
@@ -95,9 +98,7 @@ async function DashboardPage({
                 </div>
             </div>
             <CreditorsTable
-                filterValues={creditorsTableFilterValues}
-                currentPage={currentPage}
-                tableSize={tableSize}
+                fetchCreditorSearchParams={creditorsTableFilterValues}
             />
         </MainWrapper>
     )

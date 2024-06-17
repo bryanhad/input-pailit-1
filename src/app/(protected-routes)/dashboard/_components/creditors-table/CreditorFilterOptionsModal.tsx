@@ -7,17 +7,12 @@ import FilterOptions from "./FilterOptions"
 import { CreditorFilterValues } from "./validations"
 import {SlidersHorizontal} from 'lucide-react'
 
-type Props = {defaultFilterValues: CreditorFilterValues}
+type Props = {defaultFilterValues: CreditorFilterValues, noCreatedByFilter?:boolean}
 
-function CreditorFilterOptionsmodal({ defaultFilterValues }: Props) {
+function CreditorFilterOptionsmodal({ defaultFilterValues, noCreatedByFilter=false}: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    async function handleApproveDelete() {
-        setIsModalOpen(false)
-    }
-
     return (
-        // TODO: BUTTON TO CLEAR ALL FILTER
         <Modal
             centerText
             className="items-center"
@@ -44,6 +39,7 @@ function CreditorFilterOptionsmodal({ defaultFilterValues }: Props) {
                 <FilterOptions
                     defaultFilterValues={defaultFilterValues}
                     onSubmitClicked={() => setIsModalOpen(false)}
+                    noCreatedByFilter={noCreatedByFilter}
                 />
             </div>
         </Modal>

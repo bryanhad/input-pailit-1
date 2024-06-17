@@ -9,3 +9,5 @@ export const creditorFilterSchema = z.object({
 })
 
 export type CreditorFilterValues = z.infer<typeof creditorFilterSchema>
+
+export type FetchCreditorsSearchParams = CreditorFilterValues & {size?:string; page?:string}

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import React from "react"
 import { CreditorFilterValues } from "./validations"
 import { cn } from "@/lib/utils"
@@ -11,6 +11,7 @@ type Props = {
 }
 
 function ClearCreditorFiltersButton({ filterValues }: Props) {
+    const pathname = usePathname()
     const searchParams = useSearchParams()
     const router = useRouter()
 
@@ -32,7 +33,7 @@ function ClearCreditorFiltersButton({ filterValues }: Props) {
             currentPageParams.delete("createdBy")
         }
 
-        router.push(`/dashboard?${currentPageParams.toString()}`, {
+        router.push(`${pathname}?${currentPageParams.toString()}`, {
             scroll: false,
         })
     }

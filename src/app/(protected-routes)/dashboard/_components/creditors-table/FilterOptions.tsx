@@ -15,17 +15,20 @@ import { CreditorFilterValues, creditorFilterSchema } from "./validations"
 import { ClaimType, CreditorType } from "@/types"
 import { capitalizeFirstLetter } from "@/lib/utils"
 import Select from "@/components/ui/select-server-action"
-import { useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 export type FilterOptionsProps = {
     defaultFilterValues: CreditorFilterValues
     onSubmitClicked: () => void
+    noCreatedByFilter?: boolean
 }
 
 function FilterOptions({
     defaultFilterValues,
     onSubmitClicked,
+    noCreatedByFilter = false,
 }: FilterOptionsProps) {
+    const pathname = usePathname()
     const searchParams = useSearchParams()
     const router = useRouter()
     const form = useForm<CreditorFilterValues>({
@@ -34,11 +37,16 @@ function FilterOptions({
             q: searchParams.get("q") || "",
             claimType: searchParams.get("claimType") || "",
             creditorType: searchParams.get("creditorType") || "",
-            createdBy: searchParams.get("createdBy") || ""
+            createdBy: searchParams.get("createdBy") || "",
         },
     })
 
-    function onSubmit({ claimType, creditorType, q, createdBy }: CreditorFilterValues) {
+    function onSubmit({
+        claimType,
+        creditorType,
+        q,
+        createdBy,
+    }: CreditorFilterValues) {
         // const searchParams = new URLSearchParams({
         //     // the code below is to ensure to pass the object conditionally..
         //     ...(q && { q: q.trim() }),
@@ -69,11 +77,11 @@ function FilterOptions({
         } else {
             currentPageParams.delete("createdBy")
         }
-        if (searchParams.get('page')) {
-            currentPageParams.delete('page')
+        if (searchParams.get("page")) {
+            currentPageParams.delete("page")
         }
 
-        router.push(`/dashboard?${currentPageParams.toString()}`, {
+        router.push(`${pathname}?${currentPageParams.toString()}`, {
             scroll: false,
         })
 
@@ -165,21 +173,23 @@ function FilterOptions({
                             </FormItem>
                         )}
                     />
-                       <FormField
-                        control={form.control}
-                        name="createdBy"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <Input
-                                        placeholder="Inputor's Name or Email.."
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    {!noCreatedByFilter && (
+                        <FormField
+                            control={form.control}
+                            name="createdBy"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Inputor's Name or Email.."
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    )}
                     <FormSubmitButton className="w-full">
                         Filter Creditors
                     </FormSubmitButton>
