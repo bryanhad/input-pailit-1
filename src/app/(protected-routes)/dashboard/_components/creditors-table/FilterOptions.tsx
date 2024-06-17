@@ -34,10 +34,11 @@ function FilterOptions({
             q: searchParams.get("q") || "",
             claimType: searchParams.get("claimType") || "",
             creditorType: searchParams.get("creditorType") || "",
+            createdBy: searchParams.get("createdBy") || ""
         },
     })
 
-    function onSubmit({ claimType, creditorType, q }: CreditorFilterValues) {
+    function onSubmit({ claimType, creditorType, q, createdBy }: CreditorFilterValues) {
         // const searchParams = new URLSearchParams({
         //     // the code below is to ensure to pass the object conditionally..
         //     ...(q && { q: q.trim() }),
@@ -62,6 +63,11 @@ function FilterOptions({
             currentPageParams.set("creditorType", creditorType)
         } else {
             currentPageParams.delete("creditorType")
+        }
+        if (createdBy) {
+            currentPageParams.set("createdBy", createdBy)
+        } else {
+            currentPageParams.delete("createdBy")
         }
         if (searchParams.get('page')) {
             currentPageParams.delete('page')
@@ -154,6 +160,21 @@ function FilterOptions({
                                             ))}
                                         </Select>
                                     </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                       <FormField
+                        control={form.control}
+                        name="createdBy"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Inputor's Name or Email.."
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

@@ -27,7 +27,7 @@ type CreditorsTableProps = {
 }
 
 async function CreditorsTable({
-    filterValues: { q, claimType, creditorType },
+    filterValues: { q, claimType, creditorType, createdBy },
     currentPage,
     tableSize,
 }: CreditorsTableProps) {
@@ -35,6 +35,11 @@ async function CreditorsTable({
         ?.split(' ')
         .filter((word) => word.length > 0)
         .join(' & ')
+
+    const createdBySearchString = createdBy
+    ?.split(' ')
+    .filter((word) => word.length > 0)
+    .join(' & ')
 
     const searchFilter: Prisma.CreditorWhereInput = searchString
         ? {
@@ -48,9 +53,19 @@ async function CreditorsTable({
           }
         : {}
 
+    const createdBySearchFilter: Prisma.CreditorWhereInput = createdBySearchString
+          ? {
+            user: {OR: [
+                {name: {contains: createdBySearchString, mode: 'insensitive'}},
+                {email: { contains: createdBySearchString, mode: 'insensitive' }}
+            ]}
+          }
+          : {}
+
     const whereFilter: Prisma.CreditorWhereInput = {
         AND: [
             searchFilter,
+            createdBySearchFilter,
             creditorType ? { jenis: creditorType } : {},
             claimType ? { sifatTagihan: claimType } : {},
         ],

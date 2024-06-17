@@ -15,7 +15,7 @@ function ClearCreditorFiltersButton({ filterValues }: Props) {
     const router = useRouter()
 
     const isFilterNotUsed =
-        !filterValues.claimType && !filterValues.creditorType && !filterValues.q
+        !filterValues.claimType && !filterValues.creditorType && !filterValues.q && !filterValues.createdBy
 
     function onClick() {
         const currentPageParams = new URLSearchParams(searchParams.toString())
@@ -27,6 +27,9 @@ function ClearCreditorFiltersButton({ filterValues }: Props) {
         }
         if (searchParams.get("claimType")) {
             currentPageParams.delete("claimType")
+        }
+        if (searchParams.get("createdBy")) {
+            currentPageParams.delete("createdBy")
         }
 
         router.push(`/dashboard?${currentPageParams.toString()}`, {

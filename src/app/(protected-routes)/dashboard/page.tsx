@@ -1,19 +1,19 @@
-import { mustLogin } from "@/auth/actions"
-import { Button } from "@/components/ui/button"
-import MainWrapper from "@/components/ui/main-wrapper"
-import { Metadata } from "next"
-import Link from "next/link"
-import Summaries from "./_components/summary/Summaries"
-import CreditorsTable from "./_components/creditors-table/CreditorsTable"
-import CreditorFilterOptionsModal from "./_components/creditors-table/CreditorFilterOptionsModal"
-import { CreditorFilterValues } from "./_components/creditors-table/validations"
-import UserManagement from "./_components/users-table/UserManagement"
-import { UserFilterValues } from "./_components/users-table/validations"
-import { cn } from "@/lib/utils"
-import ClearCreditorFiltersButton from "./_components/creditors-table/ClearCreditorFiltersButton"
+import { mustLogin } from '@/auth/actions'
+import { Button } from '@/components/ui/button'
+import MainWrapper from '@/components/ui/main-wrapper'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import Summaries from './_components/summary/Summaries'
+import CreditorsTable from './_components/creditors-table/CreditorsTable'
+import CreditorFilterOptionsModal from './_components/creditors-table/CreditorFilterOptionsModal'
+import { CreditorFilterValues } from './_components/creditors-table/validations'
+import UserManagement from './_components/users-table/UserManagement'
+import { UserFilterValues } from './_components/users-table/validations'
+import { cn } from '@/lib/utils'
+import ClearCreditorFiltersButton from './_components/creditors-table/ClearCreditorFiltersButton'
 
 export const metadata: Metadata = {
-    title: "Dashboard",
+    title: 'Dashboard',
 }
 
 type DashboardPageProps = {
@@ -21,6 +21,7 @@ type DashboardPageProps = {
         q?: string
         creditorType?: string
         claimType?: string
+        createdBy?: string
         page?: string
         size?: string
         uq?: string
@@ -35,6 +36,7 @@ async function DashboardPage({
         q,
         claimType,
         creditorType,
+        createdBy,
         page,
         size,
         upage,
@@ -49,6 +51,7 @@ async function DashboardPage({
         q,
         creditorType,
         claimType,
+        createdBy,
     }
     const currentPage = Number(page) || 1
     const tableSize = Number(size) || 10
@@ -86,8 +89,8 @@ async function DashboardPage({
                             filterValues={creditorsTableFilterValues}
                         />
                     </div>
-                    <Button asChild variant={"success"}>
-                        <Link href={"/creditors/add"}>+ Kreditor</Link>
+                    <Button asChild variant={'success'}>
+                        <Link href={'/creditors/add'}>+ Kreditor</Link>
                     </Button>
                 </div>
             </div>
@@ -110,7 +113,7 @@ function DashboardSectionTitle({
     className?: string
 }) {
     return (
-        <h2 className={cn("text-3xl font-light py-2 text-center", className)}>
+        <h2 className={cn('text-3xl font-light py-2 text-center', className)}>
             {children}
         </h2>
     )

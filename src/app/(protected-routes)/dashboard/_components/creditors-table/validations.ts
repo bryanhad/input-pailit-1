@@ -4,6 +4,7 @@ export const creditorFilterSchema = z.object({
     q: z.string().optional(),
     creditorType: z.string().optional(),
     claimType: z.string().optional(),
+    createdBy: z.string().optional(),
     // TODO: PERHAPS MAKE A FILTER FOR CREATED AT??
 })
 
