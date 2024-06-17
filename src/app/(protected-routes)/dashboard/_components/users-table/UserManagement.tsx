@@ -154,7 +154,7 @@ async function UserManagement({
                 </div>
 
                 {/* TABLE STUFFS */}
-                <div className="flex-1 gap-3 flex flex-col xl:flex-[1] pb-1 rounded-md overflow-hidden">
+                <div className="flex-1 min-h-[318px] gap-3 flex flex-col xl:flex-[1] pb-1 rounded-md overflow-hidden">
                     {/* <div className="bg-black p-4 h-40"></div> */}
                     <div className="flex-[1] bg-white">
                         <Table
