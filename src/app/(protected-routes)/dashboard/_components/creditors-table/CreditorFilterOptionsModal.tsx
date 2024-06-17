@@ -25,7 +25,7 @@ function CreditorFilterOptionsmodal({ defaultFilterValues, noCreatedByFilter=fal
             buttonCustom={
                 <Button
                 className="flex gap-2 items-center"
-                    variant={"outline"}
+                    variant={"outline-bold"}
                     onClick={() => {
                         setIsModalOpen((prev) => !prev)
                     }}
