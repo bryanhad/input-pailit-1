@@ -188,7 +188,12 @@ function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
                             name="NIKAtauNomorAktaPendirian"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>NIK / Akta Pendirian</FormLabel>
+                                    <FormLabel>
+                                        {form.watch("jenis") ===
+                                        CreditorType.Instansi
+                                            ? "Akta Pendirian"
+                                            : "NIK"}
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder="Masukkan NIK Atau Akta Pendirian.."
@@ -364,7 +369,11 @@ function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
                             response={formSuccess}
                             errorMessage={formError}
                         />
-                        <LoadingButton type="submit" loading={isPending}>
+                        <LoadingButton
+                            type="submit"
+                            loading={isPending}
+                            disabled={!form.formState.isDirty}
+                        >
                             Submit
                         </LoadingButton>
                     </div>
