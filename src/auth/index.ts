@@ -26,6 +26,7 @@ declare module 'next-auth' {
             createdAt: Date
             email: string
             id: string
+            status: string
             /**
              * By default, TypeScript merges new interface properties and overwrites existing ones.
              * In this case, the default session user properties will be overwritten,
@@ -58,6 +59,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             token.emailVerified = existingUser.emailVerified
             token.createdAt = existingUser.createdAt
             token.id = existingUser.id
+            token.status = existingUser.status
 
             return token
         },
@@ -74,6 +76,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
             if (token.id) {
                 session.user.id = token.id as string
+            }
+            if (token.status) {
+                session.user.status = token.status as string
             }
             // `session.user.address` is now a valid property, and will be type-checked
             // in places like `useSession().data.user` or `auth().user`

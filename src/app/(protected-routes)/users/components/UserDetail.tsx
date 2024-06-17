@@ -1,34 +1,33 @@
-'use client'
+"use client"
 
-import SimplePopover from '@/components/SimplePopover'
-import UserRoleBadge from '@/components/UserRoleBadge'
-import { Button } from '@/components/ui/button'
-import { formatDateToLocale } from '@/lib/utils'
-import { Role } from '@/types'
-import { User } from '@prisma/client'
-import { MailCheck, MailWarning, PencilIcon } from 'lucide-react'
-import { useState } from 'react'
-import EditUserForm from './EditUserForm'
-import EmailStatusBadge from '@/components/EmailStatusBadge'
+import SimplePopover from "@/components/SimplePopover"
+import UserRoleBadge from "@/components/UserRoleBadge"
+import { Button } from "@/components/ui/button"
+import { formatDateToLocale } from "@/lib/utils"
+import { Role } from "@/types"
+import { User } from "@prisma/client"
+import { MailCheck, MailWarning, PencilIcon } from "lucide-react"
+import { useState } from "react"
+import EditUserForm from "./EditUserForm"
+import EmailStatusBadge from "@/components/EmailStatusBadge"
+import UserStatusToggle from "../../dashboard/_components/users-table/UserStatusToggle"
 
 export type UserDetailProps = {
-    currentLoggedInUserInfo: Pick<User, 'id' | 'role'>
+    currentLoggedInUserInfo: Pick<User, "id" | "role">
     userDetail: Pick<
         User,
-        | 'createdAt'
-        | 'email'
-        | 'emailVerified'
-        | 'image'
-        | 'name'
-        | 'role'
-        | 'id'
+        | "createdAt"
+        | "email"
+        | "emailVerified"
+        | "image"
+        | "name"
+        | "role"
+        | "id"
+        | "status"
     >
 }
 
-function UserDetail({
-    userDetail,
-    currentLoggedInUserInfo
-}: UserDetailProps) {
+function UserDetail({ userDetail, currentLoggedInUserInfo }: UserDetailProps) {
     const [isEditing, setIsEditing] = useState(false)
     return (
         <>
@@ -37,7 +36,7 @@ function UserDetail({
                 (currentLoggedInUserInfo.role === Role.Admin ||
                     currentLoggedInUserInfo.id === userDetail.id) && (
                     <Button
-                        variant={'ghost'}
+                        variant={"ghost"}
                         className="absolute top-0 right-0 rounded-tl-none rounded-br-none"
                         type="button"
                         onClick={() => setIsEditing((prev) => !prev)}
@@ -82,6 +81,15 @@ function UserDetail({
                 }
             />
             <UserFieldValuePair
+                fieldName="Status"
+                value={
+                    <UserStatusToggle
+                        currentLoggedInUserInfo={currentLoggedInUserInfo}
+                        toBeUpdatedUserInfo={userDetail}
+                    />
+                }
+            />
+            <UserFieldValuePair
                 fieldName="Joined At"
                 value={formatDateToLocale(userDetail.createdAt)}
             />
@@ -104,8 +112,8 @@ function UserFieldValuePair({ fieldName, value }: UserFieldValuePairProps) {
                 <span className="ml-2 sm:hidden">:</span>
             </p>
             <span className="hidden sm:block">:</span>
-            {typeof value === 'string' ? (
-                <p className="flex-1 w-full text-sm pt-[3px]">{value || '-'}</p>
+            {typeof value === "string" ? (
+                <p className="flex-1 w-full text-sm pt-[3px]">{value || "-"}</p>
             ) : (
                 value
             )}
