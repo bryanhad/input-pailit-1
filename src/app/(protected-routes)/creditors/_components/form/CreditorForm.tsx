@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import LoadingButton from '@/components/LoadingButton'
+import LoadingButton from "@/components/LoadingButton"
 import {
     Form,
     FormControl,
@@ -8,26 +8,27 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { capitalizeFirstLetter } from '@/lib/utils'
-import { ClaimType, CreditorType } from '@/types'
-import { useRouter } from 'next/navigation'
-import { UseFormReturn } from 'react-hook-form'
-import { FormProviderAddCreditor } from '.'
-import AttachmentsFieldNew from './AttachmentsFieldNew'
-import LegalRepresentativeInputs from './LegalRepresentativeInputs'
-import { CreditorFormValues } from './validation'
-import { useState, useTransition } from 'react'
-import FormResponse from '@/components/form-response'
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/components/ui/use-toast"
+import { capitalizeFirstLetter, formatNumber } from "@/lib/utils"
+import { ClaimType, CreditorType } from "@/types"
+import { useRouter } from "next/navigation"
+import { UseFormReturn } from "react-hook-form"
+import { FormProviderAddCreditor } from "."
+import AttachmentsFieldNew from "./AttachmentsFieldNew"
+import LegalRepresentativeInputs from "./LegalRepresentativeInputs"
+import { CreditorFormValues } from "./validation"
+import { useState, useTransition } from "react"
+import FormResponse from "@/components/form-response"
+import { Regex } from "lucide-react"
 
 type CreditorFormProps = {
     form: UseFormReturn<CreditorFormValues>
     action: (
-        userId:string,
+        userId: string,
         values: CreditorFormValues,
         ...params: any[]
     ) => Promise<
@@ -47,10 +48,10 @@ type CreditorFormProps = {
           }
     >
     creditorId?: string
-    userId:string
+    userId: string
 }
 
-function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
+function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
     const { toast } = useToast()
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
@@ -70,7 +71,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
             if (res.error) {
                 setFormError(res.error.message)
                 toast({
-                    variant: 'destructive',
+                    variant: "destructive",
                     title: res.error.title,
                     description: res.error.message,
                 })
@@ -81,7 +82,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                 title: res.success.title,
                 description: res.success.message,
             })
-            router.push('/dashboard')
+            router.push("/dashboard")
         })
     }
 
@@ -90,7 +91,9 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
         onChange: (...event: any[]) => void,
         field: keyof CreditorFormValues
     ) {
-        const value = parseInt(e.target.value)
+        // the regex is for removing all '.' from the e.target.value that has been modified from the formatNumber lol
+        const value = parseInt(e.target.value.replace(/\./g, ""))
+
         if (isNaN(value) || value < 1) {
             onChange(0)
         } else {
@@ -109,7 +112,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
         field: keyof CreditorFormValues
     ) {
         const value = parseInt(e.target.value)
-        if (isNaN(value) && e.target.value !== '') {
+        if (isNaN(value) && e.target.value !== "") {
             return
         }
         onChange(e.target.value)
@@ -121,7 +124,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="grid grid-cols-1 xl:grid-cols-2 gap-3 xl:gap-10"
+                    className="grid grid-cols-1 xl:grid-cols-2 xl:gap-10"
                 >
                     <div className="space-y-3">
                         <FormField
@@ -150,7 +153,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                                             value={item}
                                                         />
                                                     </FormControl>
-                                                    <FormLabel className="font-normal">
+                                                    <FormLabel className="font-normal cursor-pointer">
                                                         {capitalizeFirstLetter(
                                                             item
                                                         )}
@@ -240,14 +243,14 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            value={form.watch('nomorTelepon')}
+                                            value={form.watch("nomorTelepon")}
                                             placeholder="Masukkan nomor telepon kreditor"
                                             {...restOfFieldValues}
                                             onChange={(e) =>
                                                 handlePhoneNumberInputChange(
                                                     e,
                                                     restOfFieldValues.onChange,
-                                                    'nomorTelepon'
+                                                    "nomorTelepon"
                                                 )
                                             }
                                         />
@@ -274,6 +277,8 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                 </FormItem>
                             )}
                         />
+                    </div>
+                    <div className="space-y-4 max-xl:pt-4">
                         <FormField
                             control={form.control}
                             name="totalTagihan"
@@ -283,11 +288,16 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                 <FormItem>
                                     <FormLabel>Price</FormLabel>
                                     <FormControl>
-                                        <div className="flex items-center rounded-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                                        <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-black text-white">
                                             <p className="px-3">Rp</p>
                                             <Input
-                                                value={form.watch(
-                                                    'totalTagihan'
+                                                className="tracking-widest text-black rounded-r-md border border-black"
+                                                value={formatNumber(
+                                                    Number(
+                                                        form.watch(
+                                                            "totalTagihan"
+                                                        )
+                                                    )
                                                 )}
                                                 variant="withIcon"
                                                 placeholder="Add Product's Price"
@@ -296,7 +306,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                                     handleNumberInputChange(
                                                         e,
                                                         restOfFieldValues.onChange,
-                                                        'totalTagihan'
+                                                        "totalTagihan"
                                                     )
                                                 }
                                             />
@@ -306,7 +316,6 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                 </FormItem>
                             )}
                         />
-
                         <FormField
                             control={form.control}
                             name="sifatTagihan"
@@ -333,7 +342,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                                             value={item}
                                                         />
                                                     </FormControl>
-                                                    <FormLabel className="font-normal">
+                                                    <FormLabel className="font-normal cursor-pointer">
                                                         {capitalizeFirstLetter(
                                                             item
                                                         )}
@@ -346,8 +355,6 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                                 </FormItem>
                             )}
                         />
-                    </div>
-                    <div className="space-y-4 max-xl:pt-4">
                         <LegalRepresentativeInputs />
                         <h2 className="font-bold text-2xl">Lampiran</h2>
                         {/* <AttachmentsField /> */}
@@ -357,10 +364,7 @@ function CreditorForm({ form, action, creditorId, userId}: CreditorFormProps) {
                             response={formSuccess}
                             errorMessage={formError}
                         />
-                        <LoadingButton
-                            type="submit"
-                            loading={isPending}
-                        >
+                        <LoadingButton type="submit" loading={isPending}>
                             Submit
                         </LoadingButton>
                     </div>

@@ -105,7 +105,7 @@ async function CreditorDetailPage({
                                 'IDR'
                             )}
                             className="bg-black text-white border-2"
-                            valueClassName="font-medium"
+                            valueClassName="font-medium tracking-wider"
                         />
                     </div>
                 </Section>
