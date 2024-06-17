@@ -9,7 +9,12 @@ import { cn } from '@/lib/utils'
 import { Creditor } from '@prisma/client'
 import { Download } from 'lucide-react'
 
-function DownloadButton({ id }: { id: Creditor['id'] }) {
+type DownloadCreditorPDFButtonProps = {
+    id: Creditor['id']
+    small?: boolean
+}
+
+function DownloadCreditorPDFButton({ id, small = false }: DownloadCreditorPDFButtonProps) {
     const [loading, setLoading] = useState(false)
     const { toast } = useToast()
 
@@ -68,10 +73,10 @@ function DownloadButton({ id }: { id: Creditor['id'] }) {
             loading={loading}
             loadingMessage="Generating PDF.."
         >
-            <p>Downlaod PDF</p>
+            {!small && <p>Downlaod PDF</p>}
             <Download size={16} className="shrink-0 pb-[1px]" />
         </LoadingButton>
     )
 }
 
-export default DownloadButton
+export default DownloadCreditorPDFButton

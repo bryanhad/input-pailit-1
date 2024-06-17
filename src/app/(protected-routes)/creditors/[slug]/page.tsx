@@ -12,7 +12,7 @@ import { capitalizeFirstLetter, cn, formatCurrency } from '@/lib/utils'
 import { CreditorType } from '@/types'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import DownloadButton from '../../dashboard/_components/creditors-table/DownloadButton'
+import DownloadCreditorPDFButton from '../../dashboard/_components/creditors-table/DownloadCreditorPDFButton'
 import { Pencil } from 'lucide-react'
 import H1 from '@/components/ui/h1'
 import H2 from '@/components/ui/h2'
@@ -22,6 +22,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import CreditorTypeBadge from '@/components/CreditorTypeBadge'
 import { mustLogin } from '@/auth/actions'
 import FieldValuePair from '@/components/FieldValuePair'
+import EditCreditorButton from '../../dashboard/_components/creditors-table/EditCreditorButton'
 
 type CreditorDetailPageProps = { params: { slug: string } }
 
@@ -58,16 +59,8 @@ async function CreditorDetailPage({
                     </div>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                    <Button asChild className='flex gap-2'>
-                        <Link href={`/creditors/${slug}/edit`}>
-                            <p >Edit Creditor</p>
-                            <Pencil
-                                className="shrink-0 md:pb-[1px]"
-                                size={15}
-                            />
-                        </Link>
-                    </Button>
-                    <DownloadButton id={creditor.id} />
+                    <EditCreditorButton slug={slug} />
+                    <DownloadCreditorPDFButton id={creditor.id} />
                 </div>
             </div>
             <section className="grid lg:grid-cols-2 gap-6 mt-2">

@@ -1,27 +1,24 @@
-import { UserInfo } from '@/app/_components/UserPopOver'
 import ClaimTypeBadge from '@/components/ClaimTypeBadge'
-import CreditorTypeBadge from '@/components/CreditorTypeBadge'
-import SimplePopover from '@/components/SimplePopover'
+import TableDataNotFound from '@/components/TableDataNotFound'
 import { Button } from '@/components/ui/button'
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
 import db from '@/lib/db'
-import { formatCurrency, formatDateToLocale, formatNumber } from '@/lib/utils'
-import { Creditor, Prisma } from '@prisma/client'
-import { BookText, CalendarDays, CircleCheck, CircleX } from 'lucide-react'
+import { formatCurrency } from '@/lib/utils'
+import { Prisma } from '@prisma/client'
 import Link from 'next/link'
-import DeleteButton from './DeleteButton'
-import DownloadButton from './DownloadButton'
+import CreditorInfo from './CreditorInfo'
+import DeleteButton from './DeleteCreditorButton'
+import DownloadCreditorPDFButton from './DownloadCreditorPDFButton'
+import InputorInfo from './InputorInfo'
 import Pagination from './Pagination'
 import { CreditorFilterValues } from './validations'
-import TableDataNotFound from '@/components/TableDataNotFound'
 
 type CreditorsTableProps = {
     filterValues: CreditorFilterValues
@@ -121,7 +118,7 @@ async function CreditorsTable({
                                     {creditor.number}
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    <KreditorInfo
+                                    <CreditorInfo
                                         creditor={{
                                             ...creditor,
                                             attachment_count:
@@ -186,7 +183,9 @@ async function CreditorsTable({
                                             creditorId={creditor.id}
                                             creditorName={creditor.nama}
                                         />
-                                        <DownloadButton id={creditor.id} />
+                                        <DownloadCreditorPDFButton
+                                            id={creditor.id}
+                                        />
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -205,88 +204,3 @@ async function CreditorsTable({
 }
 
 export default CreditorsTable
-
-function KreditorInfo({
-    creditor,
-}: {
-    creditor: Creditor & { attachment_count: number }
-}) {
-    return (
-        <div className="flex items-center gap-4">
-            <CreditorTypeBadge jenisKreditor={creditor.jenis} />
-            <div className="flex items-start flex-col w-[200px] gap-1">
-                <p className="max-w-full truncate text-sm flex-1 text-muted-foreground">
-                    {creditor.nama}
-                </p>
-                <div className="flex justify-end gap-4">
-                    <SimplePopover tip="Kuasa Hukum">
-                        <div className="flex items-center gap-2">
-                            <p>Kuasa:</p>
-                            {creditor.namaKuasaHukum ? (
-                                <CircleCheck
-                                    size={16}
-                                    className="shrink-0 text-green-400"
-                                />
-                            ) : (
-                                <CircleX
-                                    size={16}
-                                    className="shrink-0 text-red-400"
-                                />
-                            )}
-                        </div>
-                    </SimplePopover>
-                    <SimplePopover tip="Lampiran">
-                        <div className="flex items-center text-muted-foreground gap-1">
-                            <BookText size={16} className="shrink-0" />
-                            <span>:</span>
-                            <p>{formatNumber(creditor.attachment_count)}</p>
-                        </div>
-                    </SimplePopover>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-type InputorInfoProps = {
-    inputorId: string
-    inputorName: string | null
-    inputorRole: string
-    date: Date
-    tip: string
-}
-
-function InputorInfo({
-    date,
-    inputorId,
-    inputorName,
-    inputorRole,
-    tip,
-}: InputorInfoProps) {
-    return (
-        <div className="space-y-1">
-            <Link href={`/users/${inputorId}`}>
-                <UserInfo
-                    user={{
-                        name: inputorName,
-                        role: inputorRole,
-                        image: null,
-                    }}
-                    className="text-sm"
-                    userImageClassName="size-6 text-xs"
-                />
-            </Link>
-            <div className="flex gap-1 items-center">
-                <SimplePopover tip={tip} className="p-1 rounded-full">
-                    <CalendarDays
-                        className="shrink-0 text-muted-foreground"
-                        size={14}
-                    />
-                </SimplePopover>
-                <p className="text-muted-foreground">
-                    {formatDateToLocale(date, 'id-ID', true)}
-                </p>
-            </div>
-        </div>
-    )
-}

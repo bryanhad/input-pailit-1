@@ -1,18 +1,26 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import Modal from "@/components/ui/modal"
-import React, { useState } from "react"
-import { deleteCreditor } from "./actions"
-import { useToast } from "@/components/ui/use-toast"
-import { Creditor } from "@prisma/client"
+import { Button, ButtonProps } from '@/components/ui/button'
+import Modal from '@/components/ui/modal'
+import { useToast } from '@/components/ui/use-toast'
+import { Creditor } from '@prisma/client'
+import { Trash } from 'lucide-react'
+import { useState } from 'react'
+import { deleteCreditor } from './actions'
 
-type Props = {
+type DeleteCreditorButtonProps = {
     creditorName: Creditor['nama']
     creditorId: Creditor['id']
+    small?: boolean
+    variant?: ButtonProps['variant']
 }
 
-function DeleteButton({ creditorName, creditorId }: Props) {
+function DeleteCreditorButton({
+    creditorName,
+    creditorId,
+    small = false,
+    variant='destructive'
+}: DeleteCreditorButtonProps) {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const { toast } = useToast()
 
@@ -24,9 +32,9 @@ function DeleteButton({ creditorName, creditorId }: Props) {
             })
         } catch (err: any) {
             toast({
-                variant: "destructive",
-                title: "Failed to delete creditor.",
-                description: err.message || "Something went wrong.",
+                variant: 'destructive',
+                title: 'Failed to delete creditor.',
+                description: err.message || 'Something went wrong.',
             })
         } finally {
             setIsModalOpen(false)
@@ -45,12 +53,16 @@ function DeleteButton({ creditorName, creditorId }: Props) {
             }}
             buttonCustom={
                 <Button
-                    variant={"destructive"}
+                    variant={variant}
                     onClick={() => {
                         setIsModalOpen((prev) => !prev)
                     }}
                 >
-                    Delete
+                    {small ? (
+                        <Trash className="shrink-0" size={16} />
+                    ) : (
+                        'Delete'
+                    )}
                 </Button>
             }
             title={`Are you sure?`}
@@ -60,13 +72,13 @@ function DeleteButton({ creditorName, creditorId }: Props) {
                 <Button
                     onClick={() => handleApproveDelete()}
                     className="flex-1"
-                    variant={"destructive"}
+                    variant={'destructive'}
                 >
                     Yes, delete permanently
                 </Button>
                 <Button
                     className="flex-1"
-                    variant={"outline"}
+                    variant={'outline'}
                     onClick={() => setIsModalOpen(false)}
                 >
                     Cancel
@@ -76,4 +88,4 @@ function DeleteButton({ creditorName, creditorId }: Props) {
     )
 }
 
-export default DeleteButton
+export default DeleteCreditorButton

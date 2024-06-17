@@ -98,7 +98,7 @@ model Attachment {
     nama       String
     ready      Boolean
     deskripsi  String?
-    Creditor   Creditor @relation(fields: [creditorId], references: [id])
+    Creditor   Creditor @relation(fields: [creditorId], references: [id], onDelete: Cascade)
     creditorId String
 
     @@map("attachments")
