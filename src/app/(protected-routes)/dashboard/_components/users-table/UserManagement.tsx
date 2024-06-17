@@ -94,10 +94,15 @@ async function UserManagement({
     return (
         <>
             <div className="flex flex-col gap-4 xl:flex-row">
-                <div className={cn("flex flex-col sm:flex-row xl:flex-col md:justify-between gap-4", {
+                <div
+                    className={cn(
+                        "flex flex-col sm:flex-row xl:flex-col md:justify-between gap-4",
+                        {
                             "xl:gap-2":
-                            currentLoggedInUserInfo.role === Role.User,
-                })}>
+                                currentLoggedInUserInfo.role === Role.User,
+                        }
+                    )}
+                >
                     <TotalCount
                         title="Verified Users Count"
                         totalCreditorsCount={totalVerifiedUsersCount}
@@ -149,12 +154,12 @@ async function UserManagement({
                 </div>
 
                 {/* TABLE STUFFS */}
-                <div className="flex-1 gap-2 flex flex-col xl:flex-[1]">
+                <div className="flex-1 gap-3 flex flex-col xl:flex-[1] pb-1 rounded-md overflow-hidden">
                     {/* <div className="bg-black p-4 h-40"></div> */}
                     <div className="flex-[1] bg-white">
                         <Table
                             className={cn("bg-white", {
-                                "border-b": users.length === 1,
+                                "border-b": users.length > 0,
                             })}
                         >
                             <TableHeader>

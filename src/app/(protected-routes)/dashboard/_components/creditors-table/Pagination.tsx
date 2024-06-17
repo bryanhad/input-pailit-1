@@ -59,15 +59,15 @@ function Pagination({
 
     return (
         <div className="flex items-center justify-between px-2 mb-4">
-            {totalRowShown && (
-                <div className="flex-[1] text-sm text-muted-foreground md:block hidden">
-                    {totalRowShown} of {totalRowCount} row(s) shown.
-                </div>
-            )}
-       <div className="flex gap-3 md:flex-row items-center justify-between flex-[1]">
+            <div className="flex-[1] text-sm text-muted-foreground md:block hidden">
+                {totalRowShown} of {totalRowCount} row(s) shown.
+            </div>
+            <div className="flex gap-3 md:flex-row items-center justify-between flex-[1]">
                 <div className="flex items-center md:flex-row gap-2">
-                    <p className='sm:hidden'>Rows</p>
-                    <p className="hidden sm:block text-sm font-medium">Rows per page</p>
+                    <p className="sm:hidden">Rows</p>
+                    <p className="hidden sm:block text-sm font-medium">
+                        Rows per page
+                    </p>
                     <Select
                         onValueChange={(value) => {
                             router.push(generatePageUrl(1, value), {
