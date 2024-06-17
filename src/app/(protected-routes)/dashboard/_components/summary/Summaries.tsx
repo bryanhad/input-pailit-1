@@ -40,16 +40,6 @@ async function Summaries() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:hidden flex-1 gap-4">
                 <Cards data={res} />
             </div>
-            {/* <div className="flex-[4] flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1 bg-white rounded-md shadow-sm p-5">
-                        <HorizontalBarChart
-                            title="Jumlah Kreditor (berdasarkan jenisnya)"
-                            data={res2}
-                        />
-                    </div>
-                </div>
-            </div> */}
         </div>
     )
 }
