@@ -1,19 +1,19 @@
-import { mustLogin } from '@/auth/actions'
-import { Button } from '@/components/ui/button'
-import MainWrapper from '@/components/ui/main-wrapper'
-import { Metadata } from 'next'
-import Link from 'next/link'
-import Summaries from './_components/summary/Summaries'
-import CreditorsTable from './_components/creditors-table/CreditorsTable'
-import CreditorFilterOptionsModal from './_components/creditors-table/CreditorFilterOptionsModal'
-import { CreditorFilterValues } from './_components/creditors-table/validations'
-import UserManagement from './_components/users-table/UserManagement'
-import { UserFilterValues } from './_components/users-table/validations'
-import { cn } from '@/lib/utils'
-import ClearCreditorFiltersButton from './_components/creditors-table/ClearCreditorFiltersButton'
+import { mustLogin } from "@/auth/actions"
+import { Button } from "@/components/ui/button"
+import MainWrapper from "@/components/ui/main-wrapper"
+import { Metadata } from "next"
+import Link from "next/link"
+import Summaries from "./_components/summary/Summaries"
+import CreditorsTable from "./_components/creditors-table/CreditorsTable"
+import CreditorFilterOptionsModal from "./_components/creditors-table/CreditorFilterOptionsModal"
+import { CreditorFilterValues } from "./_components/creditors-table/validations"
+import UserManagement from "./_components/users-table/UserManagement"
+import { UserFilterValues } from "./_components/users-table/validations"
+import { cn } from "@/lib/utils"
+import ClearCreditorFiltersButton from "./_components/creditors-table/ClearCreditorFiltersButton"
 
 export const metadata: Metadata = {
-    title: 'Dashboard',
+    title: "Dashboard",
 }
 
 type DashboardPageProps = {
@@ -65,7 +65,7 @@ async function DashboardPage({
 
     return (
         <MainWrapper noBackgroundAndPadding>
-            <DashboardSectionTitle>
+            <DashboardSectionTitle className="pt-0">
                 PT. Bakso Jaya Mantab Overview
             </DashboardSectionTitle>
             <Summaries />
@@ -89,8 +89,8 @@ async function DashboardPage({
                             filterValues={creditorsTableFilterValues}
                         />
                     </div>
-                    <Button asChild variant={'success'}>
-                        <Link href={'/creditors/add'}>+ Kreditor</Link>
+                    <Button asChild variant={"success"}>
+                        <Link href={"/creditors/add"}>+ Kreditor</Link>
                     </Button>
                 </div>
             </div>
@@ -113,7 +113,7 @@ function DashboardSectionTitle({
     className?: string
 }) {
     return (
-        <h2 className={cn('text-3xl font-light py-2 text-center', className)}>
+        <h2 className={cn("text-3xl font-light py-2 text-center", className)}>
             {children}
         </h2>
     )
