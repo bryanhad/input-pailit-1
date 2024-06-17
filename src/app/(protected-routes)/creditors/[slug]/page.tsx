@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
@@ -6,23 +6,23 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table'
-import db from '@/lib/db'
-import { capitalizeFirstLetter, cn, formatCurrency } from '@/lib/utils'
-import { CreditorType } from '@/types'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import DownloadCreditorPDFButton from '../../dashboard/_components/creditors-table/DownloadCreditorPDFButton'
-import { Pencil } from 'lucide-react'
-import H1 from '@/components/ui/h1'
-import H2 from '@/components/ui/h2'
-import MainWrapper from '@/components/ui/main-wrapper'
-import ClaimTypeBadge from '@/components/ClaimTypeBadge'
-import { Checkbox } from '@/components/ui/checkbox'
-import CreditorTypeBadge from '@/components/CreditorTypeBadge'
-import { mustLogin } from '@/auth/actions'
-import FieldValuePair from '@/components/FieldValuePair'
-import EditCreditorButton from '../../dashboard/_components/creditors-table/EditCreditorButton'
+} from "@/components/ui/table"
+import db from "@/lib/db"
+import { capitalizeFirstLetter, cn, formatCurrency } from "@/lib/utils"
+import { CreditorType } from "@/types"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import DownloadCreditorPDFButton from "../../dashboard/_components/creditors-table/DownloadCreditorPDFButton"
+import { Pencil } from "lucide-react"
+import H1 from "@/components/ui/h1"
+import H2 from "@/components/ui/h2"
+import MainWrapper from "@/components/ui/main-wrapper"
+import ClaimTypeBadge from "@/components/ClaimTypeBadge"
+import { Checkbox } from "@/components/ui/checkbox"
+import CreditorTypeBadge from "@/components/CreditorTypeBadge"
+import { mustLogin } from "@/auth/actions"
+import FieldValuePair from "@/components/FieldValuePair"
+import EditCreditorButton from "../../dashboard/_components/creditors-table/EditCreditorButton"
 
 type CreditorDetailPageProps = { params: { slug: string } }
 
@@ -77,8 +77,8 @@ async function CreditorDetailPage({
                         <FieldValuePair
                             fieldName={
                                 creditor.jenis === CreditorType.Instansi
-                                    ? 'Nomor Akta Pendirian'
-                                    : 'NIK'
+                                    ? "Nomor Akta Pendirian"
+                                    : "NIK"
                             }
                             value={creditor.NIKAtauNomorAktaPendirian}
                         />
@@ -102,7 +102,7 @@ async function CreditorDetailPage({
                             fieldName="Total Tagihan"
                             value={formatCurrency(
                                 Number(creditor.totalTagihan),
-                                'IDR'
+                                "IDR"
                             )}
                             className="bg-black text-white border-2"
                             valueClassName="font-medium tracking-wider"
@@ -134,51 +134,57 @@ async function CreditorDetailPage({
                     title="Lampiran"
                     className="lg:col-span-2 overflow-auto"
                 >
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[100px]">No</TableHead>
-                                <TableHead className="w-[300px]">
-                                    Nama Lampiran
-                                </TableHead>
-                                <TableHead className="w-[100px] text-center">
-                                    Ready
-                                </TableHead>
-                                <TableHead>Deskripsi</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {creditor.attachments.map(
-                                ({ nama, deskripsi, ready, id }, idx) => (
-                                    <TableRow key={id}>
-                                        <TableCell>{idx + 1}</TableCell>
-                                        <TableCell className="font-medium">
-                                            {nama}
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex justify-center mr-4">
-                                                <Checkbox
-                                                    disabled
-                                                    checked={ready}
-                                                />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <p>
-                                                {deskripsi ? (
-                                                    deskripsi
-                                                ) : (
-                                                    <span className="ml-2">
-                                                        -
-                                                    </span>
-                                                )}
-                                            </p>
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            )}
-                        </TableBody>
-                    </Table>
+                    {creditor.attachments.length < 1 ? (
+                        <p>Creditor doesn&apos;t have any attachments</p>
+                    ) : (
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[100px]">
+                                        No
+                                    </TableHead>
+                                    <TableHead className="w-[300px]">
+                                        Nama Lampiran
+                                    </TableHead>
+                                    <TableHead className="w-[100px] text-center">
+                                        Ready
+                                    </TableHead>
+                                    <TableHead>Deskripsi</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {creditor.attachments.map(
+                                    ({ nama, deskripsi, ready, id }, idx) => (
+                                        <TableRow key={id}>
+                                            <TableCell>{idx + 1}</TableCell>
+                                            <TableCell className="font-medium">
+                                                {nama}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex justify-center mr-4">
+                                                    <Checkbox
+                                                        disabled
+                                                        checked={ready}
+                                                    />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <p>
+                                                    {deskripsi ? (
+                                                        deskripsi
+                                                    ) : (
+                                                        <span className="ml-2">
+                                                            -
+                                                        </span>
+                                                    )}
+                                                </p>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                )}
+                            </TableBody>
+                        </Table>
+                    )}
                 </Section>
             </section>
         </MainWrapper>
@@ -199,7 +205,7 @@ function Section({
     className?: string
 }) {
     return (
-        <div className={cn('flex flex-col gap-4 w-full', className)}>
+        <div className={cn("flex flex-col gap-4 w-full", className)}>
             {useH1 ? <H1>{title}</H1> : <H2>{title}</H2>}
             {children}
         </div>
