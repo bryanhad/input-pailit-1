@@ -10,9 +10,9 @@ import UserDetailWithCreditorsInputed from '../components/UserDetailWithCreditor
 type UserDetailPageProps = { params: { userId: string } }
 
 async function UserDetailPage({ params: { userId } }: UserDetailPageProps) {
-    const user = await mustLogin()
+    const loggedInUser = await mustLogin()
 
-    if (userId === user.id) {
+    if (userId === loggedInUser.id) {
         redirect('/users/me')
     }
 
@@ -22,8 +22,9 @@ async function UserDetailPage({ params: { userId } }: UserDetailPageProps) {
         notFound()
     }
 
+
     const inputedCreditors = await db.creditor.findMany({
-        where: { userId: user.id },
+        where: { userId: queriedUser.id },
         include: {
             _count: { select: { attachments: true }},
             lastUpdatedBy: { select: { name: true, image: true, role: true } },
@@ -33,8 +34,9 @@ async function UserDetailPage({ params: { userId } }: UserDetailPageProps) {
     return (
         <UserDetailWithCreditorsInputed
             inputedCreditors={inputedCreditors}
-            user={queriedUser}
+            userInfo={queriedUser}
             title={`${queriedUser.name}'s Profile`}
+            currentLoggedInUserInfo={loggedInUser}
         />
     )
 }

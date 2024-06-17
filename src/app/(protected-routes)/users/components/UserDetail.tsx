@@ -8,12 +8,11 @@ import { Role } from '@/types'
 import { User } from '@prisma/client'
 import { MailCheck, MailWarning, PencilIcon } from 'lucide-react'
 import { useState } from 'react'
-import EditUserForm from './form'
+import EditUserForm from './EditUserForm'
 import EmailStatusBadge from '@/components/EmailStatusBadge'
 
 export type UserDetailProps = {
-    currentUserRole: string
-    currentUserId: string
+    currentLoggedInUserInfo: Pick<User, 'id' | 'role'>
     userDetail: Pick<
         User,
         | 'createdAt'
@@ -28,16 +27,15 @@ export type UserDetailProps = {
 
 function UserDetail({
     userDetail,
-    currentUserRole,
-    currentUserId,
+    currentLoggedInUserInfo
 }: UserDetailProps) {
     const [isEditing, setIsEditing] = useState(false)
     return (
         <>
             {/* EDIT BUTTON */}
             {!isEditing &&
-                (currentUserRole === Role.Admin ||
-                    currentUserId === userDetail.id) && (
+                (currentLoggedInUserInfo.role === Role.Admin ||
+                    currentLoggedInUserInfo.id === userDetail.id) && (
                     <Button
                         variant={'ghost'}
                         className="absolute top-0 right-0 rounded-tl-none rounded-br-none"
@@ -52,7 +50,6 @@ function UserDetail({
                 <EditUserForm
                     setIsEditing={setIsEditing}
                     userDetail={userDetail}
-                    // onApproveCancelEditing={() => setIsEditing(false)}
                 />
             ) : (
                 <UserFieldValuePair

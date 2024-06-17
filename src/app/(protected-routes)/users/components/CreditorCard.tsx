@@ -19,8 +19,8 @@ export type CreditorCardProps = {
 
 function CreditorCard({ creditor }: CreditorCardProps) {
     return (
-        <div className="flex flex-col rounded-md border border-gray-400 overflow-hidden bg-white">
-            <div className="flex justify-between items-center bg-slate-100 p-4">
+        <div className="flex flex-col rounded-md border border-gray-300 overflow-hidden bg-white">
+            <div className="flex justify-between items-center bg-slate-50 p-4">
                 <CreditorInfo
                     creditor={creditor}
                     className="w-max"

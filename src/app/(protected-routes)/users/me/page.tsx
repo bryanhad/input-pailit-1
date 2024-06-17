@@ -3,12 +3,12 @@ import db from '@/lib/db'
 import UserDetailWithCreditorsInputed from '../components/UserDetailWithCreditorsInputed'
 
 async function MePage() {
-    const user = await mustLogin()
+    const loggedInUser = await mustLogin()
 
     const inputedCreditors = await db.creditor.findMany({
-        where: { userId: user.id },
+        where: { userId: loggedInUser.id },
         include: {
-            _count: { select: { attachments: true } },
+            _count: { select: { attachments: true }},
             lastUpdatedBy: { select: { name: true, image: true, role: true } },
         },
     })
@@ -16,7 +16,8 @@ async function MePage() {
     return (
         <UserDetailWithCreditorsInputed
             inputedCreditors={inputedCreditors}
-            user={user}
+            currentLoggedInUserInfo={loggedInUser}
+            userInfo={loggedInUser}
             title='User Settings'
         />
     )

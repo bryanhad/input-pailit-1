@@ -123,9 +123,9 @@ function EditUserForm({ setIsEditing, userDetail }: EditUserFormProps) {
                     </form>
                 </Form>
                 <FormResponse
-                    className="sm:hidden"
+                    className='sm:hidden'
                     response={formSuccess}
-                    errorMessage={'oh no!'}
+                    errorMessage={formError}
                 />
             </div>
         </>
