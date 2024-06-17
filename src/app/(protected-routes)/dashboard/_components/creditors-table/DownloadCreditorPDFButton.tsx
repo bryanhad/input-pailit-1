@@ -72,12 +72,13 @@ function DownloadCreditorPDFButton({
         <LoadingButton
             className={cn({
                 "animate-pulse cursor-not-allowed flex items-center": loading,
-                'w-[155px]': isTableButton
+                'w-[155px]': isTableButton && !small
             })}
             onClick={() => handleDownloadPDF()}
             variant={"outline"}
             loading={loading}
             loadingMessage="Generating PDF.."
+            noLoadingMessage={!isTableButton}
         >
             {!small && <p>Downlaod PDF</p>}
             <Download size={16} className="shrink-0 pb-[1px]" />
