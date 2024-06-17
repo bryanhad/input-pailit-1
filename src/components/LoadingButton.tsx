@@ -1,5 +1,4 @@
 import { Loader2 } from "lucide-react"
-import { ComponentProps } from "react"
 import { Button, ButtonProps } from "./ui/button"
 
 type LoadingButtonProps = {
