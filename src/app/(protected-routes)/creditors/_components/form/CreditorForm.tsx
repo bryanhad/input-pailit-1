@@ -286,7 +286,7 @@ function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
                                 field: { value, ...restOfFieldValues },
                             }) => (
                                 <FormItem>
-                                    <FormLabel>Price</FormLabel>
+                                    <FormLabel>Total Tagihan</FormLabel>
                                     <FormControl>
                                         <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-black text-white">
                                             <p className="px-3">Rp</p>
@@ -321,7 +321,7 @@ function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
                             name="sifatTagihan"
                             render={({ field }) => (
                                 <FormItem className="space-y-3">
-                                    <FormLabel>Pilih sifat tagihan</FormLabel>
+                                    <FormLabel>Sifat Tagihan</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             onValueChange={field.onChange}
