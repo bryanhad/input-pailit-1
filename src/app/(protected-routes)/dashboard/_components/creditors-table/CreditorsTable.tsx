@@ -1,6 +1,6 @@
-import ClaimTypeBadge from '@/components/ClaimTypeBadge'
-import TableDataNotFound from '@/components/TableDataNotFound'
-import { Button } from '@/components/ui/button'
+import ClaimTypeBadge from "@/components/ClaimTypeBadge"
+import TableDataNotFound from "@/components/TableDataNotFound"
+import { Button } from "@/components/ui/button"
 import {
     Table,
     TableBody,
@@ -8,17 +8,19 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table'
-import db from '@/lib/db'
-import { formatCurrency } from '@/lib/utils'
-import { Prisma } from '@prisma/client'
-import Link from 'next/link'
-import CreditorInfo from './CreditorInfo'
-import DeleteButton from './DeleteCreditorButton'
-import DownloadCreditorPDFButton from './DownloadCreditorPDFButton'
-import InputorInfo from './InputorInfo'
-import Pagination from './Pagination'
-import { CreditorFilterValues } from './validations'
+} from "@/components/ui/table"
+import db from "@/lib/db"
+import { formatCurrency } from "@/lib/utils"
+import { Prisma } from "@prisma/client"
+import Link from "next/link"
+import CreditorInfo from "./CreditorInfo"
+import DeleteButton from "./DeleteCreditorButton"
+import DownloadCreditorPDFButton from "./DownloadCreditorPDFButton"
+import InputorInfo from "./InputorInfo"
+import Pagination from "./Pagination"
+import { CreditorFilterValues } from "./validations"
+import ViewCreditorButton from "./ViewCreditorButton"
+import EditCreditorButton from "./EditCreditorButton"
 
 type CreditorsTableProps = {
     filterValues: CreditorFilterValues
@@ -32,14 +34,14 @@ async function CreditorsTable({
     tableSize,
 }: CreditorsTableProps) {
     const searchString = q
-        ?.split(' ')
+        ?.split(" ")
         .filter((word) => word.length > 0)
-        .join(' & ')
+        .join(" & ")
 
     const createdBySearchString = createdBy
-    ?.split(' ')
-    .filter((word) => word.length > 0)
-    .join(' & ')
+        ?.split(" ")
+        .filter((word) => word.length > 0)
+        .join(" & ")
 
     const searchFilter: Prisma.CreditorWhereInput = searchString
         ? {
@@ -53,14 +55,27 @@ async function CreditorsTable({
           }
         : {}
 
-    const createdBySearchFilter: Prisma.CreditorWhereInput = createdBySearchString
-          ? {
-            user: {OR: [
-                {name: {contains: createdBySearchString, mode: 'insensitive'}},
-                {email: { contains: createdBySearchString, mode: 'insensitive' }}
-            ]}
-          }
-          : {}
+    const createdBySearchFilter: Prisma.CreditorWhereInput =
+        createdBySearchString
+            ? {
+                  user: {
+                      OR: [
+                          {
+                              name: {
+                                  contains: createdBySearchString,
+                                  mode: "insensitive",
+                              },
+                          },
+                          {
+                              email: {
+                                  contains: createdBySearchString,
+                                  mode: "insensitive",
+                              },
+                          },
+                      ],
+                  },
+              }
+            : {}
 
     const whereFilter: Prisma.CreditorWhereInput = {
         AND: [
@@ -81,7 +96,7 @@ async function CreditorsTable({
             user: { select: { name: true, image: true, role: true } },
             lastUpdatedBy: { select: { name: true, image: true, role: true } },
         },
-        orderBy: { number: 'desc' },
+        orderBy: { number: "desc" },
         where: whereFilter,
     })
 
@@ -144,7 +159,7 @@ async function CreditorsTable({
                                 <TableCell className="font-semibold">
                                     {formatCurrency(
                                         Number(creditor.totalTagihan),
-                                        'IDR'
+                                        "IDR"
                                     )}
                                 </TableCell>
                                 <TableCell>
@@ -187,19 +202,22 @@ async function CreditorsTable({
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex gap-2 justify-end">
-                                        <Button asChild>
-                                            <Link
-                                                href={`/creditors/${creditor.slug}`}
-                                            >
-                                                View
-                                            </Link>
-                                        </Button>
+                                        <ViewCreditorButton
+                                            creditorSlug={creditor.slug}
+                                        />
+                                        <EditCreditorButton
+                                            slug={creditor.slug}
+                                            small
+                                            variant={"outline-bold"}
+                                        />
                                         <DeleteButton
                                             creditorId={creditor.id}
                                             creditorName={creditor.nama}
+                                            small
                                         />
                                         <DownloadCreditorPDFButton
                                             id={creditor.id}
+                                            isTableButton
                                         />
                                     </div>
                                 </TableCell>

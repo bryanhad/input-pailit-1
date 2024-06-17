@@ -5,6 +5,7 @@ import DeleteCreditorButton from "../../dashboard/_components/creditors-table/De
 import DownloadCreditorPDFButton from "../../dashboard/_components/creditors-table/DownloadCreditorPDFButton"
 import EditCreditorButton from "../../dashboard/_components/creditors-table/EditCreditorButton"
 import InputorInfo from "../../dashboard/_components/creditors-table/InputorInfo"
+import ViewCreditorButton from "../../dashboard/_components/creditors-table/ViewCreditorButton"
 
 export type CreditorCardProps = {
     creditor: CreditorInfoProps["creditor"] & {
@@ -31,20 +32,17 @@ function CreditorCard({ creditor }: CreditorCardProps) {
             </div>
             <div className="flex flex-col justify-between lg:flex-row-reverse p-4 flex-[1] gap-4">
                 <div className="grid grid-cols-4 lg:grid-cols-2 lg:flex-[1] gap-2">
+                    <ViewCreditorButton
+                        creditorSlug={creditor.slug}
+                        />
                     <EditCreditorButton
                         slug={creditor.slug}
-                        variant={"outline"}
-                        small
-                    />
-                    <EditCreditorButton
-                        slug={creditor.slug}
-                        variant={"outline"}
+                        variant={"outline-bold"}
                         small
                     />
                     <DeleteCreditorButton
                         creditorId={creditor.id}
                         creditorName={creditor.nama}
-                        variant={"destructive-outline"}
                         small
                     />
                     <DownloadCreditorPDFButton small id={creditor.id} />
