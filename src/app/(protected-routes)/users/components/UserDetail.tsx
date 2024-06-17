@@ -11,7 +11,7 @@ import { useState } from 'react'
 import EditUserForm from './form'
 import EmailStatusBadge from '@/components/EmailStatusBadge'
 
-type UserDetailProps = {
+export type UserDetailProps = {
     currentUserRole: string
     currentUserId: string
     userDetail: Pick<

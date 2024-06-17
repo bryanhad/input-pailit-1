@@ -6,17 +6,25 @@ import { BookText, CircleCheck, CircleX } from 'lucide-react'
 
 export type CreditorInfoProps = {
     creditor: Creditor & { attachment_count: number }
-    className?:string
+    className?: string
+    badgeSize?:number
 }
 
-function CreditorInfo({ creditor, className }: CreditorInfoProps) {
+function CreditorInfo({ creditor, className, badgeSize }: CreditorInfoProps) {
     return (
         <div className="flex items-center gap-4">
-            <CreditorTypeBadge jenisKreditor={creditor.jenis} />
-            <div className={cn("flex items-start flex-col w-[200px] gap-1", className)}>
-                <p className="max-w-full truncate text-sm flex-1 text-muted-foreground">
-                    {creditor.nama}
-                </p>
+            <CreditorTypeBadge jenisKreditor={creditor.jenis} size={badgeSize} />
+            <div
+                className={cn(
+                    'flex items-start flex-col w-[160px] gap-1',
+                    className
+                )}
+            >
+                <div className="w-full max-w-[150px]">
+                    <p className="max-w-max truncate text-sm flex-1 text-muted-foreground">
+                        {creditor.nama}
+                    </p>
+                </div>
                 <div className="flex justify-end gap-4">
                     <SimplePopover tip="Kuasa Hukum">
                         <div className="flex items-center gap-2">

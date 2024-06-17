@@ -83,7 +83,7 @@ export function UserInfo({
 
     if (mode === 'WITHOUT_ROLE') {
         return (
-            <div className={cn('flex max-w-40 items-center', className)}>
+            <div className={cn('flex max-w-[150px] items-center', className)}>
                 <UserImageIcon
                     user={user}
                     className={cn('mr-2 size-7', userImageClassName)}
@@ -111,10 +111,9 @@ export function UserInfo({
     )
 }
 
-export function UserImageIcon({
-    user,
-    className,
-}: UserPopOverProps & { className?: string }) {
+export type UserImageIconProps = UserPopOverProps & { className?: string }
+
+export function UserImageIcon({ user, className }: UserImageIconProps) {
     return (
         <Avatar className={className}>
             <AvatarImage src={user.image || ''} />

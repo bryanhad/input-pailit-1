@@ -1,6 +1,6 @@
 import { UserInfo } from "@/app/_components/UserPopOver"
 import SimplePopover from "@/components/SimplePopover"
-import { formatDateToLocale } from "@/lib/utils"
+import { cn, formatDateToLocale } from "@/lib/utils"
 import { CalendarDays  } from "lucide-react"
 import Link from "next/link"
 
@@ -22,7 +22,7 @@ function InputorInfo({
     className
 }: InputorInfoProps) {
     return (
-        <div className="space-y-1">
+        <div className={cn("space-y-1", className)}>
             <Link href={`/users/${inputorId}`}>
                 <UserInfo
                     user={{

@@ -6,7 +6,7 @@ import DownloadCreditorPDFButton from '../../dashboard/_components/creditors-tab
 import EditCreditorButton from '../../dashboard/_components/creditors-table/EditCreditorButton'
 import InputorInfo from '../../dashboard/_components/creditors-table/InputorInfo'
 
-type CreditorCardProps = {
+export type CreditorCardProps = {
     creditor: CreditorInfoProps['creditor'] & {
         lastUpdatedByUserId: string | null
         lastUpdatedBy: {
@@ -21,12 +21,30 @@ function CreditorCard({ creditor }: CreditorCardProps) {
     return (
         <div className="flex flex-col rounded-md border overflow-hidden bg-white p-4 gap-4">
             <div className="flex justify-between items-center">
-                <CreditorInfo creditor={creditor} className="w-max" />
-                <DownloadCreditorPDFButton small id={creditor.id} />
+                <CreditorInfo creditor={creditor} className="w-max" badgeSize={22} />
             </div>
-            <div className="flex justify-between flex-[1] items-end">
+            <div className="flex flex-col justify-between lg:flex-row-reverse flex-[1] gap-4">
+                <div className="grid grid-cols-4 lg:grid-cols-2 lg:flex-[1] gap-2">
+                    <EditCreditorButton
+                        slug={creditor.slug}
+                        variant={'outline'}
+                        small
+                    />
+                    <EditCreditorButton
+                        slug={creditor.slug}
+                        variant={'outline'}
+                        small
+                    />
+                    <DeleteCreditorButton
+                        creditorId={creditor.id}
+                        creditorName={creditor.nama}
+                        variant={'destructive-outline'}
+                        small
+                    />
+                    <DownloadCreditorPDFButton small id={creditor.id} />
+                </div>
                 {creditor.lastUpdatedBy && creditor.lastUpdatedByUserId ? (
-                    <div className="space-y-2">
+                    <div className="flex flex-col items-center gap-2 lg:flex-[1]">
                         <p className="text-xs font-light">Last Updated By</p>
                         <InputorInfo
                             inputorId={creditor.lastUpdatedByUserId}
@@ -34,24 +52,16 @@ function CreditorCard({ creditor }: CreditorCardProps) {
                             inputorRole={creditor.lastUpdatedBy.role}
                             date={creditor.createdAt}
                             tip="Last Updated At"
+                            className=''
                         />
                     </div>
                 ) : (
-                    <p className="text-muted-foreground/80">No Updates</p>
+                    <div className='flex-[1] flex items-center justify-center'>
+                        <p className="text-muted-foreground/80 text-center">No Updates</p>
+
+                    </div>
+
                 )}
-                <div className="flex gap-2">
-                    <EditCreditorButton
-                        slug={creditor.slug}
-                        variant={'outline'}
-                        small
-                />
-                    <DeleteCreditorButton
-                        creditorId={creditor.id}
-                        creditorName={creditor.nama}
-                        variant={'destructive-outline'}
-                        small
-                    />
-                </div>
             </div>
         </div>
     )
