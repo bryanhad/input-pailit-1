@@ -9,7 +9,7 @@ import { redirect } from "next/navigation"
 async function AddNewUserPage() {
     const user = await mustLogin()
 
-    if (user.role === Role.User) {
+    if (user.role !== Role.Admin) {
         redirect('/dashboard')
     }
 
