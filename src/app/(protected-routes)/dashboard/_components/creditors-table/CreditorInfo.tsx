@@ -8,12 +8,14 @@ export type CreditorInfoProps = {
     creditor: Creditor & { attachment_count: number }
     className?: string
     badgeSize?:number
+    creditorNameClassName?:string
+    creditorBadgeClassName?:string
 }
 
-function CreditorInfo({ creditor, className, badgeSize }: CreditorInfoProps) {
+function CreditorInfo({ creditor, creditorBadgeClassName, className, badgeSize, creditorNameClassName }: CreditorInfoProps) {
     return (
         <div className="flex items-center gap-4">
-            <CreditorTypeBadge jenisKreditor={creditor.jenis} size={badgeSize} />
+            <CreditorTypeBadge className={creditorBadgeClassName} jenisKreditor={creditor.jenis} size={badgeSize} />
             <div
                 className={cn(
                     'flex items-start flex-col w-[160px] gap-1',
@@ -21,7 +23,7 @@ function CreditorInfo({ creditor, className, badgeSize }: CreditorInfoProps) {
                 )}
             >
                 <div className="w-full max-w-[150px]">
-                    <p className="max-w-max truncate text-sm flex-1 text-muted-foreground">
+                    <p className={cn("max-w-max truncate text-sm flex-1 text-muted-foreground", creditorNameClassName)}>
                         {creditor.nama}
                     </p>
                 </div>

@@ -25,7 +25,7 @@ async function UserDetailPage({ params: { userId } }: UserDetailPageProps) {
     const inputedCreditors = await db.creditor.findMany({
         where: { userId: user.id },
         include: {
-            _count: { select: { attachments: true } },
+            _count: { select: { attachments: true }},
             lastUpdatedBy: { select: { name: true, image: true, role: true } },
         },
     })
@@ -33,7 +33,7 @@ async function UserDetailPage({ params: { userId } }: UserDetailPageProps) {
     return (
         <UserDetailWithCreditorsInputed
             inputedCreditors={inputedCreditors}
-            user={user}
+            user={queriedUser}
             title={`${queriedUser.name}'s Profile`}
         />
     )
