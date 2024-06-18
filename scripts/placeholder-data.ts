@@ -37,10 +37,10 @@ export const placeholderUsers: Partial<
     },
     {
         id: "owih4g3h099rewpiuwfiew",
-        name: "Benjamin Christ",
+        name: "",
         role: Role.User,
-        password: "sipalinguser1",
-        emailVerified: new Date(),
+        password: "",
+        emailVerified: null,
         email: "BenjaminLovesCat23@gmail.com",
         status: UserStatus.notVerified,
     },

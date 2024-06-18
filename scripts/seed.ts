@@ -1,52 +1,65 @@
-import { Creditor, PrismaClient, User } from '@prisma/client'
+import { Creditor, PrismaClient, User } from "@prisma/client"
 import {
     placeholderAttachments,
     placeholderCreditors,
     placeholderUsers,
-} from './placeholder-data'
-import { hash } from 'bcryptjs'
+} from "./placeholder-data"
+import { hash } from "bcryptjs"
+import { UserStatus } from "../src/types"
 
 const prisma = new PrismaClient()
 
 async function main() {
     const toBeInsertedUsers = placeholderUsers as User[]
     const toBeInsertedCreditors = placeholderCreditors.map((creditor) => {
+        const filteredToBeInsertedUsers = toBeInsertedUsers.filter((user) => {
+            return (
+                [UserStatus.active, UserStatus.inactive] as string[]
+            ).includes(user.status)
+        })
+
         const randomUserIndex = Math.floor(
-            Math.random() * toBeInsertedUsers.length
+            Math.random() * filteredToBeInsertedUsers.length
         )
         return {
             ...creditor,
-            userId: toBeInsertedUsers[randomUserIndex].id,
+            userId: filteredToBeInsertedUsers[randomUserIndex].id,
         }
     }) as Creditor[]
 
     await Promise.all(
         toBeInsertedUsers.map(async (user) => {
-            const hashedPassword = await hash(user.password as string, 10)
+            let seedPassword = user.password
+            if (seedPassword) {
+                const hashedPassword = await hash(seedPassword as string, 10)
+                seedPassword = hashedPassword
+            }
             await prisma.user.upsert({
                 where: {
                     id: user.id,
                 },
-                update: { ...user, password: hashedPassword },
-                create: { ...user, password: hashedPassword },
+                update: { ...user, password: seedPassword },
+                create: { ...user, password: seedPassword },
             })
         })
     )
     await Promise.all(
         toBeInsertedUsers.map(async (user) => {
-            await prisma.session.upsert({
-                where: { userId: user.id },
-                update: {
-                    expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
-                    userId: user.id,
-                    sessionToken: crypto.randomUUID(),
-                },
-                create: {
-                    expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
-                    userId: user.id,
-                    sessionToken: crypto.randomUUID(),
-                },
-            })
+            if (user.status !== UserStatus.notVerified) {
+                await prisma.session.upsert({
+                    where: { userId: user.id },
+                    update: {
+                        expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
+                        userId: user.id,
+                        sessionToken: crypto.randomUUID(),
+                    },
+                    create: {
+                        expires: new Date(Date.now() + 30 * 24 * 3600 * 1000), // Session expires in 30 days
+                        userId: user.id,
+                        sessionToken: crypto.randomUUID(),
+                    },
+                })
+            }
         })
     )
 
@@ -77,10 +90,10 @@ async function main() {
 main()
     .then(async () => {
         await prisma.$disconnect()
-        console.log('Successfully seed the database!')
+        console.log("Successfully seed the database!")
     })
     .catch(async (err) => {
-        console.error('Error while seeding database', err)
+        console.error("Error while seeding database", err)
         await prisma.$disconnect()
         process.exit(1)
     })
