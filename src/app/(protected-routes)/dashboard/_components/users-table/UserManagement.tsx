@@ -90,8 +90,6 @@ async function UserManagement({
             getVerifiedUsersCount,
         ])
 
-        const uz = await db.user.findMany()
-        console.log(uz.map(u => u.name))
     const totalPages = Math.ceil(Number(totalDataCountByFilter) / tableSize)
 
     return (
