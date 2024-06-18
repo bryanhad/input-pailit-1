@@ -1,18 +1,20 @@
-import db from '@/lib/db'
-import { PrismaAdapter } from '@auth/prisma-adapter'
-import bcrypt from 'bcryptjs'
-import NextAuth from 'next-auth'
-import credentials from 'next-auth/providers/credentials'
-import { sendVerificationEmail } from './actions'
+import db from "@/lib/db"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import bcrypt from "bcryptjs"
+import NextAuth from "next-auth"
+import credentials from "next-auth/providers/credentials"
+import { sendVerificationEmail } from "./actions"
 import {
     InvalidCredentialsError,
+    LoginError,
     SessionExpiredError,
     SessionNotFoundError,
-} from './errors'
-import { loginSchema } from './validation'
-import { DefaultSession } from 'next-auth'
+} from "./errors"
+import { loginSchema } from "./validation"
+import { DefaultSession } from "next-auth"
+import { UserStatus } from "@/types"
 
-declare module 'next-auth' {
+declare module "next-auth" {
     /**
      * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
      */
@@ -33,13 +35,13 @@ declare module 'next-auth' {
              * with the new ones defined above. To keep the default session user properties,
              * you need to add them back into the newly declared interface.
              */
-        } & DefaultSession['user']
+        } & DefaultSession["user"]
     }
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     adapter: PrismaAdapter(db),
-    session: { strategy: 'jwt' },
+    session: { strategy: "jwt" },
     // session: { strategy: "database" },
     callbacks: {
         async jwt({ token, account, user, profile }) {
@@ -100,20 +102,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     })
                     if (!user || !user.password) {
                         throw new InvalidCredentialsError(
-                            'Invalid email or password.'
+                            "Invalid email or password."
+                        )
+                    }
+                    if (user.status !== UserStatus.active) {
+                        throw new LoginError(
+                            "Your account has been deactivated by an admin",
+                            "Inactive User"
                         )
                     }
                     if (!user.session) {
                         throw new SessionNotFoundError(
-                            'Session Not Found',
-                            'A user must have a session to log in.'
+                            "A user must have a session to log in."
                         )
                     }
                     if (new Date() > user.session.expires) {
                         // if user's session already expired..
                         await sendVerificationEmail(user.email)
                         throw new SessionExpiredError(
-                            'Session Expired',
                             `Your session has expired. Check your email inbox for a refresh link.`
                         )
                     }
@@ -125,7 +131,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                     if (!passwordsMatch) {
                         throw new InvalidCredentialsError(
-                            'Invalid email or password.'
+                            "Invalid email or password."
                         )
                     }
                     return user
