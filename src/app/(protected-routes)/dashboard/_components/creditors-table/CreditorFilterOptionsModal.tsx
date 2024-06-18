@@ -5,11 +5,19 @@ import Modal from "@/components/ui/modal"
 import { useState } from "react"
 import FilterOptions from "./FilterOptions"
 import { CreditorFilterValues } from "./validations"
-import {SlidersHorizontal} from 'lucide-react'
+import { SlidersHorizontal } from "lucide-react"
 
-type Props = {defaultFilterValues: CreditorFilterValues, noCreatedByFilter?:boolean}
+type CreditorFilterOptionsModalProps = {
+    defaultFilterValues: CreditorFilterValues
+    noCreatedByFilter?: boolean
+    title:string
+}
 
-function CreditorFilterOptionsmodal({ defaultFilterValues, noCreatedByFilter=false}: Props) {
+function CreditorFilterOptionsmodal({
+    defaultFilterValues,
+    noCreatedByFilter = false,
+    title
+}: CreditorFilterOptionsModalProps) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     return (
@@ -24,16 +32,16 @@ function CreditorFilterOptionsmodal({ defaultFilterValues, noCreatedByFilter=fal
             }}
             buttonCustom={
                 <Button
-                className="flex gap-2 items-center"
+                    className="flex gap-2 items-center"
                     variant={"outline-bold"}
                     onClick={() => {
                         setIsModalOpen((prev) => !prev)
                     }}
                 >
-                    <SlidersHorizontal className="shrink-0" size={16}/>
+                    <SlidersHorizontal className="shrink-0" size={16} />
                 </Button>
             }
-            title={`Filter Table`}
+            title={title}
         >
             <div className="flex gap-2 w-full">
                 <FilterOptions

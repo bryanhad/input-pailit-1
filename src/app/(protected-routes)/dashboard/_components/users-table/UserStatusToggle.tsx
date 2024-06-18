@@ -28,8 +28,6 @@ function UserStatusToggle({
     const [formSuccess, setFormSuccess] = useState<string>()
     const [open, setOpen] = useState(false)
 
-    console.log(toBeUpdatedUserInfo.status)
-
     const [userStatus, setUserStatus] = useState(toBeUpdatedUserInfo.status)
 
     // if I didn't do this, When I tried to paginate through the table, the state of the userStatus is not updating!
@@ -113,7 +111,6 @@ function UserStatusToggle({
         currentLoggedInUserInfo.role === Role.User ||
         currentLoggedInUserInfo.id === toBeUpdatedUserInfo.id
     ) {
-        console.log(userStatus)
         return (
             <SimplePopover
                 className={cn(

@@ -37,8 +37,8 @@ async function UserDetailWithCreditorsInputed({
     const {
         totalDataCount,
         creditors,
-        totalAvailablePages,
         isUsingFilter,
+        totalAvailablePages,
         fetchSize,
     } = await fetchCreditors({
         filterValues: fetchCreditorSearchParams,
@@ -67,23 +67,32 @@ async function UserDetailWithCreditorsInputed({
                     <H2>Creditors Inputed</H2>
                     <p className="font-light">Count: {creditors.length}</p>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <ClearCreditorFiltersButton
-                        filterValues={fetchCreditorSearchParams}
-                    />
-                    <CreditorFilterOptionsmodal
-                        defaultFilterValues={fetchCreditorSearchParams}
-                        noCreatedByFilter
-                    />
-                </div>
+                {creditors.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4">
+                        <ClearCreditorFiltersButton
+                            filterValues={fetchCreditorSearchParams}
+                        />
+                        {/* TODO: MAKE FILTER MODAL HAVE CUSTOMIZABLE TITLE */}
+                        <CreditorFilterOptionsmodal
+                            defaultFilterValues={fetchCreditorSearchParams}
+                            noCreatedByFilter
+                            title="Filter Creditors"
+                        />
+                    </div>
+                )}
             </div>
-            <CreditorsInputedList inputedCreditors={creditors} />
-            <Pagination
-                itemsPerPage={fetchSize}
-                totalAvailablePages={totalAvailablePages}
-                totalRowCount={totalDataCount}
-                totalRowShown={creditors.length}
+            <CreditorsInputedList
+                inputedCreditors={creditors}
+                isUsingFilter={isUsingFilter}
             />
+            {creditors.length > 0 && (
+                <Pagination
+                    itemsPerPage={fetchSize}
+                    totalAvailablePages={totalAvailablePages}
+                    totalRowCount={totalDataCount}
+                    totalRowShown={creditors.length}
+                />
+            )}
         </MainWrapper>
     )
 }

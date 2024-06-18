@@ -87,6 +87,7 @@ async function DashboardPage({
                     <div className="flex gap-2 sm:gap-4">
                         <CreditorFilterOptionsModal
                             defaultFilterValues={creditorsTableFilterValues}
+                            title="Filter Creditors Table"
                         />
                         <ClearCreditorFiltersButton
                             filterValues={creditorsTableFilterValues}
