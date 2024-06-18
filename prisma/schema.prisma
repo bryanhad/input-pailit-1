@@ -7,7 +7,7 @@
 generator client {
     provider        = "prisma-client-js"
     // will enable to use postgres's full text search later, so we can search for jobs
-    previewFeatures = ["fullTextSearch"]
+    // previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
