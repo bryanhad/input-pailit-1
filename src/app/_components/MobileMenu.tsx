@@ -27,7 +27,7 @@ function MobileMenu({ user }: MobileMenuProps) {
             <SheetTrigger className="lg:hidden">
                 <UserInfo user={user} mode="ICON" className='m-0' />
             </SheetTrigger>
-            <SheetContent noCloseButton className="flex flex-col gap-4 p-0 overflow-hidden mt-14">
+            <SheetContent className="flex flex-col gap-4 p-0 overflow-hidden">
                 <UserInfo
                     user={user}
                     className="ml-4 mt-6 flex-row-reverse justify-end"
