@@ -8,7 +8,7 @@ async function NewNavbar() {
     const session = await auth()
 
     return (
-        <header className="h-16 shadow-sm border-b bg-white">
+        <header className="h-16 shadow-sm border-b bg-white fixed w-full z-[100]">
             <nav className="flex w-full max-w-[1400px] mx-auto h-full justify-between px-4 sm:px-6 md:px-10">
                 <Link
                     href={session ? "/dashboard" : "/"}

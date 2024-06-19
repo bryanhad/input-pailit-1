@@ -8,7 +8,7 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet'
 import { User } from '@prisma/client'
-import { Home, Settings } from 'lucide-react'
+import { Home, LayoutDashboard, Settings } from 'lucide-react'
 import { SidebarLinks } from './Sidebar'
 import SidebarLink from './SidebarLink'
 import { UserInfo } from './UserPopOver'
@@ -24,10 +24,10 @@ function MobileMenu({ user }: MobileMenuProps) {
 
     return (
         <Sheet>
-            <SheetTrigger className="px-3 lg:hidden">
-                <UserInfo user={user} mode="ICON" />
+            <SheetTrigger className="lg:hidden">
+                <UserInfo user={user} mode="ICON" className='m-0' />
             </SheetTrigger>
-            <SheetContent className="flex flex-col gap-4 p-0 overflow-hidden">
+            <SheetContent noCloseButton className="flex flex-col gap-4 p-0 overflow-hidden mt-14">
                 <UserInfo
                     user={user}
                     className="ml-4 mt-6 flex-row-reverse justify-end"
@@ -35,8 +35,8 @@ function MobileMenu({ user }: MobileMenuProps) {
                 />
                 <Separator className="w-[80%] self-center" />
                 <SheetTrigger asChild>
-                    <SidebarLink icon={<Home />} href={'/dashboard'}>
-                        Home
+                    <SidebarLink icon={<LayoutDashboard />} href={'/dashboard'}>
+                        Dashboard
                     </SidebarLink>
                 </SheetTrigger>
                 <Separator className="w-[80%] self-center" />
