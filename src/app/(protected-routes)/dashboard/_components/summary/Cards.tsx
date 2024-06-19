@@ -3,25 +3,24 @@ import {
     cn,
     formatCurrency,
     formatNumber,
-} from '@/lib/utils'
-import { ClaimType } from '@/types'
-import { EachClaimTypeTotalClaims } from './actions'
-import ClaimTypeBadge from '@/components/ClaimTypeBadge'
+} from "@/lib/utils"
+import { ClaimType } from "@/types"
+import { ClaimTypeInfo } from "./actions"
+import ClaimTypeBadge from "@/components/ClaimTypeBadge"
 
 type CardsProps = {
-    data: EachClaimTypeTotalClaims
+    claimTypeInfoArr: ClaimTypeInfo[]
+    totalClaimAllCreditors: number
 }
 
-async function Cards({
-    data: { claimTypes, totalClaimAmount, totalCreditors },
-}: CardsProps) {
-    const preferenDetail = claimTypes.find(
+async function Cards({ claimTypeInfoArr, totalClaimAllCreditors }: CardsProps) {
+    const preferenDetail = claimTypeInfoArr.find(
         (el) => el.claimType === ClaimType.Preferen
     )
-    const konkurenDetail = claimTypes.find(
+    const konkurenDetail = claimTypeInfoArr.find(
         (el) => el.claimType === ClaimType.Konkuren
     )
-    const separatisDetail = claimTypes.find(
+    const separatisDetail = claimTypeInfoArr.find(
         (el) => el.claimType === ClaimType.Separatis
     )
 
@@ -30,34 +29,34 @@ async function Cards({
             <SummaryCard
                 className={`shadow-sm bg-white`}
                 claimType={`${capitalizeFirstLetter(ClaimType.Preferen)}`}
-                totalClaimOfAType={preferenDetail?.totalClaim || 0}
-                totalClaimOfAllCreditors={totalClaimAmount}
+                totalClaimOfAType={preferenDetail?.totalClaimAmount || 0}
+                totalClaimOfAllCreditors={totalClaimAllCreditors}
                 creditorCount={preferenDetail?.creditorCount || 0}
                 content={formatCurrency(
-                    Number(preferenDetail?.totalClaim),
-                    'IDR'
+                    Number(preferenDetail?.totalClaimAmount),
+                    "IDR"
                 )}
             />
             <SummaryCard
                 className={`shadow-sm bg-white`}
                 claimType={`${capitalizeFirstLetter(ClaimType.Konkuren)}`}
-                totalClaimOfAType={konkurenDetail?.totalClaim || 0}
-                totalClaimOfAllCreditors={totalClaimAmount}
+                totalClaimOfAType={konkurenDetail?.totalClaimAmount || 0}
+                totalClaimOfAllCreditors={totalClaimAllCreditors}
                 creditorCount={konkurenDetail?.creditorCount || 0}
                 content={formatCurrency(
-                    Number(konkurenDetail?.totalClaim),
-                    'IDR'
+                    Number(konkurenDetail?.totalClaimAmount),
+                    "IDR"
                 )}
             />
             <SummaryCard
                 className={`shadow-sm bg-white sm:col-span-2 md:col-span-1`}
                 claimType={`${capitalizeFirstLetter(ClaimType.Separatis)}`}
-                totalClaimOfAType={separatisDetail?.totalClaim || 0}
-                totalClaimOfAllCreditors={totalClaimAmount}
+                totalClaimOfAType={separatisDetail?.totalClaimAmount || 0}
+                totalClaimOfAllCreditors={totalClaimAllCreditors}
                 creditorCount={separatisDetail?.creditorCount || 0}
                 content={formatCurrency(
-                    Number(separatisDetail?.totalClaim),
-                    'IDR'
+                    Number(separatisDetail?.totalClaimAmount),
+                    "IDR"
                 )}
             />
         </>
@@ -89,12 +88,15 @@ function SummaryCard({
     return (
         <div
             className={cn(
-                'text-black flex flex-col gap-2 flex-1 p-4 rounded-md shadow-sm',
+                "text-black flex flex-col gap-2 flex-1 p-4 rounded-md shadow-sm",
                 className
             )}
         >
             <div className="flex items-end gap-2">
-                <ClaimTypeBadge className='text-base gap-2' sifatTagihan={claimType.toUpperCase()}/>
+                <ClaimTypeBadge
+                    className="text-base gap-2"
+                    sifatTagihan={claimType.toUpperCase()}
+                />
                 {/* <div
                     className={cn('size-3 rounded-full self-center mt-1', {
                         'bg-separatis': claimType.toUpperCase() === ClaimType.Separatis,
@@ -111,7 +113,7 @@ function SummaryCard({
                 <p className="font-light text-xl">{`${percentage}%`}</p>
             </div>
             <p className="text-2xl font-semibold md:text-xl lg:text-2xl">
-                {formatCurrency(totalClaimOfAType, 'IDR')}
+                {formatCurrency(totalClaimOfAType, "IDR")}
             </p>
         </div>
     )

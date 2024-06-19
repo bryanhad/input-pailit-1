@@ -1,5 +1,5 @@
 "use client"
-import { cn, formatCurrency, formatNumber } from "@/lib/utils"
+import { cn, formatCurrency } from "@/lib/utils"
 import {
     ArcElement,
     ChartData,
@@ -7,21 +7,21 @@ import {
     Legend,
     Tooltip,
 } from "chart.js"
-import { Doughnut } from "react-chartjs-2"
-import { EachClaimTypeTotalClaims } from "./actions"
 import { PieChart } from "lucide-react"
+import { Doughnut } from "react-chartjs-2"
+import { ClaimTypeInfo } from "./actions"
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 type DoughnutChartProps = {
-    data: EachClaimTypeTotalClaims
+    data: {claimTypeInfoArr: ClaimTypeInfo[], totalClaimAllCreditor: number}
     className?: string
     title: string
     doughnutChartClassName?:string
 }
 
 function DoughnutChart({
-    data: { claimTypes, totalClaimAmount, totalCreditors },
+    data: { claimTypeInfoArr, totalClaimAllCreditor },
     className,
     title,
     doughnutChartClassName
@@ -32,13 +32,13 @@ function DoughnutChart({
             {
                 label: "Rp",
                 // Array of totalClaim (Preferen, Konkuren, Separatis)
-                data: [
-                    claimTypes.find((el) => el.claimType === "PREFEREN")
-                        ?.totalClaim || 0,
-                    claimTypes.find((el) => el.claimType === "KONKUREN")
-                        ?.totalClaim || 0,
-                    claimTypes.find((el) => el.claimType === "SEPARATIS")
-                        ?.totalClaim || 0,
+                data: [ 
+                    claimTypeInfoArr.find((el) => el.claimType === "PREFEREN")
+                        ?.totalClaimAmount || 0,
+                    claimTypeInfoArr.find((el) => el.claimType === "KONKUREN")
+                        ?.totalClaimAmount || 0,
+                    claimTypeInfoArr.find((el) => el.claimType === "SEPARATIS")
+                        ?.totalClaimAmount || 0,
                 ],
                 backgroundColor: [
                     "hsl(142 68% 67%)",
@@ -60,7 +60,7 @@ function DoughnutChart({
                 callbacks: {
                     label: (ctx: any) => {
                         return `${(
-                            (ctx.parsed / totalClaimAmount) *
+                            (ctx.parsed / totalClaimAllCreditor) *
                             100
                         ).toFixed(2)}% | ${formatCurrency(ctx.parsed, "IDR")}`
                     },
@@ -95,7 +95,7 @@ function DoughnutChart({
                 ctx.textAlign = "center"
                 ctx.Baseline = "middle"
                 const totalClaimText = `${formatCurrency(
-                    totalClaimAmount,
+                    totalClaimAllCreditor,
                     "IDR"
                 )}`
                 // const totalCreditorsCount = "Total Creditors: " + formatNumber(totalCreditors) 
@@ -186,9 +186,9 @@ function DoughnutChart({
             </p>
             <div className={cn("relative w-[80vw] max-w-[400px] mx-auto p-2", doughnutChartClassName)}>
                 {/* <p className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] text-2xl font-bold">
-                    {formatCurrency(totalClaimAmount, 'IDR')}
+                    {formatCurrency(totalClaimAllCreditor, 'IDR')}
                 </p> */}
-                {totalClaimAmount ? (
+                {totalClaimAllCreditor ? (
                     <Doughnut
                         className="relative z-10"
                         options={options}
