@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { cn, getNameInitial } from '@/lib/utils'
 import { User } from '@prisma/client'
-import { Bolt, CircleUserRound, LogOut, Settings } from 'lucide-react'
+import { Bolt, CircleUserRound, Ghost, LogOut, Settings } from 'lucide-react'
 import Link from 'next/link'
 import NavItemDropdown from './NavItemDropdown'
 import SignOutButton from '@/auth/components/sign-out-button'
@@ -111,14 +111,18 @@ export function UserInfo({
     )
 }
 
-export type UserImageIconProps = UserPopOverProps & { className?: string }
+export type UserImageIconProps = UserPopOverProps & { className?: string, noNameIconSize?:number }
 
-export function UserImageIcon({ user, className }: UserImageIconProps) {
+export function UserImageIcon({ user, className, noNameIconSize}: UserImageIconProps) {
     return (
         <Avatar className={className}>
             <AvatarImage src={user.image || ''} />
             <AvatarFallback className="capitalize bg-slate-300/80 text-white">
-                {getNameInitial(user.name || 'no name')}
+                {user.name ? (
+                    getNameInitial(user.name)
+                ) : (
+                    <Ghost className="shrink-0" size={noNameIconSize}/>
+                )}
             </AvatarFallback>
         </Avatar>
     )

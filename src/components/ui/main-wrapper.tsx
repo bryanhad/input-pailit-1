@@ -35,7 +35,7 @@ function MainWrapper({
                         {title && (
                             <H1
                                 className={cn(
-                                    'max-md:text-center',
+                                    'max-md:text-center break-all',
                                     titleClassName
                                 )}
                             >

@@ -53,6 +53,7 @@ async function UserDetailWithCreditorsInputed({
                     <UserImageIcon
                         user={userInfo}
                         className="size-32 text-4xl"
+                        noNameIconSize={52}
                     />
                 </div>
                 <div className="relative w-full flex flex-col md:flex-[5] gap-4 border rounded-md p-4 flex-1">

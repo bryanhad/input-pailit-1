@@ -33,7 +33,7 @@ async function UserDetailPage({
         <UserDetailWithCreditorsInputed
             fetchCreditorSearchParams={searchParams}
             userInfo={queriedUser}
-            title={`${queriedUser.name}'s Profile`}
+            title={`${queriedUser.name || queriedUser.email}'s Profile`}
             currentLoggedInUserInfo={loggedInUser}
         />
     )
