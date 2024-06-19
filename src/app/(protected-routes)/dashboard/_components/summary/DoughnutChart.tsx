@@ -1,5 +1,5 @@
 "use client"
-import { cn, formatCurrency } from "@/lib/utils"
+import { cn, formatCurrency, formatNumber } from "@/lib/utils"
 import {
     ArcElement,
     ChartData,
@@ -98,6 +98,12 @@ function DoughnutChart({
                     totalClaimAmount,
                     "IDR"
                 )}`
+                // const totalCreditorsCount = "Total Creditors: " + formatNumber(totalCreditors) 
+                // ctx.fillText(
+                //     totalCreditorsCount,
+                //     chart.getDatasetMeta(0).data[0].x,
+                //     chart.getDatasetMeta(0).data[0].y + 170
+                // )
                 ctx.fillText(
                     totalClaimText,
                     chart.getDatasetMeta(0).data[0].x,
