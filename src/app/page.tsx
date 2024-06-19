@@ -1,16 +1,16 @@
-import Image from "next/image"
-import BankruptcyVerdict from "./_components/BankruptcyVerdict"
-import RootPageTitle from "./_components/RootPageTitle"
+import Image from 'next/image'
+import BankruptcyVerdict from './_components/BankruptcyVerdict'
+import RootPageTitle from './_components/RootPageTitle'
 
 export default function Home() {
     return (
-        <div className=" pt-[2vh] lg:pt-[5vh] xl:pt-[8vh] lg:flex lg:justify-center">
+        <div className=" pt-[2vh] lg:pt-[5vh] xl:pt-[8vh] lg:flex lg:justify-center fade-in duration-500">
             <div className="flex flex-col lg:flex-row max-lg:items-center gap-4">
                 <div className="flex flex-col items-center gap-2 lg:items-end">
                     <Image
-                        className="rounded-md"
+                        className="rounded-md "
                         alt="company logo"
-                        src={"/company-logo.webp"}
+                        src={'/company-logo.webp'}
                         width={300}
                         height={300}
                     />

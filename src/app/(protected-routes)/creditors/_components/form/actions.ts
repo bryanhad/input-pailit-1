@@ -127,19 +127,18 @@ export async function editCreditor(
             }
         }
 
-        // DELETE RELATED ATTACHMENTS BY creditorID
-        const deleteCreditorAttachments = db.attachment.deleteMany({
-            where: { creditorId },
-        })
+        // const deleteCreditorAttachments = db.attachment.deleteMany({
+        //     where: { creditorId },
+        // })
         // INSERT ALL NEW ATTACHMENTS, IF ANY
         const attachmentsToBeUploaded = submitedFormValues.attachments.map(
             (attachment) => {
                 return { creditorId, ...attachment }
             }
         )
-        const addNewAttachments = db.attachment.createMany({
-            data: attachmentsToBeUploaded,
-        })
+        // const addNewAttachments = db.attachment.createMany({
+        //     data: attachmentsToBeUploaded,
+        // })
         // UPDATE THE CREDITOR DETAILS
         const updateCreditor = db.creditor.update({
             where: { id: creditorId },
@@ -154,17 +153,24 @@ export async function editCreditor(
             } as any,
         })
 
-        await db.$transaction([
-            deleteCreditorAttachments,
-            addNewAttachments,
-            updateCreditor,
-        ])
+        const updatedUserName = await db.$transaction(async (tx) => {
+            // DELETE RELATED ATTACHMENTS BY creditorID
+            await db.attachment.deleteMany({
+                where: { creditorId },
+            })
+
+            await db.attachment.createMany({
+                data: attachmentsToBeUploaded,
+            })
+            const updatedUser = await updateCreditor
+            return updatedUser.nama
+        })
 
         revalidatePath('/dashboard')
         return {
             success: {
                 title: 'Successfully edited creditor',
-                message: `Creditor '${toBeUpdatedFields.nama}' has been edited`,
+                message: `Creditor '${updatedUserName}' has been edited`,
             },
         }
     } catch (err) {

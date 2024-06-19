@@ -105,12 +105,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             "Invalid email or password."
                         )
                     }
-                    if (user.status !== UserStatus.active) {
-                        throw new LoginError(
-                            "Your account has been deactivated by an admin",
-                            "Inactive User"
-                        )
-                    }
                     if (!user.session) {
                         throw new SessionNotFoundError(
                             "A user must have a session to log in."
@@ -132,6 +126,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     if (!passwordsMatch) {
                         throw new InvalidCredentialsError(
                             "Invalid email or password."
+                        )
+                    }
+                    if (user.status !== UserStatus.active) {
+                        throw new LoginError(
+                            "Your account has been deactivated by an admin",
+                            "Inactive User"
                         )
                     }
                     return user
