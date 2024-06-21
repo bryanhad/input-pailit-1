@@ -1,49 +1,53 @@
-"use client"
-import { cn, formatCurrency } from "@/lib/utils"
+'use client'
+import { cn, formatCurrency } from '@/lib/utils'
 import {
     ArcElement,
     ChartData,
     Chart as ChartJS,
     Legend,
     Tooltip,
-} from "chart.js"
-import { PieChart } from "lucide-react"
-import { Doughnut } from "react-chartjs-2"
-import { ClaimTypeInfo } from "./actions"
+} from 'chart.js'
+import { PieChart } from 'lucide-react'
+import { Doughnut } from 'react-chartjs-2'
+import { ClaimTypeInfo } from './actions'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 type DoughnutChartProps = {
-    data: {claimTypeInfoArr: ClaimTypeInfo[], totalClaimAllCreditor: number}
+    data: {
+        claimTypeInfoArr: ClaimTypeInfo[]
+        totalClaimAllCreditor: number
+        totalCountAllCreditor: number
+    }
     className?: string
     title: string
-    doughnutChartClassName?:string
+    doughnutChartClassName?: string
 }
 
 function DoughnutChart({
-    data: { claimTypeInfoArr, totalClaimAllCreditor },
+    data: { claimTypeInfoArr, totalClaimAllCreditor, totalCountAllCreditor },
     className,
     title,
-    doughnutChartClassName
+    doughnutChartClassName,
 }: DoughnutChartProps) {
-    const data: ChartData<"doughnut"> = {
-        labels: ["Preferen", "Konkuren", "Separatis"],
+    const data: ChartData<'doughnut'> = {
+        labels: ['Preferen', 'Konkuren', 'Separatis'],
         datasets: [
             {
-                label: "Rp",
+                label: 'Rp',
                 // Array of totalClaim (Preferen, Konkuren, Separatis)
-                data: [ 
-                    claimTypeInfoArr.find((el) => el.claimType === "PREFEREN")
+                data: [
+                    claimTypeInfoArr.find((el) => el.claimType === 'PREFEREN')
                         ?.totalClaimAmount || 0,
-                    claimTypeInfoArr.find((el) => el.claimType === "KONKUREN")
+                    claimTypeInfoArr.find((el) => el.claimType === 'KONKUREN')
                         ?.totalClaimAmount || 0,
-                    claimTypeInfoArr.find((el) => el.claimType === "SEPARATIS")
+                    claimTypeInfoArr.find((el) => el.claimType === 'SEPARATIS')
                         ?.totalClaimAmount || 0,
                 ],
                 backgroundColor: [
-                    "hsl(142 68% 67%)",
-                    "hsl(199 89% 73%)",
-                    "hsl(351 95% 73%)",
+                    'hsl(142 68% 67%)',
+                    'hsl(199 89% 73%)',
+                    'hsl(351 95% 73%)',
                 ],
                 borderWidth: 1,
             },
@@ -51,9 +55,9 @@ function DoughnutChart({
     }
 
     const options = {
-        cutout: "88%",
+        cutout: '90%',
         resizeDelay: 200,
-        radius: "85%",
+        radius: '78%',
         responsive: true,
         plugins: {
             tooltip: {
@@ -62,7 +66,7 @@ function DoughnutChart({
                         return `${(
                             (ctx.parsed / totalClaimAllCreditor) *
                             100
-                        ).toFixed(2)}% | ${formatCurrency(ctx.parsed, "IDR")}`
+                        ).toFixed(2)}% | ${formatCurrency(ctx.parsed, 'IDR')}`
                     },
                 },
             },
@@ -71,13 +75,13 @@ function DoughnutChart({
             },
             title: {
                 display: false,
-                text: "Detail Tagihan PT Pailit (dalam Pailit)",
+                text: 'Detail Tagihan PT Pailit (dalam Pailit)',
             },
         },
         // aspectRatio: 1.5,
         layout: {
             padding: {
-                top: 35,
+                top: 10,
                 bottom: 5,
                 right: 35,
                 left: 35,
@@ -91,14 +95,14 @@ function DoughnutChart({
                 const { ctx, data, width, height } = chart
                 ctx.save()
                 const fontSize = (height / 270).toFixed(2)
-                ctx.font = fontSize + "em sans-serif"
-                ctx.textAlign = "center"
-                ctx.Baseline = "middle"
+                ctx.font = fontSize + 'em sans-serif'
+                ctx.textAlign = 'center'
+                ctx.Baseline = 'middle'
                 const totalClaimText = `${formatCurrency(
                     totalClaimAllCreditor,
-                    "IDR"
+                    'IDR'
                 )}`
-                // const totalCreditorsCount = "Total Creditors: " + formatNumber(totalCreditors) 
+                // const totalCreditorsCount = "Total Creditors: " + formatNumber(totalCreditors)
                 // ctx.fillText(
                 //     totalCreditorsCount,
                 //     chart.getDatasetMeta(0).data[0].x,
@@ -114,7 +118,7 @@ function DoughnutChart({
         },
         // https://www.youtube.com/watch?v=ussXnf3l-U0&ab_channel=ChartJS
         {
-            id: "doughnutSliceLabel",
+            id: 'doughnutSliceLabel',
             beforeDatasetsDraw: (chart: any, args: any, plugins: any) => {
                 const { ctx, data, height } = chart
 
@@ -142,7 +146,7 @@ function DoughnutChart({
                             -10 + outerRadius * Math.sin(centerAngle)
 
                         const fontSize = (height / 500).toFixed(2)
-                        ctx.font = "bold " + fontSize + "em sans-serif"
+                        ctx.font = 'bold ' + fontSize + 'em sans-serif'
 
                         // ctx.font = 'bold 15px sans-serif'
                         const textWidth = ctx.measureText(
@@ -163,8 +167,8 @@ function DoughnutChart({
                         // ctx.fill()
 
                         ctx.fillStyle = data.datasets[0].backgroundColor[index]
-                        ctx.textAlign = "center"
-                        ctx.textBaseline = "middle"
+                        ctx.textAlign = 'center'
+                        ctx.textBaseline = 'middle'
                         ctx.fillText(
                             data.labels[index],
                             xCoordinate + centerWidth / 3,
@@ -179,22 +183,32 @@ function DoughnutChart({
 
     return (
         <div
-            className={cn("relative bg-white rounded-md shadow-sm", className)}
+            className={cn('relative bg-white border border-input/40 rounded-md shadow-sm', className)}
         >
             <p className="absolute font-semibold top-5 left-1/2 -translate-x-1/2 w-[80%] text-center text-sm">
                 {title}
             </p>
-            <div className={cn("relative w-[80vw] max-w-[400px] mx-auto p-2", doughnutChartClassName)}>
+            <div
+                className={cn(
+                    'relative w-[80vw] max-w-[400px] mx-auto p-2 aspect-square',
+                    doughnutChartClassName
+                )}
+            >
                 {/* <p className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] text-2xl font-bold">
                     {formatCurrency(totalClaimAllCreditor, 'IDR')}
                 </p> */}
                 {totalClaimAllCreditor ? (
-                    <Doughnut
-                        className="relative z-10"
-                        options={options}
-                        data={data}
-                        plugins={plugins}
-                    />
+                    <>
+                        <Doughnut
+                            className="relative z-10"
+                            options={options}
+                            data={data}
+                            plugins={plugins}
+                        />
+                        <p className="absolute bottom-2 font-light left-1/2 -translate-x-1/2">
+                            {totalCountAllCreditor} Creditors Inputted
+                        </p>
+                    </>
                 ) : (
                     <div className="flex flex-col justify-center text-muted-foreground/20 items-center pt-10">
                         <PieChart className="shrink-0" size={230} />

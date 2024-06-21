@@ -8,23 +8,40 @@ type CreditorTypeBadgeProps = {
     jenisKreditor: string
     className?: string
     size?: number
+    iconClassName?: string
 }
 
 function CreditorTypeBadge({
     jenisKreditor,
     className,
     size = 16,
+    iconClassName,
 }: CreditorTypeBadgeProps) {
     return (
         <SimplePopover
-            className={cn('rounded-full p-1', className)}
+            className={cn(
+                'rounded-full p-1',
+                // {
+                //     'text-purple-400':
+                //         jenisKreditor === CreditorType.Instansi,
+                //     'text-orange-400':
+                //         jenisKreditor === CreditorType.Pribadi,
+                // },
+                className
+            )}
             tip={capitalizeFirstLetter(jenisKreditor)}
         >
             {jenisKreditor === CreditorType.Instansi && (
-                <Building2 size={size} className="shrink-0" />
+                <Building2
+                    size={!iconClassName ? size : undefined}
+                    className={cn('shrink-0', iconClassName)}
+                />
             )}
             {jenisKreditor === CreditorType.Pribadi && (
-                <UserRound size={size} className="shrink-0" />
+                <UserRound
+                    size={!iconClassName ? size : undefined}
+                    className={cn('shrink-0', iconClassName)}
+                />
             )}
         </SimplePopover>
     )

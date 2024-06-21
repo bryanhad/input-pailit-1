@@ -27,33 +27,33 @@ async function Cards({ claimTypeInfoArr, totalClaimAllCreditors }: CardsProps) {
     return (
         <>
             <SummaryCard
-                className={`shadow-sm bg-white`}
+                className={``}
                 claimType={`${capitalizeFirstLetter(ClaimType.Preferen)}`}
                 totalClaimOfAType={preferenDetail?.totalClaimAmount || 0}
                 totalClaimOfAllCreditors={totalClaimAllCreditors}
-                creditorCount={preferenDetail?.creditorCount || 0}
+                creditorsCount={preferenDetail?.creditorsCount || 0}
                 content={formatCurrency(
                     Number(preferenDetail?.totalClaimAmount),
                     "IDR"
                 )}
             />
             <SummaryCard
-                className={`shadow-sm bg-white`}
+                className={``}
                 claimType={`${capitalizeFirstLetter(ClaimType.Konkuren)}`}
                 totalClaimOfAType={konkurenDetail?.totalClaimAmount || 0}
                 totalClaimOfAllCreditors={totalClaimAllCreditors}
-                creditorCount={konkurenDetail?.creditorCount || 0}
+                creditorsCount={konkurenDetail?.creditorsCount || 0}
                 content={formatCurrency(
                     Number(konkurenDetail?.totalClaimAmount),
                     "IDR"
                 )}
             />
             <SummaryCard
-                className={`shadow-sm bg-white sm:col-span-2 md:col-span-1`}
+                className={`sm:col-span-2 md:col-span-1`}
                 claimType={`${capitalizeFirstLetter(ClaimType.Separatis)}`}
                 totalClaimOfAType={separatisDetail?.totalClaimAmount || 0}
                 totalClaimOfAllCreditors={totalClaimAllCreditors}
-                creditorCount={separatisDetail?.creditorCount || 0}
+                creditorsCount={separatisDetail?.creditorsCount || 0}
                 content={formatCurrency(
                     Number(separatisDetail?.totalClaimAmount),
                     "IDR"
@@ -70,13 +70,13 @@ type SummaryCardProps = {
     content: string
     totalClaimOfAType: number
     totalClaimOfAllCreditors: number
-    creditorCount: number
+    creditorsCount: number
     className?: string
 }
 
 function SummaryCard({
     claimType,
-    creditorCount,
+    creditorsCount,
     className,
     totalClaimOfAType,
     totalClaimOfAllCreditors,
@@ -88,7 +88,7 @@ function SummaryCard({
     return (
         <div
             className={cn(
-                "text-black flex flex-col gap-2 flex-1 p-4 rounded-md shadow-sm",
+                "text-black flex flex-col gap-2 flex-1 p-4 rounded-md shadow-sm bg-white border border-input/40",
                 className
             )}
         >
@@ -106,15 +106,15 @@ function SummaryCard({
                 />
                 <p className="text-2xl font-semibold">{claimType}</p> */}
             </div>
-            <div className="flex justify-between items-end gap-4">
-                <p className="text-sm font-light">
-                    count : {formatNumber(creditorCount)}
-                </p>
-                <p className="font-light text-xl">{`${percentage}%`}</p>
-            </div>
-            <p className="text-2xl font-semibold md:text-xl lg:text-2xl">
+            <p className="text-2xl md:text-xl lg:text-2xl">
                 {formatCurrency(totalClaimOfAType, "IDR")}
             </p>
+            <div className="flex items-end gap-4">
+                <p className="text-xl text-green-400 font-semibold">{`${percentage}%`}</p>
+                <p className="text-sm font-light">
+                   {formatNumber(creditorsCount)} Creditors
+                </p>
+            </div>
         </div>
     )
 }

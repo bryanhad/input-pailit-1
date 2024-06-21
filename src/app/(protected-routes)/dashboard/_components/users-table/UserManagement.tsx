@@ -164,29 +164,29 @@ async function UserManagement({
                             })}
                         >
                             <TableHeader>
-                                <TableRow className="bg-gray-400 hover:bg-gray-400/90">
-                                    <TableHead className="text-white text-center w-[60px]">
+                                <TableRow className="bg-primary hover:bg-primary/90">
+                                    <TableHead className="text-white text-nowrap text-center w-[60px]">
                                         No
                                     </TableHead>
-                                    <TableHead className="text-white w-[160px]">
+                                    <TableHead className="text-white text-nowrap w-[160px]">
                                         Name
                                     </TableHead>
-                                    <TableHead className="text-white w-[200px]">
+                                    <TableHead className="text-white text-nowrap w-[200px]">
                                         Email
                                     </TableHead>
-                                    <TableHead className="text-white">
+                                    <TableHead className="text-white text-nowrap">
                                         Status
                                     </TableHead>
-                                    <TableHead className="text-white">
+                                    <TableHead className="text-white text-nowrap">
                                         Role
                                     </TableHead>
-                                    <TableHead className="text-white">
+                                    <TableHead className="text-white text-nowrap">
                                         Joined At
                                     </TableHead>
-                                    <TableHead className="text-white text-center">
+                                    <TableHead className="text-white text-nowrap text-center">
                                         Creditors Input
                                     </TableHead>
-                                    <TableHead className="text-white text-center">
+                                    <TableHead className="text-white text-nowrap text-center">
                                         Action
                                     </TableHead>
                                 </TableRow>

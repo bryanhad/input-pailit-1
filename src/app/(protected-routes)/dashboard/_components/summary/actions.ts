@@ -1,35 +1,34 @@
-"use server"
+'use server'
 
-import db from "@/lib/db"
-import { ClaimType, CreditorType } from "@/types"
+import db from '@/lib/db'
+import { ClaimType, CreditorType } from '@/types'
 
-export type CreditorTypeInfo = {
-    creditorType: string
+export type CreditorTypeSummary = {
     totalClaimAmount: number
-    creditorCount: number
+    creditorsCount: number
+}
+
+export type CreditorTypesInfo = {
+    [key in CreditorType]: CreditorTypeSummary
 }
 
 export type ClaimTypeInfo = {
     claimType: string
     totalClaimAmount: number
-    creditorCount: number
+    creditorsCount: number
 }
 
 export type SummariesData = {
     totalClaimAllCreditor: number
     totalCountAllCreditor: number
-    creditorTypeInfoArr: CreditorTypeInfo[]
+    creditorTypesInfo: CreditorTypesInfo
     claimTypeInfoArr: ClaimTypeInfo[]
 }
 
 type RawSummariesData = {
     total_claim_of_all_creditors: string
     total_count_of_all_creditors: string
-    total_claim_amount_and_count_by_creditorType: {
-        totalClaimAmount: string
-        creditorsCount: string
-        creditorType: CreditorType
-    }[]
+    total_claim_amount_and_count_by_creditorType: CreditorTypesInfo
     total_claim_amount_and_count_by_claimType: {
         totalClaimAmount: string
         creditorsCount: string
@@ -37,6 +36,7 @@ type RawSummariesData = {
     }[]
 }[]
 
+// TODO, ask client: "should totalTagihan be able to handle decimal?"
 export async function getSummariesData(): Promise<SummariesData> {
     const res: RawSummariesData = await db.$queryRaw`
         WITH total_claims AS (
@@ -49,8 +49,8 @@ export async function getSummariesData(): Promise<SummariesData> {
         ),
         claims_by_creditor_type AS (
             SELECT jenis AS creditorType,
-                SUM(CAST("totalTagihan" AS DECIMAL))::text AS totalClaimAmount,
-                COUNT(*)::text AS creditorsCount
+                SUM(CAST("totalTagihan" AS DECIMAL)) AS totalClaimAmount,
+                COUNT(*) AS creditorsCount
             FROM creditors
             GROUP BY jenis
         ),
@@ -64,11 +64,13 @@ export async function getSummariesData(): Promise<SummariesData> {
         SELECT 
             (SELECT total_claim_of_all_creditors::text FROM total_claims),
             (SELECT total_count_of_all_creditors::text FROM total_count),
-            (SELECT json_agg(json_build_object(
-                'creditorType', creditorType,
+            (SELECT json_object_agg(
+            creditorType, 
+            json_build_object(
                 'totalClaimAmount', totalClaimAmount,
                 'creditorsCount', creditorsCount
-            )) FROM claims_by_creditor_type) AS "total_claim_amount_and_count_by_creditorType",
+            )
+        ) FROM claims_by_creditor_type) AS "total_claim_amount_and_count_by_creditorType",
             (SELECT json_agg(json_build_object(
                 'claimType', claimType,
                 'totalClaimAmount', totalClaimAmount,
@@ -89,19 +91,11 @@ export async function getSummariesData(): Promise<SummariesData> {
             (el) => {
                 return {
                     claimType: el.claimType,
-                    creditorCount: Number(el.creditorsCount) || 0,
+                    creditorsCount: Number(el.creditorsCount) || 0,
                     totalClaimAmount: Number(el.totalClaimAmount) || 0,
                 }
             }
         ),
-        creditorTypeInfoArr: total_claim_amount_and_count_by_creditorType.map(
-            (el) => {
-                return {
-                    creditorType: el.creditorType,
-                    creditorCount: Number(el.creditorsCount) || 0,
-                    totalClaimAmount: Number(el.totalClaimAmount) || 0,
-                }
-            }
-        ),
+        creditorTypesInfo: total_claim_amount_and_count_by_creditorType,
     }
 }

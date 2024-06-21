@@ -49,26 +49,26 @@ async function CreditorsTable({
                     Data Kreditor PT Pailit (dalam Pailit)
                 </TableCaption> */}
                     <TableHeader>
-                        <TableRow className="bg-gray-400 hover:bg-gray-400/90">
-                            <TableHead className="text-white w-[60px]">
+                        <TableRow className="bg-primary hover:bg-primary/90">
+                            <TableHead className="text-white text-nowrap w-[60px]">
                                 No
                             </TableHead>
-                            <TableHead className="text-white w-[200px]">
+                            <TableHead className="text-white text-nowrap w-[200px]">
                                 Kreditor
                             </TableHead>
-                            <TableHead className="text-white">
+                            <TableHead className="text-white text-nowrap">
                                 Total Tagihan
                             </TableHead>
-                            <TableHead className="text-white">
+                            <TableHead className="text-white text-nowrap">
                                 Sifat Tagihan
                             </TableHead>
-                            <TableHead className="text-white">
+                            <TableHead className="text-white text-nowrap">
                                 Input by
                             </TableHead>
-                            <TableHead className="text-white">
+                            <TableHead className="text-white text-nowrap">
                                 Last Updated By
                             </TableHead>
-                            <TableHead className="text-right text-white">
+                            <TableHead className="text-right text-white text-nowrap">
                                 Action
                             </TableHead>
                         </TableRow>

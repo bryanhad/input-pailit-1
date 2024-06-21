@@ -23,7 +23,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={openSans.className}>
-                <div className="min-h-screen min-w-[280px] bg-background font-sans antialiased flex flex-col bg-slate-100 relative">
+                <div className="min-h-screen min-w-[280px] bg-background font-sans antialiased flex flex-col bg-slate-50 relative">
                     <NewNavbar/>
                     <main className="mt-20 flex-1 w-full max-w-[1400px] mx-auto px-4 pb-2 flex flex-col overflow-hidden">
                         <BreadCrumbsLink />
