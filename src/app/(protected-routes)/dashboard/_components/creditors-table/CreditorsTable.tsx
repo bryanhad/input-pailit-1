@@ -49,7 +49,7 @@ async function CreditorsTable({
                     Data Kreditor PT Pailit (dalam Pailit)
                 </TableCaption> */}
                     <TableHeader>
-                        <TableRow className="bg-primary hover:bg-primary/90">
+                        <TableRow className="bg-gray-400 hover:bg-gray-400/90">
                             <TableHead className="text-white w-[60px]">
                                 No
                             </TableHead>

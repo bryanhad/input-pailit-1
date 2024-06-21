@@ -1,5 +1,5 @@
 "use client"
-import { cn, formatCurrency } from "@/lib/utils"
+import { capitalizeFirstLetter, cn, formatCurrency } from "@/lib/utils"
 import {
     ArcElement,
     ChartData,
@@ -10,41 +10,110 @@ import {
 import { PieChart } from "lucide-react"
 import { Doughnut } from "react-chartjs-2"
 import { ClaimTypeInfo } from "./actions"
+import { ExtendClaimType, SelectedSummaryClaimType } from "./NewSummaries"
+import { ClaimType } from "@/types"
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-type DoughnutChartProps = {
-    data: {claimTypeInfoArr: ClaimTypeInfo[], totalClaimAllCreditor: number}
-    className?: string
-    title: string
-    doughnutChartClassName?:string
+type ClaimTypeInfoMap = {
+    preferen: Pick<ClaimTypeInfo, 'creditorCount' | 'totalClaimAmount'>
+    konkuren: Pick<ClaimTypeInfo, 'creditorCount' | 'totalClaimAmount'>
+    separatis: Pick<ClaimTypeInfo, 'creditorCount' | 'totalClaimAmount'>
+    total: Pick<ClaimTypeInfo, 'creditorCount' | 'totalClaimAmount'>
 }
 
-function DoughnutChart({
-    data: { claimTypeInfoArr, totalClaimAllCreditor },
+type NewDoughnutChartProps = {
+    // data: { claimTypeInfoArr: ClaimTypeInfo[]; totalClaimAllCreditor: number }
+    data: {claimTypeInfoMap: ClaimTypeInfoMap, totalClaimAllCreditor: number}
+    className?: string
+    title: string
+    newdoughnutChartClassName?: string
+    selectedSummary: string
+}
+
+function NewDoughnutChart({
+    data: { claimTypeInfoMap, totalClaimAllCreditor },
     className,
     title,
-    doughnutChartClassName
-}: DoughnutChartProps) {
+    newdoughnutChartClassName,
+    selectedSummary,
+}: NewDoughnutChartProps) {
+    let labels: string[] = []
+
+    const konkurenLabel = capitalizeFirstLetter(ClaimType.Konkuren)
+    const preferenLabel = capitalizeFirstLetter(ClaimType.Preferen)
+    const separatisLabel = capitalizeFirstLetter(ClaimType.Separatis)
+
+    switch (selectedSummary) {
+        case ClaimType.Konkuren:
+            labels = [konkurenLabel]
+            break
+        case ClaimType.Preferen:
+            labels = [preferenLabel]
+            break
+        case ClaimType.Separatis:
+            labels = [separatisLabel]
+            break
+        case ExtendClaimType.All:
+            labels = [preferenLabel, konkurenLabel, separatisLabel]
+            break
+    }
+
+    const preferenColor= "hsl(142 68% 67%)"
+    const konkurenColor= "hsl(199 89% 73%)"
+    const separatisColor= "hsl(351 95% 73%)"
+
+    const dataSetsMap = {
+        preferen: {
+            data: [claimTypeInfoMap.preferen.totalClaimAmount],
+            backgroundColor: preferenColor
+        },
+        konkuren: {
+            data: [claimTypeInfoMap.konkuren.totalClaimAmount],
+            backgroundColor: konkurenColor
+        },
+        separatis: {
+            data: [claimTypeInfoMap.separatis.totalClaimAmount],
+            backgroundColor: separatisColor
+        },
+        all: {
+            data:[
+                claimTypeInfoMap.preferen.totalClaimAmount,
+                claimTypeInfoMap.konkuren.totalClaimAmount,
+                claimTypeInfoMap.separatis.totalClaimAmount,
+            ],
+            backgroundColor: [
+                preferenColor,
+                konkurenColor,
+                separatisColor,
+            ]
+        }
+    }
+
     const data: ChartData<"doughnut"> = {
-        labels: ["Preferen", "Konkuren", "Separatis"],
+        labels,
         datasets: [
             {
                 label: "Rp",
                 // Array of totalClaim (Preferen, Konkuren, Separatis)
-                data: [ 
-                    claimTypeInfoArr.find((el) => el.claimType === "PREFEREN")
-                        ?.totalClaimAmount || 0,
-                    claimTypeInfoArr.find((el) => el.claimType === "KONKUREN")
-                        ?.totalClaimAmount || 0,
-                    claimTypeInfoArr.find((el) => el.claimType === "SEPARATIS")
-                        ?.totalClaimAmount || 0,
-                ],
-                backgroundColor: [
-                    "hsl(142 68% 67%)",
-                    "hsl(199 89% 73%)",
-                    "hsl(351 95% 73%)",
-                ],
+                data: dataSetsMap[selectedSummary as keyof typeof dataSetsMap].data,
+                    // claimTypeInfoMap.preferen.totalClaimAmount,
+                    // claimTypeInfoMap.preferen.totalClaimAmount,
+                    // claimTypeInfoMap.preferen.totalClaimAmount,
+
+                    // claimTypeInfoArr.find((el) => el.claimType === "PREFEREN")
+                    //     ?.totalClaimAmount || 0,
+                    // claimTypeInfoArr.find((el) => el.claimType === "KONKUREN")
+                    //     ?.totalClaimAmount || 0,
+                    // claimTypeInfoArr.find((el) => el.claimType === "SEPARATIS")
+                    //     ?.totalClaimAmount || 0,
+                // ],
+                backgroundColor: dataSetsMap[selectedSummary as keyof typeof dataSetsMap].backgroundColor,
+                //  [
+                //     "hsl(142 68% 67%)",
+                //     "hsl(199 89% 73%)",
+                //     "hsl(351 95% 73%)",
+                // ],
                 borderWidth: 1,
             },
         ],
@@ -58,6 +127,7 @@ function DoughnutChart({
         plugins: {
             tooltip: {
                 callbacks: {
+                    // THIS IS BAAADDD
                     label: (ctx: any) => {
                         return `${(
                             (ctx.parsed / totalClaimAllCreditor) *
@@ -98,7 +168,7 @@ function DoughnutChart({
                     totalClaimAllCreditor,
                     "IDR"
                 )}`
-                // const totalCreditorsCount = "Total Creditors: " + formatNumber(totalCreditors) 
+                // const totalCreditorsCount = "Total Creditors: " + formatNumber(totalCreditors)
                 // ctx.fillText(
                 //     totalCreditorsCount,
                 //     chart.getDatasetMeta(0).data[0].x,
@@ -184,7 +254,12 @@ function DoughnutChart({
             <p className="absolute font-semibold top-5 left-1/2 -translate-x-1/2 w-[80%] text-center text-sm">
                 {title}
             </p>
-            <div className={cn("relative w-[80vw] max-w-[400px] mx-auto p-2", doughnutChartClassName)}>
+            <div
+                className={cn(
+                    "relative w-[80vw] max-w-[400px] mx-auto p-2",
+                    newdoughnutChartClassName
+                )}
+            >
                 {/* <p className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] text-2xl font-bold">
                     {formatCurrency(totalClaimAllCreditor, 'IDR')}
                 </p> */}
@@ -208,4 +283,4 @@ function DoughnutChart({
     )
 }
 
-export default DoughnutChart
+export default NewDoughnutChart

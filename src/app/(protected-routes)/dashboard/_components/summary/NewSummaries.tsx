@@ -1,27 +1,44 @@
+'use client'
+
+import { useState } from "react"
 import Cards from "./Cards"
 import DoughnutChart from "./DoughnutChart"
 import HorizontalBarChart from "./HorizontalBarChart"
-import NewCards from "./NewCards"
 import TotalCount from "./TotalCount"
-import { getSummariesData } from "./actions"
+import { ClaimTypeInfo, CreditorTypeInfo } from "./actions"
+import NewDoughnutChart from "./NewDoughnutChart"
+import { ClaimType } from "@/types"
 
-async function Summaries() {
-    const {
-        totalCountAllCreditor,
-        totalClaimAllCreditor,
-        creditorTypeInfoArr,
-        claimTypeInfoArr,
-    } = await getSummariesData()
+type NewSummariesProps = {
+    totalCountAllCreditor: number
+    totalClaimAllCreditor: number
+    claimTypeInfoArr: ClaimTypeInfo[]
+    creditorTypeInfoArr: CreditorTypeInfo[]
+}
+
+export enum ExtendClaimType {
+    All = "ALL"
+}
+
+export type SelectedSummaryClaimType = ClaimType | ExtendClaimType
+
+function NewSummaries({
+    claimTypeInfoArr,
+    creditorTypeInfoArr,
+    totalClaimAllCreditor,
+    totalCountAllCreditor,
+}: NewSummariesProps) {
+    const [selectedClaimType, setSelectedClaimType] = useState<SelectedSummaryClaimType>(ExtendClaimType.All)
 
     return (
         <>
             <div className="flex flex-col gap-4">
                 <div className="flex-[2] flex flex-col lg:flex-row gap-4">
-                    <DoughnutChart
+                    <NewDoughnutChart
                         title="Detail Tagihan PT Pailit (dalam Pailit)"
                         data={{ totalClaimAllCreditor, claimTypeInfoArr }}
                         className="lg:flex-[1]"
-                        doughnutChartClassName="lg:max-w-[320px] xl:max-w-[400px]"
+                        newdoughnutChartClassName="lg:max-w-[320px] xl:max-w-[400px]"
                     />
                     <div className="flex flex-col  gap-4 flex-[1] lg:flex-[3]">
                         <div className="flex flex-col gap-4 sm:flex-row-reverse lg:flex-col-reverse xl:flex-row-reverse flex-1">
@@ -50,11 +67,8 @@ async function Summaries() {
                     />
                 </div>
             </div>
-            <div className="xl:flex gap-4">
-            <NewCards claimTypeInfoArr={claimTypeInfoArr} totalClaimAllCreditors={totalClaimAllCreditor}/>
-            </div>
         </>
     )
 }
 
-export default Summaries
+export default NewSummaries
