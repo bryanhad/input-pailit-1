@@ -2,8 +2,6 @@ import Cards from './Cards'
 import CreditorTypeCards from './CreditorTypeCards'
 import DoughnutChart from './DoughnutChart'
 import HorizontalBarChart from './HorizontalBarChart'
-import NewCards from './NewCards'
-import TotalCount from './TotalCount'
 import { getSummariesData } from './actions'
 
 async function Summaries() {

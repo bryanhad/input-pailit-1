@@ -1,23 +1,20 @@
 'use client'
-import { capitalizeFirstLetter, cn, formatCurrency } from '@/lib/utils'
+import CreditorTypeBadge from '@/components/CreditorTypeBadge'
+import { cn, formatCurrency } from '@/lib/utils'
 import { CreditorType } from '@/types'
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
     BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    BarControllerChartOptions,
-    BarOptions,
-    ChartComponent,
-    ChartOptions,
+    CategoryScale,
     ChartData,
+    Chart as ChartJS,
+    ChartOptions,
+    Legend,
+    LinearScale,
+    Title,
+    Tooltip
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import { CreditorTypesInfo } from './actions'
-import CreditorTypeBadge from '@/components/CreditorTypeBadge'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
