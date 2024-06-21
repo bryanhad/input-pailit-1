@@ -80,7 +80,7 @@ async function DashboardPage({
                 currentLoggedInUserInfo={user}
             />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <DashboardSectionTitle className="">
+                <DashboardSectionTitle>
                     Creditor Dashboard
                 </DashboardSectionTitle>
                 <div className="flex gap-4 justify-between">
