@@ -1,19 +1,18 @@
 import { mustLogin } from "@/auth/actions"
 import { Button } from "@/components/ui/button"
 import MainWrapper from "@/components/ui/main-wrapper"
+import { cn } from "@/lib/utils"
 import { Metadata } from "next"
 import Link from "next/link"
-import Summaries from "./_components/summary/Summaries"
-import CreditorsTable from "./_components/creditors-table/CreditorsTable"
+import ClearCreditorFiltersButton from "./_components/creditors-table/ClearCreditorFiltersButton"
 import CreditorFilterOptionsModal from "./_components/creditors-table/CreditorFilterOptionsModal"
+import CreditorsTable from "./_components/creditors-table/CreditorsTable"
 import {
-    CreditorFilterValues,
-    FetchCreditorsSearchParams,
+    FetchCreditorsSearchParams
 } from "./_components/creditors-table/validations"
+import Summaries from "./_components/summary/Summaries"
 import UserManagement from "./_components/users-table/UserManagement"
 import { UserFilterValues } from "./_components/users-table/validations"
-import { cn } from "@/lib/utils"
-import ClearCreditorFiltersButton from "./_components/creditors-table/ClearCreditorFiltersButton"
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -95,6 +94,12 @@ async function DashboardPage({
                     </div>
                     <Button asChild variant={"success"}>
                         <Link href={"/creditors/add"}>+ Kreditor</Link>
+                    </Button>
+                    <Button asChild>
+                        <Link href={'/api/get-data'}>
+                        Download XLSX
+                        </Link> 
+
                     </Button>
                 </div>
             </div>
