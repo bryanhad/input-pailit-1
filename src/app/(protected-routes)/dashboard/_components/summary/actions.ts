@@ -1,7 +1,7 @@
-'use server'
+"use server"
 
-import db from '@/lib/db'
-import { ClaimType, CreditorType } from '@/types'
+import db from "@/lib/db"
+import { ClaimType, CreditorType } from "@/types"
 
 export type CreditorTypeSummary = {
     totalClaimAmount: number
@@ -28,66 +28,97 @@ export type SummariesData = {
 type RawSummariesData = {
     total_claim_of_all_creditors: string
     total_count_of_all_creditors: string
-    total_claim_amount_and_count_by_creditorType: CreditorTypesInfo
-    total_claim_amount_and_count_by_claimType: {
-        totalClaimAmount: string
-        creditorsCount: string
+    total_claim_amount_and_count_by_creditor_type: CreditorTypesInfo
+    total_claim_amount_and_count_by_claim_type: {
         claimType: ClaimType
+        totalClaimAmount: number
+        creditorsCount: number
     }[]
 }[]
 
 // TODO, ask client: "should totalTagihan be able to handle decimal?"
 export async function getSummariesData(): Promise<SummariesData> {
     const res: RawSummariesData = await db.$queryRaw`
-        WITH total_claims AS (
-            SELECT SUM(CAST("totalTagihan" AS DECIMAL)) AS total_claim_of_all_creditors
-            FROM creditors
+       WITH total_claims AS (
+            SELECT
+                SUM (
+                    COALESCE(c."tagihanPokok"::NUMERIC, 0) + 
+                    COALESCE(c."bungaTagihan"::NUMERIC, 0) + 
+                    COALESCE(c."dendaTagihan"::NUMERIC, 0)
+                ) AS total_claim_of_all_creditors
+            FROM creditors c 
         ),
         total_count AS (
             SELECT COUNT(*) AS total_count_of_all_creditors
             FROM creditors
         ),
         claims_by_creditor_type AS (
-            SELECT jenis AS creditorType,
-                SUM(CAST("totalTagihan" AS DECIMAL)) AS totalClaimAmount,
-                COUNT(*) AS creditorsCount
+            SELECT 
+                "jenis" AS creditor_type,
+                SUM (
+                    COALESCE("tagihanPokok"::NUMERIC, 0) + 
+                    COALESCE("bungaTagihan"::NUMERIC, 0) + 
+                    COALESCE("dendaTagihan"::NUMERIC, 0)
+                ) AS total_claim_amount,
+                COUNT(*) AS creditor_count
             FROM creditors
-            GROUP BY jenis
+            GROUP BY "jenis"
         ),
         claims_by_claim_type AS (
-            SELECT "sifatTagihan" AS claimType,
-                SUM(CAST("totalTagihan" AS DECIMAL))::text AS totalClaimAmount,
-                COUNT(*)::text AS creditorsCount
+            SELECT 
+                "sifatTagihan" AS claim_type,
+                SUM (
+                    COALESCE("tagihanPokok"::NUMERIC, 0) + 
+                    COALESCE("bungaTagihan"::NUMERIC, 0) + 
+                    COALESCE("dendaTagihan"::NUMERIC, 0)
+                ) AS total_claim_amount,
+                COUNT(*) AS creditor_count
             FROM creditors
             GROUP BY "sifatTagihan"
         )
         SELECT 
-            (SELECT total_claim_of_all_creditors::text FROM total_claims),
-            (SELECT total_count_of_all_creditors::text FROM total_count),
-            (SELECT json_object_agg(
-            creditorType, 
-            json_build_object(
-                'totalClaimAmount', totalClaimAmount,
-                'creditorsCount', creditorsCount
-            )
-        ) FROM claims_by_creditor_type) AS "total_claim_amount_and_count_by_creditorType",
-            (SELECT json_agg(json_build_object(
-                'claimType', claimType,
-                'totalClaimAmount', totalClaimAmount,
-                'creditorsCount', creditorsCount
-            )) FROM claims_by_claim_type) AS "total_claim_amount_and_count_by_claimType";
+        -- GET TOTAL CLAIM OF ALL CREDITORS
+            (
+                SELECT total_claim_of_all_creditors::TEXT
+                FROM total_claims
+            ),
+        -- GET TOTAL COUNT OF ALL CREDITORS
+            (
+                SELECT total_count_of_all_creditors::TEXT
+                FROM total_count
+            ),
+        -- GET TOTAL CLAIM AMOUNT AND COUNT (GROUPED BY CREDITOR TYPE)
+            (
+                SELECT json_object_agg(
+                    creditor_type, 
+                    json_build_object(
+                        'totalClaimAmount', total_claim_amount,
+                        'creditorsCount', creditor_count
+                    )
+                ) FROM claims_by_creditor_type
+            ) AS "total_claim_amount_and_count_by_creditor_type",
+        -- GET TOTAL CLAIM AMOUNT AND COUNT (GROUPED BY CLAIM TYPE)
+            (
+                SELECT json_agg(
+                    json_build_object(
+                        'claimType', claim_type,
+                        'totalClaimAmount', total_claim_amount,
+                        'creditorsCount', creditor_count
+                    )
+                ) FROM claims_by_claim_type
+            ) AS "total_claim_amount_and_count_by_claim_type";
     `
     const {
         total_count_of_all_creditors,
         total_claim_of_all_creditors,
-        total_claim_amount_and_count_by_claimType,
-        total_claim_amount_and_count_by_creditorType,
+        total_claim_amount_and_count_by_claim_type,
+        total_claim_amount_and_count_by_creditor_type,
     } = res[0]
 
     return {
         totalCountAllCreditor: Number(total_count_of_all_creditors) || 0,
         totalClaimAllCreditor: Number(total_claim_of_all_creditors) || 0,
-        claimTypeInfoArr: total_claim_amount_and_count_by_claimType.map(
+        claimTypeInfoArr: total_claim_amount_and_count_by_claim_type.map(
             (el) => {
                 return {
                     claimType: el.claimType,
@@ -96,6 +127,6 @@ export async function getSummariesData(): Promise<SummariesData> {
                 }
             }
         ),
-        creditorTypesInfo: total_claim_amount_and_count_by_creditorType,
+        creditorTypesInfo: total_claim_amount_and_count_by_creditor_type,
     }
 }
