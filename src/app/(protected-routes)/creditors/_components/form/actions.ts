@@ -1,19 +1,21 @@
-'use server'
+"use server"
 
-import { toSlug } from '@/lib/utils'
-import { AddCreditorSchema, CreditorFormValues } from './validation'
-import { nanoid } from 'nanoid'
-import db from '@/lib/db'
-import { revalidatePath } from 'next/cache'
-import { Attachment } from '@prisma/client'
-import { ZodError } from 'zod'
+import { toSlug } from "@/lib/utils"
+import { AddCreditorSchema, CreditorFormValues } from "./validation"
+import { nanoid } from "nanoid"
+import db from "@/lib/db"
+import { revalidatePath } from "next/cache"
+import { Attachment } from "@prisma/client"
+import { ZodError } from "zod"
 
 export async function addCreditor(userId: string, values: CreditorFormValues) {
     try {
         const {
             attachments,
-            totalTagihan,
             nama,
+            tagihanPokok,
+            bungaTagihan,
+            dendaTagihan,
             jenis,
             sifatTagihan,
             NIKAtauNomorAktaPendirian,
@@ -35,7 +37,15 @@ export async function addCreditor(userId: string, values: CreditorFormValues) {
                     slug,
                     nama,
                     userId,
-                    totalTagihan: String(totalTagihan),
+                    tagihanPokok: String(tagihanPokok),
+                    bungaTagihan:
+                        bungaTagihan && bungaTagihan > 0
+                            ? String(bungaTagihan)
+                            : null,
+                    dendaTagihan:
+                        dendaTagihan && dendaTagihan > 0
+                            ? String(dendaTagihan)
+                            : null,
                     jenis: jenis.trim(),
                     sifatTagihan: sifatTagihan.trim(),
                     NIKAtauNomorAktaPendirian:
@@ -60,10 +70,10 @@ export async function addCreditor(userId: string, values: CreditorFormValues) {
                 skipDuplicates: true,
             })
         })
-        revalidatePath('/dashboard')
+        revalidatePath("/dashboard")
         return {
             success: {
-                title: 'Successfully added new creditor',
+                title: "Successfully added new creditor",
                 message: `Creditor '${nama}' has been added`,
             },
         }
@@ -71,15 +81,15 @@ export async function addCreditor(userId: string, values: CreditorFormValues) {
         if (err instanceof ZodError) {
             return {
                 error: {
-                    title: 'Invalid Fields',
-                    message: 'Please enter all required fields',
+                    title: "Invalid Fields",
+                    message: "Please enter all required fields",
                 },
             }
         }
         return {
             error: {
-                title: 'Oh Noose!',
-                message: 'Something went wrong',
+                title: "Oh Noose!",
+                message: "Something went wrong",
             },
         }
     }
@@ -90,7 +100,7 @@ export async function editCreditor(
     values: CreditorFormValues,
     dirtyFields: {
         nama: boolean
-        attachments: Omit<Attachment, 'id' | 'creditorId'>[]
+        attachments: Omit<Attachment, "id" | "creditorId">[]
     },
     creditorId: string
 ) {
@@ -107,18 +117,18 @@ export async function editCreditor(
                 // Check if the key exists in submitedFormValues
                 if (key in submitedFormValues) {
                     const typedKey = key as keyof CreditorFormValues
-                    if (typedKey === 'nama') {
+                    if (typedKey === "nama") {
                         toBeUpdatedFields.nama = submitedFormValues.nama
                         toBeUpdatedFields.slug = `${toSlug(
                             submitedFormValues.nama
                         )}-${creditorId}`
                     } else if (
-                        typedKey !== 'attachments' &&
-                        typedKey !== 'totalTagihan'
+                        typedKey !== "attachments" &&
+                        typedKey !== "totalTagihan"
                     ) {
                         toBeUpdatedFields[typedKey] =
                             submitedFormValues[typedKey]?.trim()
-                    } else if (typedKey === 'totalTagihan') {
+                    } else if (typedKey === "totalTagihan") {
                         toBeUpdatedFields.totalTagihan = String(
                             submitedFormValues[typedKey]
                         )
@@ -166,10 +176,10 @@ export async function editCreditor(
             return updatedUser.nama
         })
 
-        revalidatePath('/dashboard')
+        revalidatePath("/dashboard")
         return {
             success: {
-                title: 'Successfully edited creditor',
+                title: "Successfully edited creditor",
                 message: `Creditor '${updatedUserName}' has been edited`,
             },
         }
@@ -177,15 +187,15 @@ export async function editCreditor(
         if (err instanceof ZodError) {
             return {
                 error: {
-                    title: 'Invalid Fields',
-                    message: 'Please enter all required fields',
+                    title: "Invalid Fields",
+                    message: "Please enter all required fields",
                 },
             }
         }
         return {
             error: {
-                title: 'Oh Noose!',
-                message: 'Something went wrong',
+                title: "Oh Noose!",
+                message: "Something went wrong",
             },
         }
     }

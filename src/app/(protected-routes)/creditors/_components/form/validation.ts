@@ -17,7 +17,11 @@ const attachmentsSchema = z.array(
 )
 
 const kuasaHukumSchema = z.object({
-    namaKuasaHukum: z.string().min(1, 'Nama kuasa hukum harus diisi').max(255).optional(),
+    namaKuasaHukum: z
+        .string()
+        .min(1, "Nama kuasa hukum harus diisi")
+        .max(255)
+        .optional(),
     emailKuasaHukum: optionalEmailSchema,
     nomorTeleponKuasaHukum: z.string().min(5).max(255).optional(),
     alamatKuasaHukum: z.string().min(5).max(255).optional(),
@@ -25,7 +29,10 @@ const kuasaHukumSchema = z.object({
 
 export const AddCreditorSchema = z
     .object({
-        nama: z.string({required_error: 'Nama kreditor harus diisi'}).min(1, 'Nama kreditor harus diisi').max(255),
+        nama: z
+            .string({ required_error: "Nama kreditor harus diisi" })
+            .min(1, "Nama kreditor harus diisi")
+            .max(255),
         jenis: z
             .string()
             .min(1)
@@ -41,9 +48,11 @@ export const AddCreditorSchema = z
         email: optionalEmailSchema,
         nomorTelepon: z.string().min(5).max(255).optional().or(z.literal("")),
         korespondensi: z.string().optional(),
-        totalTagihan: z.coerce
+        tagihanPokok: z.coerce
             .number()
             .min(100, "Minimum total tagihan adalah Rp 100"),
+        bungaTagihan: z.coerce.number().optional(),
+        dendaTagihan: z.coerce.number().optional(),
         sifatTagihan: z
             .string()
             .min(1)
@@ -56,6 +65,10 @@ export const AddCreditorSchema = z
     })
     .and(kuasaHukumSchema.optional())
 
-export type CreditorFormValues = { totalTagihan: string | number } & Omit<z.infer<typeof AddCreditorSchema>, 'totalTagihan'>
+export type CreditorFormValues = {
+    tagihanPokok: string | number
+    bungaTagihan: string | number
+    dendaTagihan: string | number
+} & Omit<z.infer<typeof AddCreditorSchema>, "tagihanPokok" | 'bungaTagihan' | 'dendaTagihan'>
 
 export type EditCreditorFormValues = {}
