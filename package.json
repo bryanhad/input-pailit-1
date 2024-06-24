@@ -44,6 +44,7 @@
         "react-hook-form": "^7.51.3",
         "tailwind-merge": "^2.3.0",
         "tailwindcss-animate": "^1.0.7",
+        "xlsx": "file:vendor/xlsx-0.20.2.tgz",
         "zod": "^3.23.4"
     },
     "devDependencies": {
