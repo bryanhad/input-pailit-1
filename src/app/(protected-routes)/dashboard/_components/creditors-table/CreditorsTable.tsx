@@ -97,7 +97,7 @@ async function CreditorsTable({
                                     </TableCell>
                                     <TableCell className="font-semibold">
                                         {formatCurrency(
-                                            Number(creditor.totalTagihan),
+                                            creditor.totalTagihan,
                                             "IDR"
                                         )}
                                     </TableCell>
