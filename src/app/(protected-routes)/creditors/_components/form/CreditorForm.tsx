@@ -13,7 +13,11 @@ import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
-import { capitalizeFirstLetter, formatNumber } from "@/lib/utils"
+import {
+    capitalizeFirstLetter,
+    formatCurrency,
+    formatNumber,
+} from "@/lib/utils"
 import { ClaimType, CreditorType } from "@/types"
 import { useRouter } from "next/navigation"
 import { UseFormReturn } from "react-hook-form"
@@ -23,6 +27,7 @@ import LegalRepresentativeInputs from "./LegalRepresentativeInputs"
 import { CreditorFormValues } from "./validation"
 import { useState, useTransition } from "react"
 import FormResponse from "@/components/form-response"
+import { PlusCircle } from "lucide-react"
 
 type CreditorFormProps = {
     form: UseFormReturn<CreditorFormValues>
@@ -283,117 +288,159 @@ function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
                         />
                     </div>
                     <div className="space-y-4 max-xl:pt-4">
-                        <FormField
-                            control={form.control}
-                            name="tagihanPokok"
-                            render={({
-                                field: { value, ...restOfFieldValues },
-                            }) => (
-                                <FormItem>
-                                    <FormLabel>Tagihan Pokok</FormLabel>
-                                    <FormControl>
-                                        <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-black text-white">
-                                            <p className="px-3">Rp</p>
-                                            <Input
-                                                className="tracking-widest text-black rounded-r-md border border-black"
-                                                value={formatNumber(
-                                                    Number(
-                                                        form.watch(
-                                                            "tagihanPokok"
-                                                        )
-                                                    )
-                                                )}
-                                                variant="withIcon"
-                                                placeholder="Add Product's Price"
-                                                {...restOfFieldValues}
-                                                onChange={(e) =>
-                                                    handleNumberInputChange(
-                                                        e,
-                                                        restOfFieldValues.onChange,
-                                                        "tagihanPokok"
-                                                    )
-                                                }
-                                            />
+                        {/* TAGIHAN STUFFS */}
+                        <div className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="tagihanPokok"
+                                render={({
+                                    field: { value, ...restOfFieldValues },
+                                }) => (
+                                    <FormItem className="flex flex-col">
+                                        <div className="flex gap-4 items-end">
+                                            <FormLabel
+                                                className="mb-2"
+                                                htmlFor="tagihanPokok"
+                                            >
+                                                Tagihan Pokok
+                                            </FormLabel>
+                                            <FormControl className="flex-[1]">
+                                                <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-black text-white">
+                                                    <p className="px-3">Rp</p>
+                                                    <Input
+                                                        className="tracking-widest text-black rounded-r-md border border-black"
+                                                        value={formatNumber(
+                                                            Number(
+                                                                form.watch(
+                                                                    "tagihanPokok"
+                                                                )
+                                                            )
+                                                        )}
+                                                        variant="withIcon"
+                                                        placeholder="Add Product's Price"
+                                                        {...restOfFieldValues}
+                                                        id="tagihanPokok"
+                                                        onChange={(e) =>
+                                                            handleNumberInputChange(
+                                                                e,
+                                                                restOfFieldValues.onChange,
+                                                                "tagihanPokok"
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                            </FormControl>
                                         </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="bungaTagihan"
-                            render={({
-                                field: { value, ...restOfFieldValues },
-                            }) => (
-                                <FormItem>
-                                    <FormLabel>Bunga Tagihan</FormLabel>
-                                    <FormControl>
-                                        <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-                                            <p className="px-3">Rp</p>
-                                            <Input
-                                                className="tracking-widest text-black rounded-r-md border-l"
-                                                value={formatNumber(
-                                                    Number(
-                                                        form.watch(
+                                        <FormMessage className="ml-auto" />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="bungaTagihan"
+                                render={({
+                                    field: { value, ...restOfFieldValues },
+                                }) => (
+                                    <FormItem className="flex items-end gap-4">
+                                        <FormLabel
+                                            className="mb-2"
+                                            htmlFor="bungaTagihan"
+                                        >
+                                            Bunga Tagihan
+                                        </FormLabel>
+                                        <FormControl className="flex-[1]">
+                                            <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                                                <p className="px-3">Rp</p>
+                                                <Input
+                                                    className="tracking-widest text-black rounded-r-md border-l"
+                                                    value={formatNumber(
+                                                        Number(
+                                                            form.watch(
+                                                                "bungaTagihan"
+                                                            )
+                                                        )
+                                                    )}
+                                                    variant="withIcon"
+                                                    placeholder="Add Product's Price"
+                                                    {...restOfFieldValues}
+                                                    id="bungaTagihan"
+                                                    onChange={(e) =>
+                                                        handleNumberInputChange(
+                                                            e,
+                                                            restOfFieldValues.onChange,
                                                             "bungaTagihan"
                                                         )
-                                                    )
-                                                )}
-                                                variant="withIcon"
-                                                placeholder="Add Product's Price"
-                                                {...restOfFieldValues}
-                                                onChange={(e) =>
-                                                    handleNumberInputChange(
-                                                        e,
-                                                        restOfFieldValues.onChange,
-                                                        "bungaTagihan"
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="dendaTagihan"
-                            render={({
-                                field: { value, ...restOfFieldValues },
-                            }) => (
-                                <FormItem>
-                                    <FormLabel>Denda Tagihan</FormLabel>
-                                    <FormControl>
-                                        <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-                                            <p className="px-3">Rp</p>
-                                            <Input
-                                                className="tracking-widest text-black rounded-r-md border-l"
-                                                value={formatNumber(
-                                                    Number(
-                                                        form.watch(
+                                                    }
+                                                />
+                                            </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="dendaTagihan"
+                                render={({
+                                    field: { value, ...restOfFieldValues },
+                                }) => (
+                                    <FormItem className="flex items-end gap-4">
+                                        <FormLabel
+                                            className="mb-2"
+                                            htmlFor="dendaTagihan"
+                                        >
+                                            Denda Tagihan
+                                        </FormLabel>
+                                        <FormControl className="flex-[1]">
+                                            <div className="flex items-center rounded-l-md rounded-r-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                                                <p className="px-3">Rp</p>
+                                                <Input
+                                                    className="tracking-widest text-black rounded-r-md border-l"
+                                                    value={formatNumber(
+                                                        Number(
+                                                            form.watch(
+                                                                "dendaTagihan"
+                                                            )
+                                                        )
+                                                    )}
+                                                    variant="withIcon"
+                                                    placeholder="Add Product's Price"
+                                                    {...restOfFieldValues}
+                                                    id="dendaTagihan"
+                                                    onChange={(e) =>
+                                                        handleNumberInputChange(
+                                                            e,
+                                                            restOfFieldValues.onChange,
                                                             "dendaTagihan"
                                                         )
-                                                    )
-                                                )}
-                                                variant="withIcon"
-                                                placeholder="Add Product's Price"
-                                                {...restOfFieldValues}
-                                                onChange={(e) =>
-                                                    handleNumberInputChange(
-                                                        e,
-                                                        restOfFieldValues.onChange,
-                                                        "dendaTagihan"
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                                    }
+                                                />
+                                            </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="flex items-center">
+                                <hr className="flex-[1] border border-gray-300" />
+                                <PlusCircle
+                                    className="shrink-0 text-gray-400"
+                                    size={14}
+                                />
+                            </div>
+                            <div className="flex gap-4 justify-end  ">
+                                <p>Total Tagihan</p>
+                                <p>
+                                    {formatCurrency(
+                                        Number(form.watch("tagihanPokok")) +
+                                            Number(form.watch("bungaTagihan")) +
+                                            Number(form.watch("dendaTagihan")),
+                                        "IDR"
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+                        {/* END OF TAGIHAN STUFFS */}
                         <FormField
                             control={form.control}
                             name="sifatTagihan"
@@ -447,7 +494,10 @@ function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
                             loading={isPending}
                             disabled={!form.formState.isDirty}
                         >
-                            Submit
+                            {creditorId
+                                    ? !form.formState.isDirty ? "Edit one of the fields to submit" : 'Edit Creditor' 
+                                    : !form.formState.isDirty ? "Fill in any of the fields to submit" : 'Add Creditor' 
+                                    }
                         </LoadingButton>
                     </div>
                 </form>
