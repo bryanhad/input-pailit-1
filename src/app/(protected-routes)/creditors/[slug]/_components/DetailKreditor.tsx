@@ -31,10 +31,6 @@ function DetailKreditor({ creditor }: DetailKreditorProps) {
                     fieldName="Nomor Telepon"
                     value={creditor.nomorTelepon}
                 />
-                <FieldValuePair
-                    fieldName="Korespondensi"
-                    value={creditor.korespondensi}
-                />
             </div>
         </Section>
     )

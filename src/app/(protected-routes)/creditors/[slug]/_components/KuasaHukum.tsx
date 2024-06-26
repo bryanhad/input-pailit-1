@@ -24,8 +24,8 @@ function KuasaHukum({ creditor }: KuasaHukumProps) {
                     value={creditor.nomorTeleponKuasaHukum}
                 />
                 <FieldValuePair
-                    fieldName="Alamat"
-                    value={creditor.alamatKuasaHukum}
+                    fieldName="Alamat Korespondensi"
+                    value={creditor.alamatKorespondensi}
                 />
             </div>
         </Section>

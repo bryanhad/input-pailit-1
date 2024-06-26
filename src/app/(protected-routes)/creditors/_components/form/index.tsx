@@ -18,12 +18,11 @@ export const useAddCreditorForm = (defaultFormValue?: CreditorFormValues) => {
             alamat: defaultFormValue?.alamat || undefined,
             email: defaultFormValue?.email || undefined,
             nomorTelepon: defaultFormValue?.nomorTelepon || undefined,
-            korespondensi: defaultFormValue?.korespondensi || undefined,
             tagihanPokok: defaultFormValue?.tagihanPokok || 0,
             bungaTagihan: defaultFormValue?.bungaTagihan || 0,
             dendaTagihan: defaultFormValue?.dendaTagihan || 0,
             sifatTagihan: defaultFormValue?.sifatTagihan || "SEPARATIS",
-            alamatKuasaHukum: defaultFormValue?.alamatKuasaHukum || undefined,
+            alamatKorespondensi: defaultFormValue?.alamatKorespondensi || undefined,
             emailKuasaHukum: defaultFormValue?.emailKuasaHukum || undefined,
             namaKuasaHukum: defaultFormValue?.namaKuasaHukum || undefined,
             nomorTeleponKuasaHukum:

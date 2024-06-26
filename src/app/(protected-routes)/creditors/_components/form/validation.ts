@@ -24,7 +24,7 @@ const kuasaHukumSchema = z.object({
         .optional(),
     emailKuasaHukum: optionalEmailSchema,
     nomorTeleponKuasaHukum: z.string().min(5).max(255).optional(),
-    alamatKuasaHukum: z.string().min(5).max(255).optional(),
+    alamatKorespondensi: z.string().min(5).max(255).optional(),
 })
 
 export const AddCreditorSchema = z
@@ -47,7 +47,6 @@ export const AddCreditorSchema = z
         alamat: z.string().min(5).max(255).optional().or(z.literal("")),
         email: optionalEmailSchema,
         nomorTelepon: z.string().min(5).max(255).optional().or(z.literal("")),
-        korespondensi: z.string().optional(),
         tagihanPokok: z.coerce
             .number()
             .min(100, "Minimum total tagihan adalah Rp 100"),

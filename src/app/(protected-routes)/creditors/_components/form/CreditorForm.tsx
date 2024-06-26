@@ -275,24 +275,6 @@ function CreditorForm({ form, action, creditorId, userId }: CreditorFormProps) {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
-                                name="korespondensi"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            Korespondensi Kreditor
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                {...field}
-                                                placeholder="Masukkan korespondensi kreditor"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
                         </div>
                     </CreditorFormSection>
                     <div className="space-y-3 max-xl:pt-4">

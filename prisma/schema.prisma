@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-    provider        = "prisma-client-js"
+    provider = "prisma-client-js"
     // will enable to use postgres's full text search later, so we can search for jobs
     // previewFeatures = ["fullTextSearch"]
 }
@@ -70,7 +70,6 @@ model Creditor {
     alamat                    String?
     email                     String?
     nomorTelepon              String?
-    korespondensi             String?
     tagihanPokok              String
     bungaTagihan              String?
     dendaTagihan              String?
@@ -79,7 +78,7 @@ model Creditor {
     namaKuasaHukum         String?
     emailKuasaHukum        String?
     nomorTeleponKuasaHukum String?
-    alamatKuasaHukum       String?
+    alamatKorespondensi    String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

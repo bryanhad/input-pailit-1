@@ -31,12 +31,12 @@ function LegalRepresentativeInputs() {
     const [kuasaDetail, setKuasaDetail] = useState<{
         namaKuasaHukum: null | string
         emailKuasaHukum: null | string
-        alamatKuasaHukum: null | string
+        alamatKorespondensi: null | string
         nomorTeleponKuasaHukum: null | string
     }>({
         namaKuasaHukum: null,
         emailKuasaHukum: null,
-        alamatKuasaHukum: null,
+        alamatKorespondensi: null,
         nomorTeleponKuasaHukum: null,
     })
 
@@ -44,7 +44,7 @@ function LegalRepresentativeInputs() {
         setKuasaDetail({
             namaKuasaHukum: form.getValues('namaKuasaHukum') || null,
             emailKuasaHukum: form.getValues('emailKuasaHukum') || null,
-            alamatKuasaHukum: form.getValues('alamatKuasaHukum') || null,
+            alamatKorespondensi: form.getValues('alamatKorespondensi') || null,
             nomorTeleponKuasaHukum:
                 form.getValues('nomorTeleponKuasaHukum') || null,
         })
@@ -56,13 +56,13 @@ function LegalRepresentativeInputs() {
         setKuasaDetail({
             namaKuasaHukum: null,
             emailKuasaHukum: null,
-            alamatKuasaHukum: null,
+            alamatKorespondensi: null,
             nomorTeleponKuasaHukum: null,
         })
 
         form.setValue('namaKuasaHukum', undefined)
         form.setValue('emailKuasaHukum', undefined)
-        form.setValue('alamatKuasaHukum', undefined)
+        form.setValue('alamatKorespondensi', undefined)
         form.setValue('nomorTeleponKuasaHukum', undefined)
 
         setWithLegalRepresentative(false)
@@ -158,23 +158,23 @@ function LegalRepresentativeInputs() {
                 />
                 <FormField
                     control={form.control}
-                    name="alamatKuasaHukum"
+                    name="alamatKorespondensi"
                     render={({
                         field: { onChange, value, ...restOfFieldValues },
                     }) => (
                         <FormItem>
-                            <FormLabel>Alamat</FormLabel>
+                            <FormLabel>Alamat Korespondensi</FormLabel>
                             <FormControl>
                                 <Textarea
-                                    placeholder="Type Legal Representative Address's address here."
+                                    placeholder="Type creditor's correspondence adress here."
                                     value={
-                                        kuasaDetail.alamatKuasaHukum ||
+                                        kuasaDetail.alamatKorespondensi ||
                                         undefined
                                     }
                                     onChange={(e) => {
                                         setKuasaDetail((prev) => ({
                                             ...prev,
-                                            alamatKuasaHukum: e.target.value,
+                                            alamatKorespondensi: e.target.value,
                                         }))
                                         onChange(e)
                                     }}

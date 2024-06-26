@@ -20,10 +20,9 @@ export async function addCreditor(userId: string, values: CreditorFormValues) {
             sifatTagihan,
             NIKAtauNomorAktaPendirian,
             alamat,
-            alamatKuasaHukum,
             email,
             emailKuasaHukum,
-            korespondensi,
+            alamatKorespondensi,
             namaKuasaHukum,
             nomorTelepon,
             nomorTeleponKuasaHukum,
@@ -51,10 +50,9 @@ export async function addCreditor(userId: string, values: CreditorFormValues) {
                     NIKAtauNomorAktaPendirian:
                         NIKAtauNomorAktaPendirian?.trim(),
                     alamat: alamat?.trim(),
-                    alamatKuasaHukum: alamatKuasaHukum?.trim(),
+                    alamatKorespondensi: alamatKorespondensi?.trim(),
                     email: email?.trim(),
                     emailKuasaHukum: emailKuasaHukum?.trim(),
-                    korespondensi: korespondensi?.trim(),
                     namaKuasaHukum: namaKuasaHukum?.trim(),
                     nomorTelepon: nomorTelepon?.trim(),
                     nomorTeleponKuasaHukum: nomorTeleponKuasaHukum?.trim(),
@@ -165,8 +163,8 @@ export async function editCreditor(
                     ...toBeUpdatedFields,
                     namaKuasaHukum: submitedFormValues.namaKuasaHukum || null,
                     emailKuasaHukum: submitedFormValues.emailKuasaHukum || null,
-                    alamatKuasaHukum:
-                        submitedFormValues.alamatKuasaHukum || null,
+                    alamatKorespondensi:
+                        submitedFormValues.alamatKorespondensi || null,
                     nomorTeleponKuasaHukum:
                         submitedFormValues.nomorTeleponKuasaHukum || null,
                     lastUpdatedByUserId: userId,
