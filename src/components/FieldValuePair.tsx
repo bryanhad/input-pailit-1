@@ -15,7 +15,7 @@ function FieldValuePair({ fieldName, value, className, valueClassName, fieldClas
                 className
             )}
         >
-            <p className={cn("min-w-[160px] font-medium pl-2 max-md:pt-2 md:py-2", fieldClassName)}>
+            <p className={cn("min-w-[180px] font-medium pl-2 max-md:pt-2 md:py-2", fieldClassName)}>
                 {fieldName}
                 <span className="ml-2 md:hidden">:</span>
             </p>

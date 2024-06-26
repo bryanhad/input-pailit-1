@@ -87,7 +87,7 @@ function LegalRepresentativeInputs() {
 
     return (
         <CreditorFormSection title="Kuasa Hukum">
-            <div className="border border-input p-4 rounded-md relative">
+            <div className="border border-input p-4 rounded-md relative flex flex-col gap-2">
                 <Modal
                     title={`Are you sure?`}
                     desc={`This action will remove all 'Kuasa Hukum' fields from the current form.`}
