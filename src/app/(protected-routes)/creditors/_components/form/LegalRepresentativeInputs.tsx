@@ -1,20 +1,21 @@
-"use client"
+'use client'
 import {
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { UseFormReturn } from "react-hook-form"
-import { X } from "lucide-react"
-import { CreditorFormValues } from "./validation"
-import { Button } from "@/components/ui/button"
-import Modal from "@/components/ui/modal"
-import { useEffect, useState } from "react"
-import { useFormContextAddCreditor } from "."
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { UseFormReturn } from 'react-hook-form'
+import { X } from 'lucide-react'
+import { CreditorFormValues } from './validation'
+import { Button } from '@/components/ui/button'
+import Modal from '@/components/ui/modal'
+import { useEffect, useState } from 'react'
+import { useFormContextAddCreditor } from '.'
+import CreditorFormSection from './CreditorFormSection'
 
 type LegalRepresentativeInputsProps = {
     form: UseFormReturn<CreditorFormValues>
@@ -25,7 +26,7 @@ function LegalRepresentativeInputs() {
     const form = useFormContextAddCreditor()
 
     const [withLegalRepresentative, setWithLegalRepresentative] =
-        useState<boolean>(!!form.getValues("namaKuasaHukum"))
+        useState<boolean>(!!form.getValues('namaKuasaHukum'))
 
     const [kuasaDetail, setKuasaDetail] = useState<{
         namaKuasaHukum: null | string
@@ -41,11 +42,11 @@ function LegalRepresentativeInputs() {
 
     useEffect(() => {
         setKuasaDetail({
-            namaKuasaHukum: form.getValues("namaKuasaHukum") || null,
-            emailKuasaHukum: form.getValues("emailKuasaHukum") || null,
-            alamatKuasaHukum: form.getValues("alamatKuasaHukum") || null,
+            namaKuasaHukum: form.getValues('namaKuasaHukum') || null,
+            emailKuasaHukum: form.getValues('emailKuasaHukum') || null,
+            alamatKuasaHukum: form.getValues('alamatKuasaHukum') || null,
             nomorTeleponKuasaHukum:
-                form.getValues("nomorTeleponKuasaHukum") || null,
+                form.getValues('nomorTeleponKuasaHukum') || null,
         })
     }, [form])
 
@@ -59,10 +60,10 @@ function LegalRepresentativeInputs() {
             nomorTeleponKuasaHukum: null,
         })
 
-        form.setValue("namaKuasaHukum", undefined)
-        form.setValue("emailKuasaHukum", undefined)
-        form.setValue("alamatKuasaHukum", undefined)
-        form.setValue("nomorTeleponKuasaHukum", undefined)
+        form.setValue('namaKuasaHukum', undefined)
+        form.setValue('emailKuasaHukum', undefined)
+        form.setValue('alamatKuasaHukum', undefined)
+        form.setValue('nomorTeleponKuasaHukum', undefined)
 
         setWithLegalRepresentative(false)
         setIsModalOpen(false)
@@ -73,10 +74,10 @@ function LegalRepresentativeInputs() {
             <Button
                 className="block "
                 type="button"
-                variant={"success"}
+                variant={'success'}
                 onClick={() => {
                     setWithLegalRepresentative(true)
-                    form.setValue("namaKuasaHukum", "")
+                    form.setValue('namaKuasaHukum', '')
                 }}
             >
                 + Kuasa Hukum
@@ -85,9 +86,7 @@ function LegalRepresentativeInputs() {
     }
 
     return (
-        <>
-            <h2 className="font-bold text-2xl">Kuasa Hukum</h2>
-
+        <CreditorFormSection title="Kuasa Hukum">
             <div className="border border-input p-4 rounded-md relative">
                 <Modal
                     title={`Are you sure?`}
@@ -102,7 +101,7 @@ function LegalRepresentativeInputs() {
                         <Button
                             type="button"
                             className="p-1 size-7 absolute right-0 top-0 rounded-tl-none rounded-br-none"
-                            variant={"destructive"}
+                            variant={'destructive'}
                             onClick={() => {
                                 setIsModalOpen((prev) => !prev)
                             }}
@@ -115,13 +114,13 @@ function LegalRepresentativeInputs() {
                         <Button
                             onClick={() => handleApprove()}
                             className="flex-1"
-                            variant={"destructive"}
+                            variant={'destructive'}
                         >
                             Yes, creditor doesn&apos;t need &apos;Kuasa&apos;
                         </Button>
                         <Button
                             className="flex-1"
-                            variant={"outline"}
+                            variant={'outline'}
                             onClick={() => setIsModalOpen(false)}
                         >
                             Cancel
@@ -245,7 +244,7 @@ function LegalRepresentativeInputs() {
                     )}
                 />
             </div>
-        </>
+        </CreditorFormSection>
     )
 }
 

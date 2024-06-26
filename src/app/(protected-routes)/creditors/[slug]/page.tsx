@@ -61,12 +61,12 @@ async function CreditorDetailPage({
                     <DownloadCreditorPDFButton id={creditor.id} />
                 </div>
             </div>
-            <section className="grid lg:grid-cols-2 gap-6 mt-2">
-                <div>
+            <section className="grid lg:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-4">
                     <DetailKreditor creditor={creditor} />
                     <KuasaHukum creditor={creditor} />
                 </div>
-                <div className="grid">
+                <div className="flex flex-col">
                     <TagihanKreditor creditor={creditor} />
                     <LampiranKreditor creditor={creditor} />
                 </div>

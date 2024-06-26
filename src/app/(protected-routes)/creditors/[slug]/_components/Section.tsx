@@ -14,7 +14,7 @@ export function Section({
     className?: string
 }) {
     return (
-        <div className={cn("flex flex-col gap-4 w-full", className)}>
+        <div className={cn("gap-4 grid", className)}>
             {useH1 ? <H1>{title}</H1> : <H2>{title}</H2>}
             {children}
         </div>

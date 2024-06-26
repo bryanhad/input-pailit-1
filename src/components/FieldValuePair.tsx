@@ -15,12 +15,12 @@ function FieldValuePair({ fieldName, value, className, valueClassName, fieldClas
                 className
             )}
         >
-            <p className={cn("min-w-[180px] font-medium pl-2 py-2", fieldClassName)}>
+            <p className={cn("min-w-[160px] font-medium pl-2 max-md:pt-2 md:py-2", fieldClassName)}>
                 {fieldName}
                 <span className="ml-2 md:hidden">:</span>
             </p>
             <span className="hidden md:block self-center">:</span>
-            <p className={cn("flex-1 w-full text-sm pt-[3px] pr-2 self-center", valueClassName)}>{value || '-'}</p>
+            <p className={cn("flex-1 w-full text-sm pt-[3px] px-2 max-md:pb-2 md:py-2 self-center break-all", valueClassName)}>{value || '-'}</p>
         </div>
     )
 }
