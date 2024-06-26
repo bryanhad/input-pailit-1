@@ -9,7 +9,7 @@ type KuasaHukumProps = {
 
 function KuasaHukum({ creditor }: KuasaHukumProps) {
     return (
-        <Section title="Kuasa Hukum">
+        <Section title="Kuasa / Kuasa Hukum">
             <div className="flex flex-col gap-2">
                 <FieldValuePair
                     fieldName="Nama"

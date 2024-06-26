@@ -80,13 +80,13 @@ function LegalRepresentativeInputs() {
                     form.setValue('namaKuasaHukum', '')
                 }}
             >
-                + Kuasa Hukum
+                + Kuasa / Kuasa Hukum
             </Button>
         )
     }
 
     return (
-        <CreditorFormSection title="Kuasa Hukum">
+        <CreditorFormSection title="Kuasa / Kuasa Hukum">
             <div className="border border-input p-4 rounded-md relative flex flex-col gap-2">
                 <Modal
                     title={`Are you sure?`}
