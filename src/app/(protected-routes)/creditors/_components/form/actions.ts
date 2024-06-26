@@ -124,12 +124,18 @@ export async function editCreditor(
                         )}-${creditorId}`
                     } else if (
                         typedKey !== "attachments" &&
-                        typedKey !== "totalTagihan"
+                        typedKey !== "tagihanPokok" &&
+                        typedKey !== "bungaTagihan" &&
+                        typedKey !== "dendaTagihan"
                     ) {
                         toBeUpdatedFields[typedKey] =
                             submitedFormValues[typedKey]?.trim()
-                    } else if (typedKey === "totalTagihan") {
-                        toBeUpdatedFields.totalTagihan = String(
+                    } else if (
+                        typedKey === "tagihanPokok" ||
+                        typedKey === "bungaTagihan" ||
+                        typedKey === "dendaTagihan"
+                    ) {
+                        toBeUpdatedFields[typedKey] = String(
                             submitedFormValues[typedKey]
                         )
                     }
@@ -137,42 +143,35 @@ export async function editCreditor(
             }
         }
 
-        // const deleteCreditorAttachments = db.attachment.deleteMany({
-        //     where: { creditorId },
-        // })
         // INSERT ALL NEW ATTACHMENTS, IF ANY
         const attachmentsToBeUploaded = submitedFormValues.attachments.map(
             (attachment) => {
                 return { creditorId, ...attachment }
             }
         )
-        // const addNewAttachments = db.attachment.createMany({
-        //     data: attachmentsToBeUploaded,
-        // })
-        // UPDATE THE CREDITOR DETAILS
-        const updateCreditor = db.creditor.update({
-            where: { id: creditorId },
-            data: {
-                ...toBeUpdatedFields,
-                namaKuasaHukum: submitedFormValues.namaKuasaHukum || null,
-                emailKuasaHukum: submitedFormValues.emailKuasaHukum || null,
-                alamatKuasaHukum: submitedFormValues.alamatKuasaHukum || null,
-                nomorTeleponKuasaHukum:
-                    submitedFormValues.nomorTeleponKuasaHukum || null,
-                lastUpdatedByUserId: userId,
-            } as any,
-        })
 
         const updatedUserName = await db.$transaction(async (tx) => {
             // DELETE RELATED ATTACHMENTS BY creditorID
-            await db.attachment.deleteMany({
+            await tx.attachment.deleteMany({
                 where: { creditorId },
             })
-
-            await db.attachment.createMany({
+            await tx.attachment.createMany({
                 data: attachmentsToBeUploaded,
             })
-            const updatedUser = await updateCreditor
+            // UPDATE THE CREDITOR DETAILS
+            const updatedUser = await tx.creditor.update({
+                where: { id: creditorId },
+                data: {
+                    ...toBeUpdatedFields,
+                    namaKuasaHukum: submitedFormValues.namaKuasaHukum || null,
+                    emailKuasaHukum: submitedFormValues.emailKuasaHukum || null,
+                    alamatKuasaHukum:
+                        submitedFormValues.alamatKuasaHukum || null,
+                    nomorTeleponKuasaHukum:
+                        submitedFormValues.nomorTeleponKuasaHukum || null,
+                    lastUpdatedByUserId: userId,
+                } as any,
+            })
             return updatedUser.nama
         })
 
