@@ -30,37 +30,12 @@ export async function GET(req: Request) {
     }
 
     try {
-        const dataa = await db.creditor.findMany({
+        const creditors = await db.creditor.findMany({
             include: { _count: { select: { attachments: true } } },
+            orderBy: {number: 'asc'}
         })
-        const creditors: FetchedCreditor[] = await db.$queryRaw`
-        SELECT 
-            c."number" as "No",
-            c."nama" as "Nama Kreditor",
-            c."NIKAtauNomorAktaPendirian" as "NIK atau Nomor Akta Pendirian",
-            c."alamat" as "Alamat Kreditor",
-            c."nomorTelepon" as "Nomor Telepon Kreditor",
-            c."email" as "Email Kreditor",
-            c."namaKuasaHukum" as "Kuasa / Kuasa Hukum",
-            c."nomorTeleponKuasaHukum" as "Nomor Telepon Kuasa / Kuasa Hukum",
-            c."emailKuasaHukum" as "Email Kuasa / Kuasa Hukum",
-            c."alamatKorespondensi" as "Alamat Korespondensi",
-            c."tagihanPokok" as "Tagihan Pokok",
-            c."bungaTagihan" as "Bunga Tagihan",
-            c."dendaTagihan" as "Denda Tagihan",
-            (
-                COALESCE(c."tagihanPokok"::NUMERIC, 0) + 
-                COALESCE(c."bungaTagihan"::NUMERIC, 0) + 
-                COALESCE(c."dendaTagihan"::NUMERIC, 0)
-            )::TEXT AS "Total Tagihan",
-            c."sifatTagihan" as "Sifat Tagihan",
-            COUNT(a."id")::TEXT as "Jumlah Lampiran",
-            c."createdAt" as "Tanggal Input"
-        FROM creditors c
-        LEFT JOIN attachments a ON a."creditorId" = c."id"
-        GROUP BY c."id"
-    `
-        const processedData = dataa.map((c) => {
+
+        const processedData = creditors.map((c) => {
             const tagihanPokok = Number(c.tagihanPokok)
             const bungaTagihan = Number(c.bungaTagihan || '0')
             const dendaTagihan = Number(c.dendaTagihan || '0')
