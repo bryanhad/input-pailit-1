@@ -4,6 +4,7 @@ import LoadingButton from '@/components/LoadingButton'
 import { useToast } from '@/components/ui/use-toast'
 import axios from 'axios'
 import { format } from 'date-fns'
+import { Download } from 'lucide-react'
 import { useState } from 'react'
 
 function DownloadCreditorsXLSXButton() {
@@ -52,8 +53,11 @@ function DownloadCreditorsXLSXButton() {
             loading={loading}
             loadingMessage="Generating XLSX.."
             onClick={onClick}
+            noLoadingMessage
+            className='md:min-w-[160px]'
         >
-            Download XLSX
+            <Download size={16} className="shrink-0" />
+            <span className="hidden md:block">Download XLSX</span>
         </LoadingButton>
     )
 }
