@@ -13,6 +13,7 @@ import {
 import Summaries from "./_components/summary/Summaries"
 import UserManagement from "./_components/users-table/UserManagement"
 import { UserFilterValues } from "./_components/users-table/validations"
+import DownloadCreditorsXLSXButton from "./_components/creditors-table/DownloadCreditorsXLSXButton"
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -95,12 +96,7 @@ async function DashboardPage({
                     <Button asChild variant={"success"}>
                         <Link href={"/creditors/add"}>+ Kreditor</Link>
                     </Button>
-                    <Button asChild>
-                        <Link href={'/api/get-data'}>
-                        Download XLSX
-                        </Link> 
-
-                    </Button>
+                <DownloadCreditorsXLSXButton/>
                 </div>
             </div>
             <CreditorsTable

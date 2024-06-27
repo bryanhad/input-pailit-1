@@ -39,7 +39,7 @@ function DownloadCreditorPDFButton({
                 { data: creditorWithAttahcments },
                 { responseType: "arraybuffer" }
             )
-            if (res.status < 200 && res.status >= 300) {
+            if (res.status < 200 || res.status >= 300) {
                 throw new Error("Failed to get PDF from server.")
             }
             // Create a Blob from the Buffer
@@ -53,15 +53,15 @@ function DownloadCreditorPDFButton({
             window.URL.revokeObjectURL(url)
 
             toast({
-                title: "Successfully downloaded PDF.",
+                title: "Successfully downloaded PDF",
                 description: `Check your browser's download history`,
             })
         } catch (err: any) {
             console.error("Error downloading PDF:", err)
             toast({
                 variant: "destructive",
-                title: "Failed to download PDF.",
-                description: err.message || "Something went wrong.",
+                title: "Failed to download PDF",
+                description: err.message || "Something went wrong",
             })
         } finally {
             setLoading(false)
