@@ -64,7 +64,7 @@ export async function fetchCreditors({
                       },
                   },
                   {
-                      alamatKuasaHukum: {
+                      alamat: {
                           contains: searchString,
                           mode: "insensitive",
                       },
