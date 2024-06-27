@@ -20,7 +20,7 @@ async function EditCreditorPage({ params: { slug } }: EditCreditorPageProps) {
         notFound()
     }
 
-    const { attachments, ...creditorValues } = creditor
+    const { attachments, bungaTagihan, dendaTagihan, ...creditorValues } = creditor
 
     const sanitizedAttachments = attachments.map((attachment) => ({
         ...attachment,
@@ -29,17 +29,18 @@ async function EditCreditorPage({ params: { slug } }: EditCreditorPageProps) {
 
     const sanitizedCreditor = {
         ...creditorValues,
+        bungaTagihan: bungaTagihan ?? 0,
+        dendaTagihan: dendaTagihan ?? 0,
         NIKAtauNomorAktaPendirian:
             creditorValues.NIKAtauNomorAktaPendirian ?? undefined,
         alamat: creditorValues.alamat ?? undefined,
         email: creditorValues.email ?? undefined,
         nomorTelepon: creditorValues.nomorTelepon ?? undefined,
-        korespondensi: creditorValues.korespondensi ?? undefined,
+        alamatKorespondensi: creditorValues.alamatKorespondensi ?? undefined,
         namaKuasaHukum: creditorValues.namaKuasaHukum ?? undefined,
         emailKuasaHukum: creditorValues.emailKuasaHukum ?? undefined,
         nomorTeleponKuasaHukum:
             creditorValues.nomorTeleponKuasaHukum ?? undefined,
-        alamatKuasaHukum: creditorValues.alamatKuasaHukum ?? undefined,
         attachments: sanitizedAttachments,
     }
 
